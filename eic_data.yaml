@@ -31,25 +31,25 @@ datatypes :
     Author : "C. Bernet, B. Hegner"
     Members :
       - eic::LorentzVector P4 // Four momentum.
-      - int64_t ID // Particle type identification code
-      - int64_t Status // Status code
+      - long long ID // Particle type identification code
+      - long long Status // Status code
 
 
   eic::RawCalorimeterHit:
     Description: "EIC raw calorimeter hit"
     Author : "F.Gaede, B. Hegner"
     Members:
-      - int64_t cellID0   // The detector specific (geometrical) cell id.
-      - int64_t cellID1   // The second detector specific (geometrical) cell id.
-      - int64_t amplitude // The amplitude of the hit in ADC counts.
-      - int64_t timeStamp // The time stamp for the hit.
+      - long long cellID0   // The detector specific (geometrical) cell id.
+      - long long cellID1   // The second detector specific (geometrical) cell id.
+      - long long amplitude // The amplitude of the hit in ADC counts.
+      - long long timeStamp // The time stamp for the hit.
 
   eic::CalorimeterHit:
     Description: "EIC calorimeter hit"
     Author : "F.Gaede, B. Hegner"
     Members:
-      - int64_t cellID0  // The detector specific (geometrical) cell id.
-      - int64_t cellID1  // The second detector specific (geometrical) cell id.
+      - long long cellID0  // The detector specific (geometrical) cell id.
+      - long long cellID1  // The second detector specific (geometrical) cell id.
       - float energy // The energy of the hit in [GeV].
       - float time   // The time of the hit in [ns].
       - std::array<float, 3> position // The position of the hit in world coordinates.
@@ -67,9 +67,9 @@ datatypes :
       - float theta // Intrinsic direction of cluster at position - Theta.
       - float phi   // Intrinsic direction of cluster at position - Phi.
       - std::array<float, 3> directionError // Covariance matrix of the direction (3 Parameters)
-      - std::vector<float> shape  // Shape parameters
-      - std::vector<float> weight // weight of a particular cluster
-      - std::vector<float> subdetectorEnergies // A vector that holds the energy observed in a particular subdetector.
+        #- std::vector<float> shape  // Shape parameters
+        #- std::vector<float> weight // weight of a particular cluster
+        #- std::vector<float> subdetectorEnergies // A vector that holds the energy observed in a particular subdetector.
     OneToManyRelations:
       - eic::Cluster clusters // The clusters that have been combined to this cluster.
       - eic::CalorimeterHit hits // The hits that have been combined to this cluster.
@@ -78,8 +78,8 @@ datatypes :
     Description: "EIC MC Particle"
     Author : "F.Gaede, B. Hegner"
     Members:
-      - int64_t pdg // The PDG code of the particle.
-      - int64_t genstatus   // The status for particles as defined by the generator.
+      - long long pdg // The PDG code of the particle.
+      - long long genstatus   // The status for particles as defined by the generator.
       - std::array<double, 3> vertex // The production vertex of the particle in [mm].
       - float charge // The particle's charge.
       - float mass // The mass of the particle in [GeV]
@@ -98,8 +98,8 @@ datatypes :
       double Px2() const {return momentum().at(0)*momentum().at(0);}\n
       double Py2() const {return momentum().at(1)*momentum().at(1);}\n
       double Pz2() const {return momentum().at(2)*momentum().at(2);}\n
-      ROOT::Math::XYZTVector FourVector() const { return  ROOT::Math::XYZTVector(Px(),Py(),Pz(),std::sqrt(Px2()+Py2()+Pz2()+mass()*mass())); }\n
-      double theta() const { return  ROOT::Math::XYZVector(Px(),Py(),Pz()).Theta();}\n
+      //ROOT::Math::XYZTVector FourVector() const { return  ROOT::Math::XYZTVector(Px(),Py(),Pz(),std::sqrt(Px2()+Py2()+Pz2()+mass()*mass())); }\n
+      //double theta() const { return  ROOT::Math::XYZVector(Px(),Py(),Pz()).Theta();}\n
       "
 
   eic::ReconstructedParticle:
@@ -122,8 +122,8 @@ datatypes :
     Description: "EIC simulated calorimeter hit"
     Author : "F.Gaede, B. Hegner"
     Members:
-      - int64_t cellID0  // The detector specific (geometrical) cell id.
-      - int64_t cellID1  // The second detector specific (geometrical) cell id.
+      - long long cellID0  // The detector specific (geometrical) cell id.
+      - long long cellID1  // The second detector specific (geometrical) cell id.
       - float energy // The energy of the hit in [GeV].
       - float time   // The time of the hit in [ns].
       - std::array<float, 3> position // The position of the hit in world coordinates.
@@ -132,8 +132,8 @@ datatypes :
     Description: "EIC simulated tracker hit"
     Author : "F.Gaede, B. Hegner"
     Members:
-      - int64_t cellID0  // The detector specific (geometrical) cell id.
-      - int64_t cellID1  // The second detector specific (geometrical) cell id.
+      - long long cellID0  // The detector specific (geometrical) cell id.
+      - long long cellID1  // The second detector specific (geometrical) cell id.
       - std::array<double, 3> position // The position of the hit in world coordinates.
       - float time   // The time of the hit in [ns].
       - float pathLength // path length
@@ -161,28 +161,28 @@ datatypes :
     Description : "EIC tracker data"
     Author : "F.Gaede, B. Hegner"
     Members:
-      - int64_t cellID0 // The detector specific (geometrical) cell id.
-      - int64_t cellID1 // The second detector specific (geometrical) cell id.
+      - long long cellID0 // The detector specific (geometrical) cell id.
+      - long long cellID1 // The second detector specific (geometrical) cell id.
       - int time    // The time of the hit.
-      - std::vector<float> charge // The corrected (calibrated) FADC spectrum.
+        #- std::vector<float> charge // The corrected (calibrated) FADC spectrum.
 
   eic::TrackerHit:
     Description : "EIC tracker hit"
     Author : "F.Gaede, B. Hegner"
     Members :
-      - int64_t cellID0 // The detector specific (geometrical) cell id.
-      - int64_t cellID1 // The second detector specific (geometrical) cell id.
-      - int64_t time    // The time of the hit.
+      - long long cellID0 // The detector specific (geometrical) cell id.
+      - long long cellID1 // The second detector specific (geometrical) cell id.
+      - long long time    // The time of the hit.
       - float EDep  // EDep
       - float EDepError // error on EDep
       - std::array<double, 3> position // position 
-      - std::vector<float> covMatrix // The calibrated ADC values
+        #- std::vector<float> covMatrix // The calibrated ADC values
   eic::TrackerPulse:
     Description : "EIC tracker pulse"
     Author : "F. Gaede, B. Hegner"
     Members:
-      - int64_t cellID0  // The detector specific (geometrical) cell id.
-      - int64_t cellID1  // The second detector specific (geometrical) cell id.
+      - long long cellID0  // The detector specific (geometrical) cell id.
+      - long long cellID1  // The second detector specific (geometrical) cell id.
       - int quality  // ...
       - float time   // The time of the pulse.
       - float charge // The integrated charge of the pulse
@@ -194,9 +194,9 @@ datatypes :
     Description: "EIC tracker raw data"
     Author : "Whit Armstrong"
     Members:
-      - int64_t cellID0  // The detector specific (geometrical) cell id.
-      - int64_t cellID1  // The second detector specific (geometrical) cell id.
-      - int64_t channelID  // channel  id.
+      - long long cellID0  // The detector specific (geometrical) cell id.
+      - long long cellID1  // The second detector specific (geometrical) cell id.
+      - long long channelID  // channel  id.
       - int time     //  time measurement associated with the adc values.
       - int adc      // measured ADC values
         #      - std::vector<short> adc // measured ADC values.
@@ -205,8 +205,8 @@ datatypes :
     Description: "EIC tracker data"
     Author : "F.Gaede, B. Hegner"
     Members:
-      - int64_t cellID0  // The detector specific (geometrical) cell id.
-      - int64_t cellID1  // The second detector specific (geometrical) cell id.
+      - long long cellID0  // The detector specific (geometrical) cell id.
+      - long long cellID1  // The second detector specific (geometrical) cell id.
       - int time     //  time measurement associated with the adc values.
         #      - std::vector<short> charge // The actual FADC spectrum.
 

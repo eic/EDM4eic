@@ -3,11 +3,9 @@ project(EICD
   VERSION 0.5.1
   LANGUAGES CXX)
 
-execute_process(COMMAND podio ${CMAKE_SOURCE_DIR}/eic_data.yaml ${PROJECT_BINARY_DIR} EICD )
-#execute_process(COMMAND podio ${CMAKE_SOURCE_DIR}/EICD-edm-extensions.yaml ${PROJECT_BINARY_DIR} lcio )
-
 #--- Declare options -----------------------------------------------------------
 option(CREATE_DOC "Whether or not to create doxygen doc target.")
+option(BUILD_DATA_MODEL "Run podio class generator yaml file" OFF)
 
 # Offer the user the choice of overriding the installation directories
 set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
@@ -24,43 +22,45 @@ set(DEF_INSTALL_CMAKE_DIR cmake)
 set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH
   "Installation directory for CMake files")
 
+if(BUILD_DATA_MODEL)
+  execute_process(COMMAND python $ENV{PODIO}/python/podio_class_generator.py ${CMAKE_SOURCE_DIR}/eic_data.yaml ${PROJECT_BINARY_DIR} eicd )
+endif(BUILD_DATA_MODEL)
+
 # Make relative paths absolute (needed later on)
-foreach(p LIB BIN INCLUDE CMAKE)
-  set(var INSTALL_${p}_DIR)
-  if(NOT IS_ABSOLUTE "${${var}}")
-    set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
-  endif()
-endforeach()
+#foreach(p LIB BIN INCLUDE CMAKE)
+#  set(var INSTALL_${p}_DIR)
+#  if(NOT IS_ABSOLUTE "${${var}}")
+#    set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
+#  endif()
+#endforeach()
 
 # Set up C++14
 ##set(CPP_STANDARD_FLAGS "-std=c++17")
 #if (${APPLE})
 #    set(CPP_STANDARD_FLAGS "-std=c++14\ -stdlib=libc++")
 #endif()
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -DDROP_CGAL ${CPP_STANDARD_FLAGS} -Wall -Wextra -Wpedantic -Wno-unused-variable -Wno-unused-parameter")
-
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -DDROP_CGAL ${CPP_STANDARD_FLAGS} -Wall -Wextra -Wpedantic -Wno-unused-variable -Wno-unused-parameter")
 
 # Make sure we find the Find*.cmake functions distributed with this package
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package(podio REQUIRED)
-message(STATUS "Found podio: ${podio_DIR}")
+message("Podio libraries: ${podio_LIBRARIES}")
 # Make sure the library is found.
 # Not the case if LD_LIBRARY_PATH is wrong
 #find_library(PODIOLIB podio PATHS $ENV{PODIO}/lib)
 #if (NOT PODIOLIB)
 #    message(FATAL_ERROR "libpodio.so(dylib) cannot be found dynamically. Make sure you have sourced PODIO init*.sh file to set up your environment to use PODIO")
 #endif()
-link_directories(${podio_LIBRARY_DIR})
+#link_directories(${podio_LIBRARY_DIR})
 
 #--- Declare ROOT dependency ---------------------------------------------------
+include(cmake/root.cmake)
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
 find_package(ROOT REQUIRED COMPONENTS RIO Tree Physics)
-include_directories(${ROOT_INCLUDE_DIR})
 include(${ROOT_USE_FILE})
 ## extra root settings
-#include(cmake/root.cmake)
-
 #find_package(dag REQUIRED HINTS $ENV{FCCDAG})
 #if(${DAG_FOUND})
 #  message(STATUS "Found dag: ${DAG_DIR}")
@@ -69,37 +69,12 @@ include(${ROOT_USE_FILE})
 #  )
 #endif(${DAG_FOUND})
 
-link_directories(${ROOT_LIBRARY_DIR})
+#link_directories(${ROOT_LIBRARY_DIR})
 #add_definitions(-Wpadded)
 #--temporary fix of inconsistency in ROOT CMake macros
-set(ROOT_genreflex_cmd ${ROOT_genreflex_CMD})
+#set(ROOT_genreflex_cmd ${ROOT_genreflex_CMD})
 
-add_definitions(-Wno-unused-variable -Wno-unused-parameter)
-
-message(
-  "${PROJECT_SOURCE_DIR}
-  ${PROJECT_BINARY_DIR}
-  ${ROOT_INCLUDE_DIR}
-  ${podio_INCLUDE_DIRS}"
-  )
-
-# set up include-directories
-include_directories(
-  "${PROJECT_SOURCE_DIR}"
-  "${PROJECT_BINARY_DIR}"
-  "${PROJECT_BINARY_DIR}/EICD"
-  "${ROOT_INCLUDE_DIRS}"
-  "${podio_INCLUDE_DIRS}"
-  )
-
-
-# adding testing capabilities
-#include(CTest)
-
-#--- target for Doxygen documentation ------------------------------------------
-#jif(EICD_documentation)
-#j  include(cmake/EICDDoxygen.cmake)
-#jendif()
+#add_definitions(-Wno-unused-variable -Wno-unused-parameter)
 
 #configure_file(${CMAKE_SOURCE_DIR}/cmake/Datamodel.cmake
 #  "${CMAKE_SOURCE_DIR}/datamodel/CMakeLists.txt" @ONLY)
@@ -110,19 +85,24 @@ include_directories(
 #add_subdirectory(tests)
 
 file(GLOB sources ${CMAKE_BINARY_DIR}/src/*.cc)
-file(GLOB headers ${CMAKE_BINARY_DIR}/EICD/*.h podio/PythonEventStore.h)
+file(GLOB headers ${CMAKE_BINARY_DIR}/eicd/*.h podio/PythonEventStore.h)
 
 #REFLEX_GENERATE_DICTIONARY(EICD ${headers} SELECTION ${CMAKE_BINARY_DIR}/src/selection.xml )
-ROOT_GENERATE_DICTIONARY(EICDDict ${headers} LINKDEF ${CMAKE_BINARY_DIR}/LinkDef.h MODULE EICD)# OPTIONS -p)
+#ROOT_GENERATE_DICTIONARY(EICDDict ${headers} LINKDEF ${CMAKE_BINARY_DIR}/LinkDef.h MODULE EICD)# OPTIONS -p)
+#ADD_CUSTOM_TARGET(EICD_ROOTDICTS DEPENDS ${sources} ${headers} EICDDict.cxx)
 
-ADD_CUSTOM_TARGET(EICD_ROOTDICTS DEPENDS ${sources} ${headers} EICDDict.cxx)
-
-add_library(EICD SHARED ${sources} EICDDict.cxx)
+add_library(EICD SHARED ${sources} ) #EICDDict.cxx)
 target_link_libraries(EICD 
-  PUBLIC ${ROOT_LIBRARIES}
+  PUBLIC ROOT::Core
+  PUBLIC ROOT::GenVector
   ${podio_LIBRARIES}
   )
-add_dependencies(EICD EICD_ROOTDICTS)
+target_include_directories(EICD 
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/eicd>
+  PUBLIC 
+  $<INSTALL_INTERFACE:include/eicd>
+  )
+#add_dependencies(EICD EICD_ROOTDICTS)
 
 #add_library(EICDDict SHARED EICD.cxx)
 #target_link_libraries(EICDDict)
@@ -135,18 +115,15 @@ install(TARGETS EICD
   EXPORT ${PROJECT_NAME}Targets
   RUNTIME DESTINATION "${INSTALL_BIN_DIR}" COMPONENT bin
   LIBRARY DESTINATION "${INSTALL_LIB_DIR}" COMPONENT shlib
-  PUBLIC_HEADER DESTINATION "${INSTALL_INCLUDE_DIR}/EICD"
+  PUBLIC_HEADER DESTINATION "${INSTALL_INCLUDE_DIR}/eicd"
   COMPONENT dev)
 
-install(FILES
-  "${PROJECT_BINARY_DIR}/libEICD.rootmap"
-  DESTINATION "${INSTALL_LIB_DIR}" COMPONENT dev)
-
-if (${ROOT_VERSION} GREATER 6)
-  install(FILES
-      "${PROJECT_BINARY_DIR}/libEICD_rdict.pcm"
-      DESTINATION "${INSTALL_LIB_DIR}" COMPONENT dev)
-endif()
+#install(FILES
+#  "${PROJECT_BINARY_DIR}/libEICD.rootmap"
+#  DESTINATION "${INSTALL_LIB_DIR}" COMPONENT dev)
+#install(FILES
+#  "${PROJECT_BINARY_DIR}/libEICD_rdict.pcm"
+#  DESTINATION "${INSTALL_LIB_DIR}" COMPONENT dev)
 
 
 ## The interesting stuff goes here
