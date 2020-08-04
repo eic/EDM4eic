@@ -1,0 +1,239 @@
+---
+options :
+  # should getters / setters be prefixed with get / set?
+  getSyntax: False
+  # should POD members be exposed with getters/setters in classes that have them as members?
+  exposePODMembers: True
+
+components :
+
+  SimpleStruct:
+    x : int
+    y : int
+    z : int
+    p : std::array<int, 4>
+    ExtraCode :
+      declaration: "
+      SimpleStruct() : x(0),y(0),z(0) {}
+      SimpleStruct( const int* v) : x(v[0]),y(v[1]),z(v[2]) {}
+      "
+  eic::LorentzVector:
+    Mass: float
+    Pt  : float
+    Eta : float
+    Phi : float
+
+datatypes :
+# Datatypes are components that can be stored in a Collection
+
+  eic::Particle :
+    Description : "Naive Particle Type, used for reconstructed and generated particles"
+    Author : "C. Bernet, B. Hegner"
+    Members :
+      - eic::LorentzVector P4 // Four momentum.
+      - int64_t ID // Particle type identification code
+      - int64_t Status // Status code
+
+
+  eic::RawCalorimeterHit:
+    Description: "EIC raw calorimeter hit"
+    Author : "F.Gaede, B. Hegner"
+    Members:
+      - int64_t cellID0   // The detector specific (geometrical) cell id.
+      - int64_t cellID1   // The second detector specific (geometrical) cell id.
+      - int64_t amplitude // The amplitude of the hit in ADC counts.
+      - int64_t timeStamp // The time stamp for the hit.
+
+  eic::CalorimeterHit:
+    Description: "EIC calorimeter hit"
+    Author : "F.Gaede, B. Hegner"
+    Members:
+      - int64_t cellID0  // The detector specific (geometrical) cell id.
+      - int64_t cellID1  // The second detector specific (geometrical) cell id.
+      - float energy // The energy of the hit in [GeV].
+      - float time   // The time of the hit in [ns].
+      - std::array<float, 3> position // The position of the hit in world coordinates.
+      - int type // The type of the hit
+    OneToOneRelations:
+      - eic::RawCalorimeterHit rawHit // The RawCalorimeterHit
+
+  eic::Cluster:
+    Description: "EIC cluster"
+    Author : "F.Gaede, B. Hegner"
+    Members:
+      - float energy // Energy of the cluster
+      - std::array<float, 3> position // Position of the cluster.
+      - std::array<float, 6> positionError // Covariance matrix of the position (6 Parameters)
+      - float theta // Intrinsic direction of cluster at position - Theta.
+      - float phi   // Intrinsic direction of cluster at position - Phi.
+      - std::array<float, 3> directionError // Covariance matrix of the direction (3 Parameters)
+      - std::vector<float> shape  // Shape parameters
+      - std::vector<float> weight // weight of a particular cluster
+      - std::vector<float> subdetectorEnergies // A vector that holds the energy observed in a particular subdetector.
+    OneToManyRelations:
+      - eic::Cluster clusters // The clusters that have been combined to this cluster.
+      - eic::CalorimeterHit hits // The hits that have been combined to this cluster.
+
+  eic::MCParticle:
+    Description: "EIC MC Particle"
+    Author : "F.Gaede, B. Hegner"
+    Members:
+      - int64_t pdg // The PDG code of the particle.
+      - int64_t genstatus   // The status for particles as defined by the generator.
+      - std::array<double, 3> vertex // The production vertex of the particle in [mm].
+      - float charge // The particle's charge.
+      - float mass // The mass of the particle in [GeV]
+      - float time // The creation time of the particle in [ns] wrt. the event, e.g. for preassigned decays or decays in flight from the simulator.
+      - std::array<double, 3> endpoint // The endpoint of the particle in [mm]
+      - bool endpointSet  // Whether the endpoint has been set
+      - std::array<double, 3> momentum // The particle's 3-momentum at the production vertex in [GeV]
+    OneToManyRelations:
+      - eic::MCParticle parents // The parents of this particle.
+      - eic::MCParticle daughters // The daughters this particle.
+    ExtraCode :
+      declaration: "
+      double Px() const {return momentum().at(0);}\n
+      double Py() const {return momentum().at(1);}\n
+      double Pz() const {return momentum().at(2);}\n
+      double Px2() const {return momentum().at(0)*momentum().at(0);}\n
+      double Py2() const {return momentum().at(1)*momentum().at(1);}\n
+      double Pz2() const {return momentum().at(2)*momentum().at(2);}\n
+      ROOT::Math::XYZTVector FourVector() const { return  ROOT::Math::XYZTVector(Px(),Py(),Pz(),std::sqrt(Px2()+Py2()+Pz2()+mass()*mass())); }\n
+      double theta() const { return  ROOT::Math::XYZVector(Px(),Py(),Pz()).Theta();}\n
+      "
+
+  eic::ReconstructedParticle:
+    Description: "EIC Reconstructed Particle"
+    Author : "F.Gaede, B. Hegner"
+    Members:
+      - int type     // Type of reconstructed particle.
+      - double energy // Energy of the reconstructed particle.
+      - std::array<double, 3> momentum // The reconstructed particle's 3-momentum
+      - float charge // The particle's charge
+      - double mass   // The mass of the particle in [GeV]
+    OneToOneRelations:
+      - eic::Vertex vertex // The start vertex associated to this particle.
+    OneToManyRelations:
+      - eic::Cluster clusters // The clusters combined to this particle.
+      - eic::Track tracks // The tracks combined to this particle"
+      - eic::ReconstructedParticle particles // The particles combined to this particle
+
+  eic::SimCalorimeterHit:
+    Description: "EIC simulated calorimeter hit"
+    Author : "F.Gaede, B. Hegner"
+    Members:
+      - int64_t cellID0  // The detector specific (geometrical) cell id.
+      - int64_t cellID1  // The second detector specific (geometrical) cell id.
+      - float energy // The energy of the hit in [GeV].
+      - float time   // The time of the hit in [ns].
+      - std::array<float, 3> position // The position of the hit in world coordinates.
+
+  eic::SimTrackerHit:
+    Description: "EIC simulated tracker hit"
+    Author : "F.Gaede, B. Hegner"
+    Members:
+      - int64_t cellID0  // The detector specific (geometrical) cell id.
+      - int64_t cellID1  // The second detector specific (geometrical) cell id.
+      - std::array<double, 3> position // The position of the hit in world coordinates.
+      - float time   // The time of the hit in [ns].
+      - float pathLength // path length
+      - float EDep   // EDep
+      - std::array<float, 3> _p // momentum
+    OneToOneRelations:
+      - eic::MCParticle particle // The MCParticle that caused the hit.
+
+  eic::Track:
+    Description: "EIC reconstructed track"
+    Author : "F.Gaede, B. Hegner"
+    Members:
+      - float chi2 // Chi2
+      - int ndf    // Number of degrees of freedom of the track fit.
+      - float dEdx // dEdx of the track.
+      - float dEdxError // Error of dEdx.
+      - float radiusOfInnermostHit // The radius of the innermost hit that has been used in the track fit.
+      #- std::vector<int> subdetectorHitNumbers // The number of hits in particular subdetectors
+    OneToManyRelations:
+      - eic::Track tracks    // The tracks that have been combined to this track.
+      - eic::TrackerHit hits // The hits that have been combined to this track.
+      - eic::TrackState trackStates // Track states associated to this track.
+
+  eic::TrackerData:
+    Description : "EIC tracker data"
+    Author : "F.Gaede, B. Hegner"
+    Members:
+      - int64_t cellID0 // The detector specific (geometrical) cell id.
+      - int64_t cellID1 // The second detector specific (geometrical) cell id.
+      - int time    // The time of the hit.
+      - std::vector<float> charge // The corrected (calibrated) FADC spectrum.
+
+  eic::TrackerHit:
+    Description : "EIC tracker hit"
+    Author : "F.Gaede, B. Hegner"
+    Members :
+      - int64_t cellID0 // The detector specific (geometrical) cell id.
+      - int64_t cellID1 // The second detector specific (geometrical) cell id.
+      - int64_t time    // The time of the hit.
+      - float EDep  // EDep
+      - float EDepError // error on EDep
+      - std::array<double, 3> position // position 
+      - std::vector<float> covMatrix // The calibrated ADC values
+  eic::TrackerPulse:
+    Description : "EIC tracker pulse"
+    Author : "F. Gaede, B. Hegner"
+    Members:
+      - int64_t cellID0  // The detector specific (geometrical) cell id.
+      - int64_t cellID1  // The second detector specific (geometrical) cell id.
+      - int quality  // ...
+      - float time   // The time of the pulse.
+      - float charge // The integrated charge of the pulse
+        #      - std::vector<float> covMatrix    // ...
+    OneToOneRelations:
+      - eic::TrackerData corrData // ...
+
+  eic::TrackerRawData:
+    Description: "EIC tracker raw data"
+    Author : "Whit Armstrong"
+    Members:
+      - int64_t cellID0  // The detector specific (geometrical) cell id.
+      - int64_t cellID1  // The second detector specific (geometrical) cell id.
+      - int64_t channelID  // channel  id.
+      - int time     //  time measurement associated with the adc values.
+      - int adc      // measured ADC values
+        #      - std::vector<short> adc // measured ADC values.
+  
+  eic::TrackerData:
+    Description: "EIC tracker data"
+    Author : "F.Gaede, B. Hegner"
+    Members:
+      - int64_t cellID0  // The detector specific (geometrical) cell id.
+      - int64_t cellID1  // The second detector specific (geometrical) cell id.
+      - int time     //  time measurement associated with the adc values.
+        #      - std::vector<short> charge // The actual FADC spectrum.
+
+  # EIC TrackState
+  eic::TrackState:
+      Description: "EIC track state"
+      Author : "F.Gaede, B. Hegner"
+      Members:
+        - int location // The location of the track state.
+        - float d0     // Impact parameter of the track in (r-phi).
+        - float phi    // Phi of the track at the reference point.
+        - float omega  // Omega is the signed curvature of the track in [1/mm].
+        - float z0     // Impact parameter of the track in (r-z).
+        - float tanLambda // Lambda is the dip angle of the track in r-z at the reference point.
+        - std::array<float, 3> referencePoint // Reference point of the track parameters
+          #        - std::vector<float> covMatrix // Covariance matrix of the track parameters.
+
+  # EIC Vertex
+  eic::Vertex:
+      Description: "EIC vertex"
+      Author : "F.Gaede, B. Hegner"
+      Members:
+        - int primary // Whether it is the primary vertex of the event
+        - float chi2  // Chi squared of the vertex fit.
+        - float probability // Probability of the vertex fit
+        - std::array<float, 3> position // Position of the vertex.
+          #        - std::vector<float> cov // <empty>
+          #        - std::vector<float> par // <empty>
+      OneToOneRelations:
+        - eic::ReconstructedParticle particle // Reconstructed Particle associated to the Vertex.
