@@ -1,0 +1,146 @@
+---
+options :
+  # should getters / setters be prefixed with get / set?
+  getSyntax: False
+  # should POD members be exposed with getters/setters in classes that have them as members?
+  exposePODMembers: True
+
+components :
+
+  dd4hep::podio::ThreeVector:
+    Members :
+      - double x
+      - double y
+      - double z
+
+  dd4hep::podio::FourVector:
+    Members :
+      - double x
+      - double y
+      - double z
+
+datatypes :
+
+  dd4hep::podio::MonteCarloContrib:
+    description: "Podio implementation of dd4hep's dd4hep::sim::MonteCarloContrib class"
+    author : "W.Armstrong"
+    members:
+      - int trackID
+      - int pdgID
+      - double deposit
+      - double time
+      - double length
+      - double x
+      - double y
+      - double z
+
+
+  dd4hep::podio::Geant4Particle:
+    description: "Podio implementation of dd4hep's dd4hep::sim::Geant4Particle class"
+    author : "W.Armstrong"
+    members:
+      - int id //
+      - int g4Parent 
+      - int reason
+      - int mask
+      - int steps
+      - int secondaries
+      - int pdgID
+      - int status
+      - int[2] colorFlow
+      - int    genStatus
+      - int  charge  
+      - int[1] spare
+      - float[3]  spin 
+      - double vsx   // 12 ints + 4 bytes + 3 floats should be aligned to 8 bytes....
+      - double vsy  
+      - double vsz 
+      - double vex  
+      - double vey  
+      - double vez 
+      - double psx  
+      - double psy  
+      - double psz 
+      - double pex  
+      - double pey  
+      - double pez 
+      - double mass 
+      - double time 
+      - double properTime 
+    OneToManyRelations:
+      - int parents 
+      - int daughters 
+
+  dd4hep::podio::TrackerHit:
+    description: "Podio implementation of dd4hep's dd4hep::sim::Geant4Tracker::Hit class"
+    author : "W.Armstrong"
+    members:
+      - long // cellID 
+      - long flag // User flag to classify hits
+      - long g4ID // Original Geant 4 track identifier of the creating track (debugging)
+      - dd4hep::podio::ThreeVector position
+      - dd4hep::podio::ThreeVector momentum
+      - double length
+      - dd4hep::podio::MonteCarloContrib truth
+      - double energyDeposit
+
+  dd4hep::podio::CalorimeterHit:
+    description: "Podio implementation of dd4hep's dd4hep::sim::Geant4Calorimeter::Hit class"
+    author : "W.Armstrong"
+    members:
+      - long long // cellID 
+      - long flag // User flag to classify hits
+      - long g4ID // Original Geant 4 track identifier of the creating track (debugging)
+      - dd4hep::podio::ThreeVector position
+      - dd4hep::podio::MonteCarloContrib truth
+      - double energyDeposit
+
+#    class Geant4HitData {
+#      long long int cellID = 0;
+#      long flag = 0;
+#      long g4ID = -1;
+#      }
+#    class MonteCarloContrib {
+#    public:
+#      /// Geant 4 Track identifier
+#      int trackID;
+#      /// Particle ID from the PDG table
+#      int pdgID;
+#      /// Total energy deposit in this hit
+#      double deposit;
+#      /// Timestamp when this energy was deposited
+#      double time;
+#      /// Length of this step
+#      double length = 0.0;
+#      /// Proper position of the hit contribution
+#      float  x,y,z;
+#      ...
+#    }
+#
+#    class Geant4Tracker {
+#      class Hit : public Geant4HitData {
+#      public:
+#        /// Hit position
+#        Position      position;
+#        /// Hit direction
+#        Direction     momentum;
+#        /// Length of the track segment contributing to this hit
+#        double        length;
+#        /// Monte Carlo / Geant4 information
+#        Contribution  truth;
+#        /// Energy deposit in the tracker hit
+#        double        energyDeposit;
+#        ...
+#
+#    class Geant4Calorimeter {
+#      class Hit : public Geant4HitData {
+#      public:
+#        /// Hit position
+#        Position      position;
+#        /// Hit contributions by individual particles
+#        Contributions truth;
+#        /// Total energy deposit
+#        double        energyDeposit;
+#        ...
+
+
