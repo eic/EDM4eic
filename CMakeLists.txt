@@ -24,7 +24,7 @@ set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH
 
 if(BUILD_DATA_MODEL)
   execute_process(COMMAND python $ENV{PODIO}/python/podio_class_generator.py ${CMAKE_SOURCE_DIR}/eic_data.yaml ${PROJECT_BINARY_DIR} eicd )
-  execute_process(COMMAND python $ENV{PODIO}/python/podio_class_generator.py ${CMAKE_SOURCE_DIR}/dd4hep.yaml ${PROJECT_BINARY_DIR} dd4hep/podio )
+  #execute_process(COMMAND python $ENV{PODIO}/python/podio_class_generator.py ${CMAKE_SOURCE_DIR}/dd4hep.yaml ${PROJECT_BINARY_DIR}/dd4pod dd4hep/podio )
 endif(BUILD_DATA_MODEL)
 
 # Make relative paths absolute (needed later on)
