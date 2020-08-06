@@ -44,7 +44,7 @@ datatypes :
     Description: "Podio implementation of dd4hep's dd4hep::sim::Geant4Particle class"
     Author : "W.Armstrong"
     Members:
-      - int id // x
+      - int ID // x
       - int g4Parent  // x
       - int reason // x
       - int mask // x
@@ -53,11 +53,11 @@ datatypes :
       - int pdgID // x
       - int status // x
       - std::array<int,2> colorFlow // x
-      - int    genStatus // x
+      - int  genStatus // x
       - int  charge   // x
       - std::array<int,1> spare // x
       - std::array<float,3>  spin  // x
-      - double vsx   // 12 ints + 4 bytes + 3 floats should be aligned to 8 bytes....
+      - double vsx   // x
       - double vsy   // x
       - double vsz  // x
       - double vex   // x
