@@ -1,0 +1,7 @@
+image: eicweb.phy.anl.gov:4567/containers/eic_container/eic:latest
+
+
+build:
+  script:
+    - mkdir build && cd build && cmake ../. -DCMAKE_INSTALL_PREFIX=../install && make -j20 && make install
+
