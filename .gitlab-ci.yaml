@@ -1,7 +1,12 @@
 image: eicweb.phy.anl.gov:4567/containers/eic_container/eic:latest
 
+stages:
+  - build
 
-build:
+compile:
+  stage: build
+  tags:
+    - sodium
   script:
     - mkdir build && cd build && cmake ../. -DCMAKE_INSTALL_PREFIX=../install && make -j20 && make install
 
