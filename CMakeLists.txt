@@ -11,7 +11,11 @@ if(APPLE)
   set(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
 endif(APPLE)
 
-find_package(podio REQUIRED)
+
+set(PODIO $ENV{PODIO})
+set(CMAKE_MODULE_PATH ${PODIO}/lib/cmake/podio)
+find_package(podio 0.11.0 REQUIRED)
+include_directories(${podio_INCLUDE_DIR})
 
 #include(cmake/root.cmake)
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
