@@ -8,37 +8,44 @@ options :
 
 components :
 
-  SimpleStruct:
-    x : int
-    y : int
-    z : int
-    p : std::array<int, 4>
-    ExtraCode :
-      declaration: "
-      SimpleStruct() : x(0),y(0),z(0) {}
-      SimpleStruct( const int* v) : x(v[0]),y(v[1]),z(v[2]) {}
-      "
-  eic::LorentzVector:
-    Mass: float
-    Pt  : float
-    Eta : float
-    Phi : float
+  eic::VectorXYZM:
+    Members :
+      - double x  
+      - double y 
+      - double z 
+      - double M
+
+  eic::VectorXYZT:
+    Members :
+      - double x  
+      - double y 
+      - double z 
+      - double t
 
 datatypes :
-# Datatypes are components that can be stored in a Collection
 
   eic::Particle :
     Description : "Naive Particle Type, used for reconstructed and generated particles"
-    Author : "C. Bernet, B. Hegner"
+    Author : "W.Armstrong"
     Members :
-      - eic::LorentzVector P4 // Four momentum.
-      - long long ID // Particle type identification code
-      - long long Status // Status code
+      - eic::VectorXYZT p // Four momentum.
+      - long long pid     // Particle type identification code
+      - long long status  // Status code
+
+        #eic::SimCalorimeterHit:
+        #  Description: "EIC simulated calorimeter hit"
+        #  Author : "F.Gaede, B. Hegner"
+        #  Members:
+        #    - long long cellID0  // The detector specific (geometrical) cell id.
+        #    - long long cellID1  // The second detector specific (geometrical) cell id.
+        #    - float energy // The energy of the hit in [GeV].
+        #    - float time   // The time of the hit in [ns].
+        #    - std::array<float, 3> position // The position of the hit in world coordinates.
 
 
   eic::RawCalorimeterHit:
-    Description: "EIC raw calorimeter hit"
-    Author : "F.Gaede, B. Hegner"
+    Description: "Raw (digitized) calorimeter hit"
+    Author : "W.Armstrong"
     Members:
       - long long cellID0   // The detector specific (geometrical) cell id.
       - long long cellID1   // The second detector specific (geometrical) cell id.
@@ -46,17 +53,51 @@ datatypes :
       - long long timeStamp // The time stamp for the hit.
 
   eic::CalorimeterHit:
-    Description: "EIC calorimeter hit"
-    Author : "F.Gaede, B. Hegner"
+    Description: "Calorimeter hit"
+    Author : "W.Armstrong"
     Members:
       - long long cellID0  // The detector specific (geometrical) cell id.
       - long long cellID1  // The second detector specific (geometrical) cell id.
-      - float energy // The energy of the hit in [GeV].
-      - float time   // The time of the hit in [ns].
+      - float     energy   // The energy of the hit in [GeV].
+      - float     time     // The time of the hit in [ns].
       - std::array<float, 3> position // The position of the hit in world coordinates.
-      - int type // The type of the hit
+      - int       type     // The type of the hit
     OneToOneRelations:
       - eic::RawCalorimeterHit rawHit // The RawCalorimeterHit
+
+        #  eic::SimTrackerHit:
+        #    Description: "EIC simulated tracker hit"
+        #    Author : "F.Gaede, B. Hegner"
+        #    Members:
+        #      - long long cellID0  // The detector specific (geometrical) cell id.
+        #      - long long cellID1  // The second detector specific (geometrical) cell id.
+        #      - std::array<double, 3> position // The position of the hit in world coordinates.
+        #      - float time   // The time of the hit in [ns].
+        #      - float pathLength // path length
+        #      - float EDep   // EDep
+        #      - std::array<float, 3> _p // momentum
+        #    OneToOneRelations:
+        #      - eic::MCParticle particle // The MCParticle that caused the hit.
+
+  eic::RawTrackerHit:
+    Description : "Raw (digitized) tracker hit"
+    Author : "W.Armstrong"
+    Members:
+      - long long cellID // The detector specific (geometrical) cell id.
+      - int time    // tdc value.
+      - int charge  // adc value
+
+  eic::TrackerHit:
+    Description : "Tracker hit (reconstructed from Raw)"
+    Author : "W.Armstrong"
+    Members :
+      - long long cellID0 // The detector specific (geometrical) cell id.
+      - long long cellID1 // The second detector specific (geometrical) cell id.
+      - long long time    // The time of the hit.
+      - float EDep        // EDep
+      - float EDepError   // error on EDep
+      - std::array<double, 3> position // position 
+        #- std::vector<float> covMatrix // The calibrated ADC values
 
   eic::Cluster:
     Description: "EIC cluster"
@@ -119,30 +160,6 @@ datatypes :
       - eic::Track tracks // The tracks combined to this particle"
       - eic::ReconstructedParticle particles // The particles combined to this particle
 
-  eic::SimCalorimeterHit:
-    Description: "EIC simulated calorimeter hit"
-    Author : "F.Gaede, B. Hegner"
-    Members:
-      - long long cellID0  // The detector specific (geometrical) cell id.
-      - long long cellID1  // The second detector specific (geometrical) cell id.
-      - float energy // The energy of the hit in [GeV].
-      - float time   // The time of the hit in [ns].
-      - std::array<float, 3> position // The position of the hit in world coordinates.
-
-  eic::SimTrackerHit:
-    Description: "EIC simulated tracker hit"
-    Author : "F.Gaede, B. Hegner"
-    Members:
-      - long long cellID0  // The detector specific (geometrical) cell id.
-      - long long cellID1  // The second detector specific (geometrical) cell id.
-      - std::array<double, 3> position // The position of the hit in world coordinates.
-      - float time   // The time of the hit in [ns].
-      - float pathLength // path length
-      - float EDep   // EDep
-      - std::array<float, 3> _p // momentum
-    OneToOneRelations:
-      - eic::MCParticle particle // The MCParticle that caused the hit.
-
   eic::Track:
     Description: "EIC reconstructed track"
     Author : "F.Gaede, B. Hegner"
@@ -165,19 +182,9 @@ datatypes :
       - long long cellID0 // The detector specific (geometrical) cell id.
       - long long cellID1 // The second detector specific (geometrical) cell id.
       - int time    // The time of the hit.
+      - int charge  // adc value
         #- std::vector<float> charge // The corrected (calibrated) FADC spectrum.
 
-  eic::TrackerHit:
-    Description : "EIC tracker hit"
-    Author : "F.Gaede, B. Hegner"
-    Members :
-      - long long cellID0 // The detector specific (geometrical) cell id.
-      - long long cellID1 // The second detector specific (geometrical) cell id.
-      - long long time    // The time of the hit.
-      - float EDep  // EDep
-      - float EDepError // error on EDep
-      - std::array<double, 3> position // position 
-        #- std::vector<float> covMatrix // The calibrated ADC values
   eic::TrackerPulse:
     Description : "EIC tracker pulse"
     Author : "F. Gaede, B. Hegner"
@@ -225,16 +232,16 @@ datatypes :
         - std::array<float, 3> referencePoint // Reference point of the track parameters
           #        - std::vector<float> covMatrix // Covariance matrix of the track parameters.
 
-  # EIC Vertex
   eic::Vertex:
       Description: "EIC vertex"
-      Author : "F.Gaede, B. Hegner"
+      Author : "W.Armstrong"
       Members:
-        - int primary // Whether it is the primary vertex of the event
-        - float chi2  // Chi squared of the vertex fit.
+        - int primary       // Whether it is the primary vertex of the event
+        - float chi2        // Chi squared of the vertex fit.
         - float probability // Probability of the vertex fit
-        - std::array<float, 3> position // Position of the vertex.
+        - eic::VectorXYZT position // postion and time of vertex.
           #        - std::vector<float> cov // <empty>
           #        - std::vector<float> par // <empty>
       OneToOneRelations:
         - eic::ReconstructedParticle particle // Reconstructed Particle associated to the Vertex.
+
