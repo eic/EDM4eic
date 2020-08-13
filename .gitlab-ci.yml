@@ -2,11 +2,25 @@ image: eicweb.phy.anl.gov:4567/containers/eic_container/eic:latest
 
 stages:
   - build
+  - deploy
 
 compile:
   stage: build
+  only:
+    - tags
   tags:
     - sodium
   script:
     - mkdir build && cd build && cmake ../. -DCMAKE_INSTALL_PREFIX=../install && make -j20 && make install
 
+
+pages:
+  image: alpine:latest
+  stage: deploy
+  script:
+  - cp -r docs/html public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
