@@ -22,7 +22,15 @@ components :
       - double z 
       - double t
 
+  eic::VectorXYZ :
+    Members :
+      - double x  // x 
+      - double y  // y
+      - double z  // z
+
 datatypes :
+
+
 
   eic::Particle :
     Description : "Naive Particle Type, used for reconstructed and generated particles"
@@ -60,7 +68,7 @@ datatypes :
       - long long cellID1  // The second detector specific (geometrical) cell id.
       - float     energy   // The energy of the hit in [GeV].
       - float     time     // The time of the hit in [ns].
-      - std::array<float, 3> position // The position of the hit in world coordinates.
+      - eic::VectorXYZ position // The position of the hit in world coordinates.
       - int       type     // The type of the hit
     OneToOneRelations:
       - eic::RawCalorimeterHit rawHit // The RawCalorimeterHit
@@ -97,7 +105,7 @@ datatypes :
       - float EDep        // EDep
       - float EDepError   // error on EDep
       - std::array<double, 3> position // position 
-        #- std::vector<float> covMatrix // The calibrated ADC values
+      - std::array<double, 3> covMatrix // covMatrix 
 
   eic::Cluster:
     Description: "EIC cluster"
