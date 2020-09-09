@@ -12,8 +12,8 @@ if(APPLE)
 endif(APPLE)
 
 
-set(PODIO $ENV{PODIO})
-set(CMAKE_MODULE_PATH ${PODIO}/lib/cmake/podio)
+#set(PODIO $ENV{PODIO})
+#set(CMAKE_MODULE_PATH ${PODIO}/lib/cmake/podio)
 find_package(podio 0.11.0 REQUIRED)
 include_directories(${podio_INCLUDE_DIR})
 

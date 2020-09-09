@@ -8,12 +8,12 @@ options :
 
 components :
 
-  eic::VectorXYZM:
+  eic::VectorPxPyPzM:
     Members :
-      - double x  
-      - double y 
-      - double z 
-      - double M
+      - double px  
+      - double py 
+      - double pz 
+      - double m
 
   eic::VectorXYZT:
     Members :
@@ -33,12 +33,13 @@ datatypes :
 
 
   eic::Particle :
-    Description : "Naive Particle Type, used for reconstructed and generated particles"
+    Description : "Basic Particle used for reconstructed and generated particles"
     Author : "W.Armstrong"
     Members :
-      - eic::VectorXYZT p // Four momentum.
-      - long long pid     // Particle type identification code
-      - long long status  // Status code
+      - eic::VectorPxPyPzM p       // Four momentum.
+      - eic::VectorXYZT    v       // vertex.
+      - long long          pid     // Particle type identification code
+      - long long          status  // Status code
 
         #eic::SimCalorimeterHit:
         #  Description: "EIC simulated calorimeter hit"
