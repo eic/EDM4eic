@@ -68,6 +68,12 @@ install(FILES
   "${PROJECT_BINARY_DIR}/libeicd_rdict.pcm"
   DESTINATION lib)
 
+add_custom_target( doc_doxygen #ALL 
+  COMMAND doxygen ${CMAKE_SOURCE_DIR}/docs/Doxyfile
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+  COMMENT "Generating API documentation with Doxygen"
+  VERBATIM )
+
 # -------------------------
 # install library config
 include(CMakePackageConfigHelpers)
