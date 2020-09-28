@@ -10,23 +10,44 @@ components :
 
   eic::VectorPxPyPzM:
     Members :
-      - double px  
-      - double py 
-      - double pz 
+      - double px
+      - double py
+      - double pz
       - double m
 
   eic::VectorXYZT:
     Members :
-      - double x  
-      - double y 
-      - double z 
+      - double x
+      - double y
+      - double z
       - double t
 
   eic::VectorXYZ :
     Members :
-      - double x  // x 
+      - double x  // x
       - double y  // y
       - double z  // z
+
+  eic::VectorXYZLocal :
+    Members :
+      - double local_x
+      - double local_y
+      - double local_z
+
+  eic::DimensionXYZ :
+    Members :
+      - double dim_x
+      - double dim_y
+      - double dim_z
+
+  eic::CovXYZ :
+    Members :
+      - double cov_xx
+      - double cov_yy
+      - double cov_zz
+      - double cov_xy
+      - double cov_xz
+      - double cov_yz
 
 datatypes :
 
@@ -56,8 +77,7 @@ datatypes :
     Description: "Raw (digitized) calorimeter hit"
     Author : "W.Armstrong"
     Members:
-      - long long cellID0   // The detector specific (geometrical) cell id.
-      - long long cellID1   // The second detector specific (geometrical) cell id.
+      - long long cellID    // The detector specific (geometrical) cell id.
       - long long amplitude // The amplitude of the hit in ADC counts.
       - long long timeStamp // The time stamp for the hit.
 
@@ -65,12 +85,13 @@ datatypes :
     Description: "Calorimeter hit"
     Author : "W.Armstrong"
     Members:
-      - long long cellID0  // The detector specific (geometrical) cell id.
-      - long long cellID1  // The second detector specific (geometrical) cell id.
-      - float     energy   // The energy of the hit in [GeV].
-      - float     time     // The time of the hit in [ns].
-      - eic::VectorXYZ position // The position of the hit in world coordinates.
-      - int       type     // The type of the hit
+      - long long cellID                // The detector specific (geometrical) cell id.
+      - float     energy                // The energy of the hit in [GeV].
+      - float     time                  // The time of the hit in [ns].
+      - eic::VectorXYZ position         // The global position of the hit in world coordinates.
+      - eic::VectorXYZLocal local       // The local position of the hit in detector coordinates.
+      - eic::DimensionXYZ dimension     // The dimension information of the cell
+      - int       type                  // The type of the hit.
     OneToOneRelations:
       - eic::RawCalorimeterHit rawHit // The RawCalorimeterHit
 
@@ -105,16 +126,16 @@ datatypes :
       - long long time    // The time of the hit.
       - float EDep        // EDep
       - float EDepError   // error on EDep
-      - std::array<double, 3> position // position 
-      - std::array<double, 3> covMatrix // covMatrix 
+      - std::array<double, 3> position // position
+      - std::array<double, 3> covMatrix // covMatrix
 
   eic::Cluster:
     Description: "EIC cluster"
     Author : "F.Gaede, B. Hegner"
     Members:
       - float energy // Energy of the cluster
-      - std::array<float, 3> position // Position of the cluster.
-      - std::array<float, 6> positionError // Covariance matrix of the position (6 Parameters)
+      - eic::VectorXYZ position // Global position of the cluster.
+      - eic::CovXYZ positionError // Covariance matrix of the position (6 Parameters)
       - float theta // Intrinsic direction of cluster at position - Theta.
       - float phi   // Intrinsic direction of cluster at position - Phi.
       - std::array<float, 3> directionError // Covariance matrix of the direction (3 Parameters)
