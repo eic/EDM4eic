@@ -121,8 +121,7 @@ datatypes :
     Description : "Tracker hit (reconstructed from Raw)"
     Author : "W.Armstrong"
     Members :
-      - long long cellID0 // The detector specific (geometrical) cell id.
-      - long long cellID1 // The second detector specific (geometrical) cell id.
+      - long long cellID // The detector specific (geometrical) cell id.
       - long long time    // The time of the hit.
       - float EDep        // EDep
       - float EDepError   // error on EDep
@@ -209,8 +208,7 @@ datatypes :
     Description : "EIC tracker data"
     Author : "F.Gaede, B. Hegner"
     Members:
-      - long long cellID0 // The detector specific (geometrical) cell id.
-      - long long cellID1 // The second detector specific (geometrical) cell id.
+      - long long cellID // The detector specific (geometrical) cell id.
       - int time    // The time of the hit.
       - int charge  // adc value
         #- std::vector<float> charge // The corrected (calibrated) FADC spectrum.
@@ -219,8 +217,7 @@ datatypes :
     Description : "EIC tracker pulse"
     Author : "F. Gaede, B. Hegner"
     Members:
-      - long long cellID0  // The detector specific (geometrical) cell id.
-      - long long cellID1  // The second detector specific (geometrical) cell id.
+      - long long cellID  // The detector specific (geometrical) cell id.
       - int quality  // ...
       - float time   // The time of the pulse.
       - float charge // The integrated charge of the pulse
@@ -232,8 +229,7 @@ datatypes :
     Description: "EIC tracker raw data"
     Author : "Whit Armstrong"
     Members:
-      - long long cellID0  // The detector specific (geometrical) cell id.
-      - long long cellID1  // The second detector specific (geometrical) cell id.
+      - long long cellID  // The detector specific (geometrical) cell id.
       - long long channelID  // channel  id.
       - int time     //  time measurement associated with the adc values.
       - int adc      // measured ADC values
@@ -243,8 +239,7 @@ datatypes :
     Description: "EIC tracker data"
     Author : "F.Gaede, B. Hegner"
     Members:
-      - long long cellID0  // The detector specific (geometrical) cell id.
-      - long long cellID1  // The second detector specific (geometrical) cell id.
+      - long long cellID  // The detector specific (geometrical) cell id.
       - int time     //  time measurement associated with the adc values.
         #      - std::vector<short> charge // The actual FADC spectrum.
 
