@@ -275,22 +275,24 @@ datatypes :
     Author: "C. Peng"
     Members:
       - long long cellID        // The detector specific (geometrical) cell id.
-      - float amplitude         // PMT signal amplitude
-      - float time              // PMT signal time
+      - unsigned amplitude      // PMT signal amplitude
+      - unsigned timeStamp      // PMT signal time
 
   eic::PMTHit:
     Description: "EIC PMT hit"
     Author: "C. Peng"
     Members:
-      - long long cellID        // The detector specific (geometrical) cell id.
-      - float npe               // estimated number of photo-electrons
-      - float time              // time
-      - eic::VectorXYZ position // PMT hit position
+      - long long cellID          // The detector specific (geometrical) cell id.
+      - float npe                 // estimated number of photo-electrons
+      - float time                // time
+      - eic::VectorXYZ position   // PMT hit position
+      - eic::VectorXYZLocal local // The local position of the hit in detector coordinates.
 
   eic::RIChCluster:
     Description: "EIC RICh Cluster"
     Author: "C. Peng"
     Members:
+      - eic::VectorXYZ position // Global position of the cluster.
       - float theta             // opening angle of the ring
       - float radius            // radius of the best fit ring
       - float radiusError       // estimated error from the fit
