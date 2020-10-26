@@ -1,6 +1,8 @@
 EICD - eic data
 ===============
 
+TODO: fix docs
+
 https://argonne_mep.gitlab.io/eic/eicd/
 
 
