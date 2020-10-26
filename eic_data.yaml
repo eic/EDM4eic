@@ -40,6 +40,12 @@ components :
       - double dim_y
       - double dim_z
 
+  eic::CovSymmetricXYZ :
+    Members :
+      - double covsym_xx
+      - double covsym_yy
+      - double covsym_zz
+
   eic::CovXYZ :
     Members :
       - double cov_xx
@@ -49,9 +55,38 @@ components :
       - double cov_xz
       - double cov_yz
 
+  eic::PixelXY :
+    Members :
+      - double pixel_x
+      - double pixel_y
+
+  eic::CellXYZ :
+    Members :
+      - double cell_x
+      - double cell_y
+      - double cell_z
+
+  eic::ElectronBeam :
+    Members :
+      - float eEnergy
+      - int   helicity 
+
+  eic::HadronBeam :
+    Members :
+      - float hEnergy
+      - int   pol 
+
 datatypes :
 
-
+  eic::EventInfo:
+    Description : "Event Info"
+    Author : "W.Armstrong"
+    Members :
+      - long long run      // Run number.
+      - long long number   // Event number.
+      - long long genID    // Generator ID (TBD).
+      - long long procID   // Processes ID (TBD).
+      - long long type     // event type ID (TBD).
 
   eic::Particle :
     Description : "Basic Particle used for reconstructed and generated particles"
@@ -61,17 +96,6 @@ datatypes :
       - eic::VectorXYZT    v       // vertex.
       - long long          pid     // Particle type identification code
       - long long          status  // Status code
-
-        #eic::SimCalorimeterHit:
-        #  Description: "EIC simulated calorimeter hit"
-        #  Author : "F.Gaede, B. Hegner"
-        #  Members:
-        #    - long long cellID0  // The detector specific (geometrical) cell id.
-        #    - long long cellID1  // The second detector specific (geometrical) cell id.
-        #    - float energy // The energy of the hit in [GeV].
-        #    - float time   // The time of the hit in [ns].
-        #    - std::array<float, 3> position // The position of the hit in world coordinates.
-
 
   eic::RawCalorimeterHit:
     Description: "Raw (digitized) calorimeter hit"
@@ -85,65 +109,51 @@ datatypes :
     Description: "Calorimeter hit"
     Author : "W.Armstrong"
     Members:
-      - long long cellID                // The detector specific (geometrical) cell id.
-      - float     energy                // The energy of the hit in [GeV].
-      - float     time                  // The time of the hit in [ns].
-      - eic::VectorXYZ position         // The global position of the hit in world coordinates.
-      - eic::VectorXYZLocal local       // The local position of the hit in detector coordinates.
-      - eic::DimensionXYZ dimension     // The dimension information of the cell
-      - int       type                  // The type of the hit.
+      - long long           cellID    // The detector specific (geometrical) cell id.
+      - float               energy    // The energy of the hit in [GeV].
+      - float               time      // The time of the hit in [ns].
+      - eic::VectorXYZ      position  // The global position of the hit in world coordinates.
+      - eic::VectorXYZLocal local     // The local position of the hit in detector coordinates.
+      - eic::DimensionXYZ   dimension // The dimension information of the cell
+      - int                 type      // The type of the hit.
     OneToOneRelations:
       - eic::RawCalorimeterHit rawHit // The RawCalorimeterHit
-
-        #  eic::SimTrackerHit:
-        #    Description: "EIC simulated tracker hit"
-        #    Author : "F.Gaede, B. Hegner"
-        #    Members:
-        #      - long long cellID0  // The detector specific (geometrical) cell id.
-        #      - long long cellID1  // The second detector specific (geometrical) cell id.
-        #      - std::array<double, 3> position // The position of the hit in world coordinates.
-        #      - float time   // The time of the hit in [ns].
-        #      - float pathLength // path length
-        #      - float EDep   // EDep
-        #      - std::array<float, 3> _p // momentum
-        #    OneToOneRelations:
-        #      - eic::MCParticle particle // The MCParticle that caused the hit.
 
   eic::RawTrackerHit:
     Description : "Raw (digitized) tracker hit"
     Author : "W.Armstrong"
     Members:
       - long long cellID // The detector specific (geometrical) cell id.
-      - int time    // tdc value.
-      - int charge  // adc value
+      - int time         // tdc value.
+      - int charge       // adc value
 
   eic::TrackerHit:
     Description : "Tracker hit (reconstructed from Raw)"
     Author : "W.Armstrong"
     Members :
-      - long long cellID // The detector specific (geometrical) cell id.
-      - long long time    // The time of the hit.
-      - float EDep        // EDep
-      - float EDepError   // error on EDep
-      - std::array<double, 3> position // position
-      - std::array<double, 3> covMatrix // covMatrix
+      - long long            cellID    // The detector specific (geometrical) cell id.
+      - float                time      // The time of the hit.
+      - float                EDep      // EDep
+      - float                EDepError // error on EDep
+      - eic::VectorXYZ       position  // position
+      - eic::CovSymmetricXYZ covMatrix // covMatrix
 
   eic::Cluster:
     Description: "EIC cluster"
-    Author : "F.Gaede, B. Hegner"
+    Author : "W.Armstrong, C.Peng"
     Members:
-      - float energy // Energy of the cluster
-      - eic::VectorXYZ position // Global position of the cluster.
-      - eic::CovXYZ positionError // Covariance matrix of the position (6 Parameters)
-      - float theta // Intrinsic direction of cluster at position - Theta.
-      - float phi   // Intrinsic direction of cluster at position - Phi.
-      - std::array<float, 3> directionError // Covariance matrix of the direction (3 Parameters)
+      - float                energy          // Energy of the cluster
+      - eic::VectorXYZ       position        // Global position of the cluster.
+      - eic::CovXYZ          positionError   // Covariance matrix of the position (6 Parameters)
+      - float                theta           // Intrinsic direction of cluster at position - Theta.
+      - float                phi             // Intrinsic direction of cluster at position - Phi.
+        #- std::array<float, 3> directionError  // Covariance matrix of the direction (3 Parameters)
         #- std::vector<float> shape  // Shape parameters
         #- std::vector<float> weight // weight of a particular cluster
         #- std::vector<float> subdetectorEnergies // A vector that holds the energy observed in a particular subdetector.
     OneToManyRelations:
-      - eic::Cluster clusters // The clusters that have been combined to this cluster.
-      - eic::CalorimeterHit hits // The hits that have been combined to this cluster.
+      - eic::Cluster        clusters // The clusters that have been combined to this cluster.
+      - eic::CalorimeterHit hits     // The hits that have been combined to this cluster.
 
   eic::MCParticle:
     Description: "EIC MC Particle"
@@ -177,16 +187,16 @@ datatypes :
     Description: "EIC Reconstructed Particle"
     Author : "F.Gaede, B. Hegner"
     Members:
-      - int type     // Type of reconstructed particle.
-      - double energy // Energy of the reconstructed particle.
+      - int type                       // Type of reconstructed particle.
+      - double energy                  // Energy of the reconstructed particle.
       - std::array<double, 3> momentum // The reconstructed particle's 3-momentum
-      - float charge // The particle's charge
-      - double mass   // The mass of the particle in [GeV]
+      - float charge                   // The particle's charge
+      - double mass                    // The mass of the particle in [GeV]
     OneToOneRelations:
-      - eic::Vertex vertex // The start vertex associated to this particle.
+      - eic::Vertex vertex             // The start vertex associated to this particle.
     OneToManyRelations:
-      - eic::Cluster clusters // The clusters combined to this particle.
-      - eic::Track tracks // The tracks combined to this particle"
+      - eic::Cluster clusters                // The clusters combined to this particle.
+      - eic::Track tracks                    // The tracks combined to this particle"
       - eic::ReconstructedParticle particles // The particles combined to this particle
 
   eic::Track:
@@ -227,13 +237,12 @@ datatypes :
 
   eic::TrackerRawData:
     Description: "EIC tracker raw data"
-    Author : "Whit Armstrong"
+    Author : "W.Armstrong"
     Members:
-      - long long cellID  // The detector specific (geometrical) cell id.
-      - long long channelID  // channel  id.
-      - int time     //  time measurement associated with the adc values.
-      - int adc      // measured ADC values
-        #      - std::vector<short> adc // measured ADC values.
+      - long long cellID     // The detector specific (geometrical) cell id.
+      - long long channelID  // channel id.
+      - int time             // time measurement associated with the adc values.
+      - int adc              // measured ADC values
   
   eic::TrackerData:
     Description: "EIC tracker data"
@@ -261,12 +270,10 @@ datatypes :
       Description: "EIC vertex"
       Author : "W.Armstrong"
       Members:
-        - int primary       // Whether it is the primary vertex of the event
-        - float chi2        // Chi squared of the vertex fit.
-        - float probability // Probability of the vertex fit
-        - eic::VectorXYZT position // postion and time of vertex.
-          #        - std::vector<float> cov // <empty>
-          #        - std::vector<float> par // <empty>
+        - int             primary     // Whether it is the primary vertex of the event
+        - float           chi2        // Chi squared of the vertex fit.
+        - float           probability // Probability of the vertex fit
+        - eic::VectorXYZT position    // postion and time of vertex.
       OneToOneRelations:
         - eic::ReconstructedParticle particle // Reconstructed Particle associated to the Vertex.
 
@@ -274,9 +281,9 @@ datatypes :
     Description: "EIC Raw PMT hit"
     Author: "C. Peng"
     Members:
-      - long long cellID        // The detector specific (geometrical) cell id.
-      - unsigned amplitude      // PMT signal amplitude
-      - unsigned timeStamp      // PMT signal time
+      - long long cellID     // The detector specific (geometrical) cell id.
+      - unsigned  amplitude  // PMT signal amplitude
+      - unsigned  timeStamp  // PMT signal time
 
   eic::PMTHit:
     Description: "EIC PMT hit"
