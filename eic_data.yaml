@@ -155,6 +155,7 @@ datatypes :
       - eic::Cluster        clusters // The clusters that have been combined to this cluster.
       - eic::CalorimeterHit hits     // The hits that have been combined to this cluster.
 
+
   eic::MCParticle:
     Description: "EIC MC Particle"
     Author : "F.Gaede, B. Hegner"
@@ -198,6 +199,23 @@ datatypes :
       - eic::Cluster clusters                // The clusters combined to this particle.
       - eic::Track tracks                    // The tracks combined to this particle"
       - eic::ReconstructedParticle particles // The particles combined to this particle
+
+  eic::TrackParameters:
+    Description: "ACTS Track parameters"
+    Author : "W.Armstrong"
+    Members:
+      - double loc0        // loc0      
+      - double loc1        // loc1      
+      - double phi         // phi       
+      - double theta       // theta     
+      - double qOverP      // qOverP    
+      - double time        // time      
+      - double err_loc0    // err_loc0  
+      - double err_loc1    // err_loc1  
+      - double err_phi     // err_phi   
+      - double err_theta   // err_theta 
+      - double err_qOverP  // err_qOverP
+      - double err_time    // err_time  
 
   eic::Track:
     Description: "EIC reconstructed track"
@@ -306,4 +324,6 @@ datatypes :
       - float npe               // number of photo-electrons
     OneToManyRelations:
       - eic::PMTHit hits        // The hits that have been included in this cluster
+
+
 
