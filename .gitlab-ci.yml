@@ -26,7 +26,7 @@ gen_doxygen_src:
     - build/eicd
 
 pages:
-  image: alpine
+  image: eicweb.phy.anl.gov:4567/containers/eic_container/alpine
   stage: deploy
   needs: ['gen_doxygen_src']
   rules:
