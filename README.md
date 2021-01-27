@@ -3,7 +3,7 @@ EICd - EIC data model               {#mainpage}
 
 https://eic.phy.anl.gov/eicd
 
-- [dd4pod](https://eic.phy.anl.gov/npdet/namespacedd4pod.html): data model for dd4hep output which comes with [npdet](https://eic.phy.anl.gov/npdet/).
+- [dd4pod](https://eic.phy.anl.gov/npdet/ref_doc/namespacedd4pod.html): data model for dd4hep output which comes with [npdet](https://eic.phy.anl.gov/npdet/).
 
 
 ```
