@@ -1,9 +1,8 @@
-EICD - eic data
-===============
+EICd - EIC data model               {#mainpage}
+=====================
 
-TODO: fix docs
 
-https://argonne_mep.gitlab.io/eic/eicd/
+https://eic.phy.anl.gov/eicd
 
 
 ```
