@@ -4,21 +4,21 @@ stages:
   - build
   - deploy
 
-compile:
-  stage: build
-  tags:
-    - sodium
+    #compile:
+    #  stage: build
+    #  tags:
+    #    - sodium
+    #  script:
+    #    - mkdir build && cd build && cmake ../. -DCMAKE_INSTALL_PREFIX=../install && make -j20 && make install
+
+
+pages:
+  stage: deploy
   script:
-    - mkdir build && cd build && cmake ../. -DCMAKE_INSTALL_PREFIX=../install && make -j20 && make install
-
-
-      #pages:
-      #  image: alpine:latest
-      #  stage: deploy
-      #  script:
-      #  - cp -r docs/html public
-      #  artifacts:
-      #    paths:
-      #    - public
-      #  only:
-      #  - master
+    - mkdir build && cd build && cmake ../. -DCMAKE_INSTALL_PREFIX=../install && make doc_doxygen && cd ..
+    - cp -r build/doxygen_output/html public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
