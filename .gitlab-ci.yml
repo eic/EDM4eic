@@ -4,15 +4,10 @@ stages:
   - build
   - deploy
 
-    #compile:
-    #  stage: build
-    #  tags:
-    #    - sodium
-    #  script:
-    #    - mkdir build && cd build && cmake ../. -DCMAKE_INSTALL_PREFIX=../install && make -j10 && make install
-    #  artifacts:
-    #    paths:
-    #    - build/doxygen_output
+compile:
+  stage: build
+  script:
+    - mkdir build && cd build && cmake ../. -DCMAKE_INSTALL_PREFIX=../install && make -j20 && make install
 
 gen_doxygen_src:
   stage: build
