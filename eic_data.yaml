@@ -186,15 +186,15 @@ datatypes :
 
   eic::ReconstructedParticle:
     Description: "EIC Reconstructed Particle"
-    Author : "F.Gaede, B. Hegner"
+    Author : "W.Armstrong"
     Members:
-      - int type                       // Type of reconstructed particle.
-      - double energy                  // Energy of the reconstructed particle.
-      - std::array<double, 3> momentum // The reconstructed particle's 3-momentum
-      - float charge                   // The particle's charge
-      - double mass                    // The mass of the particle in [GeV]
+      - long long      pid            // PID of reconstructed particle.
+      - double         energy         // Energy of the reconstructed particle.
+      - eic::VectorXYZ p              // three momentum.
+      - double         charge         // The particle's charge
+      - double         mass           // The mass of the particle in [GeV]
     OneToOneRelations:
-      - eic::Vertex vertex             // The start vertex associated to this particle.
+      - eic::Vertex vertex            // The start vertex associated to this particle.
     OneToManyRelations:
       - eic::Cluster clusters                // The clusters combined to this particle.
       - eic::Track tracks                    // The tracks combined to this particle"
