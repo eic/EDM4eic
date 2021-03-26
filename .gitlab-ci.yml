@@ -28,8 +28,8 @@ pages:
     - if: '$CI_SERVER_HOST == "gitlab.phy.anl.gov" && $CI_COMMIT_BRANCH == "master"' 
   script:
     - apk update && apk add doxygen  graphviz ttf-ubuntu-font-family
-    - cd build && mkdir -p doxygen_output && doxygen ../docs/Doxyfile  && cd ..
-    - mkdir -p public && cp -r build/doxygen_output/html/* public/.
+    - cd build && cp -r ../docs/* . && doxygen Doxyfile  && cd ..
+    - mkdir -p public && cp -r build/docs/html/* public/.
     #    - mkdir build && cd build && cmake ../. -DCMAKE_INSTALL_PREFIX=../install && make doc_doxygen && cd ..
     #- cp -r build/doxygen_output/html public
   artifacts:
