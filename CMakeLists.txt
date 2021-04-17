@@ -4,7 +4,6 @@ project(EICD
   LANGUAGES CXX)
 
 #--- Declare options -----------------------------------------------------------
-option(CREATE_DOC "Whether or not to create doxygen doc target.")
 option(BUILD_DATA_MODEL "Run podio class generator yaml file" ON)
 
 if(APPLE)
@@ -12,8 +11,6 @@ if(APPLE)
 endif(APPLE)
 
 
-#set(PODIO $ENV{PODIO})
-#set(CMAKE_MODULE_PATH ${PODIO}/lib/cmake/podio)
 find_package(podio 0.11.0 REQUIRED)
 include_directories(${podio_INCLUDE_DIR})
 
@@ -50,6 +47,9 @@ PODIO_GENERATE_DICTIONARY(eicd ${headers}
 set_target_properties(eicd-dictgen PROPERTIES EXCLUDE_FROM_ALL TRUE)
 target_sources(eicd PRIVATE eicd.cxx)
 
+add_subdirectory(source)
+
+
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/eicd
   DESTINATION include
   FILES_MATCHING PATTERN *.h
@@ -73,6 +73,8 @@ add_custom_target( doc_doxygen #ALL
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   COMMENT "Generating API documentation with Doxygen"
   VERBATIM )
+
+
 
 # -------------------------
 # install library config
