@@ -867,6 +867,7 @@ WARN_LOGFILE           =
 INPUT                  = src \
                          eicd \
                          ../README.md \
+                         ../source \
                          page.dox
 
 # This tag can be used to specify the character encoding of the source files
