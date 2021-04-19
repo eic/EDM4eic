@@ -1,13 +1,73 @@
 image: eicweb.phy.anl.gov:4567/containers/eic_container/eic:latest
 
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_PIPELINE_SOURCE == "webide"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_TAG'
+
+
+default:
+  before_script:
+    - mkdir -p images && mkdir -p doc/
+  artifacts:
+    paths:
+      - images/
+      - doc/
+    reports:
+      dotenv: juggler.env
+
 stages:
+  - config
   - build
   - deploy
 
+
+env:
+  stage: config 
+  rules:
+    - if: '$CI_SERVER_HOST == "eicweb.phy.anl.gov"' 
+  script:
+    - |
+      if [[ "x${CI_PIPELINE_SOURCE}" == "xmerge_request_event"  || "$CI_COMMIT_BRANCH" == "master" ]]; then
+        export EIC_DATA_MODEL_VERSION="${CI_COMMIT_REF_NAME}"
+        echo "EIC_DATA_MODEL_VERSION = ${EIC_DATA_MODEL_VERSION}"
+        echo "EIC_DATA_MODEL_VERSION=$CI_COMMIT_REF_NAME" >> juggler.env
+      fi
+    - mkdir -p "/scratch/${CI_PROJECT_NAME}_${CI_PIPELINE_ID}" && cp juggler.env /scratch/${CI_PROJECT_NAME}_${CI_PIPELINE_ID}/juggler.env && printenv > /scratch/${CI_PROJECT_NAME}_${CI_PIPELINE_ID}/env.out
+  artifacts:
+    reports:
+      dotenv: juggler.env
+
 compile:
   stage: build
+  needs:
+    - ["env"]
   script:
     - mkdir build && cd build && cmake ../. -DCMAKE_INSTALL_PREFIX=../install && make -j20 && make install
+
+
+checks:juggler:
+  stage: deploy
+  rules:
+    - if: '$CI_SERVER_HOST == "eicweb.phy.anl.gov"' 
+  variables:
+    EIC_DATA_MODEL_VERSION: "$EIC_DATA_MODEL_VERSION"
+  trigger:
+    project: EIC/juggler
+    strategy: depend
+
+      #benchmarks:physics:
+      #  stage: deploy
+      #  rules:
+      #    - if: '$CI_SERVER_HOST == "eicweb.phy.anl.gov"' 
+      #  needs:
+      #    - ["compile"]
+      #  trigger:
+      #    project: EIC/benchmarks/physics_benchmarks
+      #    strategy: depend
 
 gen_doxygen_src:
   stage: build
