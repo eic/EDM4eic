@@ -28,6 +28,12 @@ components :
       - double y  // y
       - double z  // z
 
+  eic::VectorPolar:
+    Members:
+      - double r
+      - double theta
+      - double phi
+
   eic::VectorXYZLocal :
     Members :
       - double local_x
@@ -75,6 +81,7 @@ components :
     Members :
       - float hEnergy
       - int   pol 
+
 
 datatypes :
 
@@ -325,5 +332,30 @@ datatypes :
     OneToManyRelations:
       - eic::PMTHit hits        // The hits that have been included in this cluster
 
+  eic::ImagingLayer:
+    Description: "Layer for Imaging Calorimeter"
+    Author: "C. Peng"
+    Members:
+      - int                  nhits           // Number of hits
+      - float                edep            // Energy deposit
+      - float                radius          // Shower radius
+      - float                skewness        // Skewness of hits distribution
+      - float                chi2            // Edep chi2
+      - float                x0cum           // estimated radiation length before this layer
+      - eic::VectorXYZ       position        // Global center position.
+      - eic::VectorPolar     polar           // Global center position in polar coordinates
 
+  eic::ImagingCluster:
+    Description: "Cluster for Imaging Calorimeter"
+    Author: "C. Peng"
+    Members:
+      - float                energy          // Energy of the cluster.
+      - eic::VectorXYZ       position        // Global position of the cluster.
+      - eic::VectorPolar     polar           // Polar coordinates for global position.
+      - float                cl_theta        // Intrinsic direction of cluster at position - Theta.
+      - float                cl_phi          // Intrinsic direction of cluster at position - Phi.
+      - std::array<eic::ImagingLayer, 20>  nhits           // layer data
+    OneToManyRelations:
+      - eic::Cluster        clusters // The clusters that have been combined to this cluster.
+      - eic::CalorimeterHit hits     // The hits that have been combined to this cluster.
 
