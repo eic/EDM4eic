@@ -344,18 +344,18 @@ datatypes :
       - float                x0cum           // estimated radiation length before this layer
       - eic::VectorXYZ       position        // Global center position.
       - eic::VectorPolar     polar           // Global center position in polar coordinates
+    OneToManyRelations:
+      - eic::CalorimeterHit hits             // Hits belong to this layer
 
   eic::ImagingCluster:
     Description: "Cluster for Imaging Calorimeter"
     Author: "C. Peng"
     Members:
+      - int                  nhits           // Number of hits in this cluster
       - float                energy          // Energy of the cluster.
       - eic::VectorXYZ       position        // Global position of the cluster.
       - eic::VectorPolar     polar           // Polar coordinates for global position.
       - float                cl_theta        // Intrinsic direction of cluster at position - Theta.
       - float                cl_phi          // Intrinsic direction of cluster at position - Phi.
-      - std::array<eic::ImagingLayer, 20>  nhits           // layer data
-    OneToManyRelations:
-      - eic::Cluster        clusters // The clusters that have been combined to this cluster.
-      - eic::CalorimeterHit hits     // The hits that have been combined to this cluster.
+      - std::array<eic::ImagingLayer, 20>  layers  // layer data
 
