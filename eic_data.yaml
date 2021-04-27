@@ -351,11 +351,13 @@ datatypes :
     Description: "Cluster for Imaging Calorimeter"
     Author: "C. Peng"
     Members:
-      - int                  nhits           // Number of hits in this cluster
+      - int                  nhits           // Number of hits in this cluster.
       - float                energy          // Energy of the cluster.
+      - float                edep            // Energy deposit of the cluster.
+      - float                leakcorr        // Leakage correction to the cluster
       - eic::VectorXYZ       position        // Global position of the cluster.
       - eic::VectorPolar     polar           // Polar coordinates for global position.
       - float                cl_theta        // Intrinsic direction of cluster at position - Theta.
       - float                cl_phi          // Intrinsic direction of cluster at position - Phi.
-      - std::array<eic::ImagingLayer, 20>  layers  // layer data
+      - std::array<eic::ImagingLayer, 20> layers  // layer data
 
