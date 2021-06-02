@@ -72,13 +72,6 @@ components :
       - double cell_y
       - double cell_z
 
-  eic::BaseHit :
-    Members :
-      - double x
-      - double y
-      - double z
-      - double E
-
   eic::ElectronBeam :
     Members :
       - float eEnergy
@@ -339,6 +332,17 @@ datatypes :
     OneToManyRelations:
       - eic::PMTHit hits        // The hits that have been included in this cluster
 
+  eic::ImagingPixel:
+    Description: "Pixel for Imaging Calorimeter"
+    Author: "C. Peng"
+    Members:
+      - int                 clusterID       // cluster id
+      - int                 layerID         // layer id
+      - int                 hitID           // hit id
+      - float               edep            // energy deposition
+      - eic::VectorXYZ      position        // global position
+      - eic::VectorPolar    polar           // global position in polar coordinates
+
   eic::ImagingLayer:
     Description: "Layer for Imaging Calorimeter"
     Author: "C. Peng"
@@ -353,7 +357,8 @@ datatypes :
       - float                x0cum          // estimated radiation length before this layer
       - eic::VectorXYZ       position       // Global center position.
       - eic::VectorPolar     polar          // Global center position in polar coordinates
-      - std::array<eic::BaseHit, 100> hits  // hits data
+    OneToManyRelations:
+      - eic::ImagingPixel   hits            // hits data
 
   eic::ImagingCluster:
     Description: "Cluster for Imaging Calorimeter"
