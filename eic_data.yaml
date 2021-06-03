@@ -72,13 +72,6 @@ components :
       - double cell_y
       - double cell_z
 
-  eic::BaseHit :
-    Members :
-      - double x
-      - double y
-      - double z
-      - double E
-
   eic::ElectronBeam :
     Members :
       - float eEnergy
@@ -339,34 +332,53 @@ datatypes :
     OneToManyRelations:
       - eic::PMTHit hits        // The hits that have been included in this cluster
 
+  eic::ImagingPixel:
+    Description: "Pixel for Imaging Calorimeter"
+    Author: "C. Peng"
+    Members:
+      - int                 clusterID       // Cluster id
+      - int                 layerID         // Layer id
+      - int                 sectorID        // Sector id
+      - int                 hitID           // Hit id
+      - double              edep            // Energy deposition
+      - double              time            // Timestamp
+      - double              eta             // Pseudorapidity
+      - eic::VectorXYZLocal local           // Local position in its sector
+      - eic::VectorXYZ      position        // Global position
+      - eic::VectorPolar    polar           // Global position in polar coordinates
+
   eic::ImagingLayer:
     Description: "Layer for Imaging Calorimeter"
     Author: "C. Peng"
     Members:
-      - int                  clusterID      // cluster id
-      - int                  layerID        // layer id
+      - int                  clusterID      // Cluster id
+      - int                  layerID        // Layer id
       - int                  nhits          // Number of hits
-      - float                edep           // Energy deposit
-      - float                radius         // Shower radius
-      - float                skewness       // Skewness of hits distribution
-      - float                chi2           // Edep chi2
-      - float                x0cum          // estimated radiation length before this layer
+      - double               edep           // Energy deposit
+      - double               radius         // Shower radius
+      - double               skewness       // Skewness of hits distribution
+      - double               chi2           // Edep chi2
+      - double               x0cum          // Estimated radiation length before this layer
+      - double               eta            // Pseudorapidity
       - eic::VectorXYZ       position       // Global center position.
       - eic::VectorPolar     polar          // Global center position in polar coordinates
-      - std::array<eic::BaseHit, 100> hits  // hits data
+    OneToManyRelations:
+      - eic::ImagingPixel   hits            // hits data
 
   eic::ImagingCluster:
     Description: "Cluster for Imaging Calorimeter"
     Author: "C. Peng"
     Members:
       - int                  nhits           // Number of hits in this cluster.
-      - float                energy          // Energy of the cluster.
-      - float                edep            // Energy deposit of the cluster.
-      - float                leakcorr        // Leakage correction to the cluster
+      - double               energy          // Energy of the cluster.
+      - double               edep            // Energy deposit of the cluster.
+      - double               leakcorr        // Leakage correction to the cluster
+      - double               eta             // Pseudorapidity
       - eic::VectorXYZ       position        // Global position of the cluster.
       - eic::VectorPolar     polar           // Polar coordinates for global position.
-      - float                cl_theta        // Intrinsic direction of cluster at position - Theta.
-      - float                cl_phi          // Intrinsic direction of cluster at position - Phi.
+      - double               cl_theta        // Intrinsic direction of cluster at position - Theta.
+      - double               cl_phi          // Intrinsic direction of cluster at position - Phi.
     OneToManyRelations:
+      - eic::ImagingPixel    hits            // hits data
       - eic::ImagingLayer    layers          // layer data
 
