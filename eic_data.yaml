@@ -149,11 +149,14 @@ datatypes :
     Description: "EIC cluster"
     Author : "W.Armstrong, C.Peng"
     Members:
-      - float                energy          // Energy of the cluster
+      - float                energy          // Reconstructed energy of the cluster.
+      - float                edep            // Energy deposit of the cluster.
+      - int                  nhits           // Number of hits in the cluster.
       - eic::VectorXYZ       position        // Global position of the cluster.
-      - eic::CovXYZ          positionError   // Covariance matrix of the position (6 Parameters)
-      - float                theta           // Intrinsic direction of cluster at position - Theta.
-      - float                phi             // Intrinsic direction of cluster at position - Phi.
+      - eic::CovXYZ          positionError   // Covariance matrix of the position (6 Parameters).
+      - eic::VectorPolar     polar           // Polar coordinates for global position.
+      - float                cl_theta        // Intrinsic direction of cluster at position - Theta.
+      - float                cl_phi          // Intrinsic direction of cluster at position - Phi.
         #- std::array<float, 3> directionError  // Covariance matrix of the direction (3 Parameters)
         #- std::vector<float> shape  // Shape parameters
         #- std::vector<float> weight // weight of a particular cluster
