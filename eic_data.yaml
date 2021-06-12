@@ -117,6 +117,9 @@ datatypes :
     Author : "W.Armstrong"
     Members:
       - long long           cellID    // The detector specific (geometrical) cell id.
+      - int                 clusterID // ID of the cluster that owns this hit
+      - int                 layerID   // ID of the layer that has this hit
+      - int                 sectorID  // ID of the sector that has this hit
       - float               energy    // The energy of the hit in [GeV].
       - float               time      // The time of the hit in [ns].
       - eic::VectorXYZ      position  // The global position of the hit in world coordinates.
