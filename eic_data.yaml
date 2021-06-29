@@ -150,8 +150,9 @@ datatypes :
 
   eic::Cluster:
     Description: "EIC cluster"
-    Author : "W.Armstrong, C.Peng"
+    Author : "W.Armstrong, S. Joosten, C.Peng"
     Members:
+      - int                  clusterID       // Unique ID of this cluster
       - float                energy          // Reconstructed energy of the cluster.
       - float                edep            // Energy deposit of the cluster.
       - int                  nhits           // Number of hits in the cluster.
@@ -160,12 +161,9 @@ datatypes :
       - eic::VectorPolar     polar           // Polar coordinates for global position.
       - float                cl_theta        // Intrinsic direction of cluster at position - Theta.
       - float                cl_phi          // Intrinsic direction of cluster at position - Phi.
-        #- std::array<float, 3> directionError  // Covariance matrix of the direction (3 Parameters)
-        #- std::vector<float> shape  // Shape parameters
-        #- std::vector<float> weight // weight of a particular cluster
-        #- std::vector<float> subdetectorEnergies // A vector that holds the energy observed in a particular subdetector.
     OneToManyRelations:
       - eic::Cluster        clusters // The clusters that have been combined to this cluster.
+      ## the cluster <-> hit relation is deprecated and will be removed in the future
       - eic::CalorimeterHit hits     // The hits that have been combined to this cluster.
 
 
@@ -371,8 +369,9 @@ datatypes :
 
   eic::ImagingCluster:
     Description: "Cluster for Imaging Calorimeter"
-    Author: "C. Peng"
+    Author: "S. Joosten, C. Peng"
     Members:
+      - int                 clusterID         // Cluster id
       - int                  nhits            // Number of hits in this cluster.
       - double               energy           // Energy of the cluster.
       - double               edep             // Energy deposit of the cluster.
@@ -385,6 +384,7 @@ datatypes :
       - double               cl_theta         // Intrinsic direction of cluster at position - Theta.
       - double               cl_phi           // Intrinsic direction of cluster at position - Phi.
     OneToManyRelations:
+      # cluster <-> hit relation is deprecated
       - eic::ImagingPixel    hits             // hits data
       - eic::ImagingLayer    layers           // layer data
 
