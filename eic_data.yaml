@@ -126,8 +126,6 @@ datatypes :
       - eic::VectorXYZLocal local     // The local position of the hit in detector coordinates.
       - eic::DimensionXYZ   dimension // The dimension information of the cell
       - int                 type      // The type of the hit.
-    OneToOneRelations:
-      - eic::RawCalorimeterHit rawHit // The RawCalorimeterHit
 
   eic::RawTrackerHit:
     Description : "Raw (digitized) tracker hit"
@@ -161,39 +159,6 @@ datatypes :
       - eic::VectorPolar     polar           // Polar coordinates for global position.
       - float                cl_theta        // Intrinsic direction of cluster at position - Theta.
       - float                cl_phi          // Intrinsic direction of cluster at position - Phi.
-    OneToManyRelations:
-      - eic::Cluster        clusters // The clusters that have been combined to this cluster.
-      ## the cluster <-> hit relation is deprecated and will be removed in the future
-      - eic::CalorimeterHit hits     // The hits that have been combined to this cluster.
-
-
-  eic::MCParticle:
-    Description: "EIC MC Particle"
-    Author : "F.Gaede, B. Hegner"
-    Members:
-      - long long pdg // The PDG code of the particle.
-      - long long genstatus   // The status for particles as defined by the generator.
-      - std::array<double, 3> vertex // The production vertex of the particle in [mm].
-      - float charge // The particle's charge.
-      - float mass // The mass of the particle in [GeV]
-      - float time // The creation time of the particle in [ns] wrt. the event, e.g. for preassigned decays or decays in flight from the simulator.
-      - std::array<double, 3> endpoint // The endpoint of the particle in [mm]
-      - bool endpointSet  // Whether the endpoint has been set
-      - std::array<double, 3> momentum // The particle's 3-momentum at the production vertex in [GeV]
-    OneToManyRelations:
-      - eic::MCParticle parents // The parents of this particle.
-      - eic::MCParticle daughters // The daughters this particle.
-    ExtraCode :
-      declaration: "
-      double Px() const {return momentum().at(0);}\n
-      double Py() const {return momentum().at(1);}\n
-      double Pz() const {return momentum().at(2);}\n
-      double Px2() const {return momentum().at(0)*momentum().at(0);}\n
-      double Py2() const {return momentum().at(1)*momentum().at(1);}\n
-      double Pz2() const {return momentum().at(2)*momentum().at(2);}\n
-      //ROOT::Math::XYZTVector FourVector() const { return  ROOT::Math::XYZTVector(Px(),Py(),Pz(),std::sqrt(Px2()+Py2()+Pz2()+mass()*mass())); }\n
-      //double theta() const { return  ROOT::Math::XYZVector(Px(),Py(),Pz()).Theta();}\n
-      "
 
   eic::ReconstructedParticle:
     Description: "EIC Reconstructed Particle"
@@ -204,12 +169,6 @@ datatypes :
       - eic::VectorXYZ p              // three momentum.
       - double         charge         // The particle's charge
       - double         mass           // The mass of the particle in [GeV]
-    OneToOneRelations:
-      - eic::Vertex vertex            // The start vertex associated to this particle.
-    OneToManyRelations:
-      - eic::Cluster clusters                // The clusters combined to this particle.
-      - eic::Track tracks                    // The tracks combined to this particle"
-      - eic::ReconstructedParticle particles // The particles combined to this particle
 
   eic::TrackParameters:
     Description: "ACTS Track parameters"
@@ -228,73 +187,6 @@ datatypes :
       - double err_qOverP  // err_qOverP
       - double err_time    // err_time  
 
-  eic::Track:
-    Description: "EIC reconstructed track"
-    Author : "F.Gaede, B. Hegner"
-    Members:
-      - float chi2 // Chi2
-      - int ndf    // Number of degrees of freedom of the track fit.
-      - float dEdx // dEdx of the track.
-      - float dEdxError // Error of dEdx.
-      - float radiusOfInnermostHit // The radius of the innermost hit that has been used in the track fit.
-      #- std::vector<int> subdetectorHitNumbers // The number of hits in particular subdetectors
-    OneToManyRelations:
-      - eic::Track tracks    // The tracks that have been combined to this track.
-      - eic::TrackerHit hits // The hits that have been combined to this track.
-      - eic::TrackState trackStates // Track states associated to this track.
-
-  eic::TrackerData:
-    Description : "EIC tracker data"
-    Author : "F.Gaede, B. Hegner"
-    Members:
-      - long long cellID // The detector specific (geometrical) cell id.
-      - int time    // The time of the hit.
-      - int charge  // adc value
-        #- std::vector<float> charge // The corrected (calibrated) FADC spectrum.
-
-  eic::TrackerPulse:
-    Description : "EIC tracker pulse"
-    Author : "F. Gaede, B. Hegner"
-    Members:
-      - long long cellID  // The detector specific (geometrical) cell id.
-      - int quality  // ...
-      - float time   // The time of the pulse.
-      - float charge // The integrated charge of the pulse
-        #      - std::vector<float> covMatrix    // ...
-    OneToOneRelations:
-      - eic::TrackerData corrData // ...
-
-  eic::TrackerRawData:
-    Description: "EIC tracker raw data"
-    Author : "W.Armstrong"
-    Members:
-      - long long cellID     // The detector specific (geometrical) cell id.
-      - long long channelID  // channel id.
-      - int time             // time measurement associated with the adc values.
-      - int adc              // measured ADC values
-  
-  eic::TrackerData:
-    Description: "EIC tracker data"
-    Author : "F.Gaede, B. Hegner"
-    Members:
-      - long long cellID  // The detector specific (geometrical) cell id.
-      - int time     //  time measurement associated with the adc values.
-        #      - std::vector<short> charge // The actual FADC spectrum.
-
-  # EIC TrackState
-  eic::TrackState:
-      Description: "EIC track state"
-      Author : "F.Gaede, B. Hegner"
-      Members:
-        - int location // The location of the track state.
-        - float d0     // Impact parameter of the track in (r-phi).
-        - float phi    // Phi of the track at the reference point.
-        - float omega  // Omega is the signed curvature of the track in [1/mm].
-        - float z0     // Impact parameter of the track in (r-z).
-        - float tanLambda // Lambda is the dip angle of the track in r-z at the reference point.
-        - std::array<float, 3> referencePoint // Reference point of the track parameters
-          #        - std::vector<float> covMatrix // Covariance matrix of the track parameters.
-
   eic::Vertex:
       Description: "EIC vertex"
       Author : "W.Armstrong"
@@ -303,8 +195,6 @@ datatypes :
         - float           chi2        // Chi squared of the vertex fit.
         - float           probability // Probability of the vertex fit
         - eic::VectorXYZT position    // postion and time of vertex.
-      OneToOneRelations:
-        - eic::ReconstructedParticle particle // Reconstructed Particle associated to the Vertex.
 
   eic::RawPMTHit:
     Description: "EIC Raw PMT hit"
@@ -333,8 +223,6 @@ datatypes :
       - float radius            // radius of the best fit ring
       - float radiusError       // estimated error from the fit
       - float npe               // number of photo-electrons
-    OneToManyRelations:
-      - eic::PMTHit hits        // The hits that have been included in this cluster
 
   eic::ImagingPixel:
     Description: "Pixel for Imaging Calorimeter"
@@ -364,8 +252,6 @@ datatypes :
       - double               eta              // Pseudorapidity
       - eic::VectorXYZ       position         // Global center position.
       - eic::VectorPolar     polar            // Global center position in polar coordinates
-    OneToManyRelations:
-      - eic::ImagingPixel   hits              // hits data
 
   eic::ImagingCluster:
     Description: "Cluster for Imaging Calorimeter"
@@ -383,8 +269,3 @@ datatypes :
       - eic::VectorPolar     polar            // Polar coordinates for global position.
       - double               cl_theta         // Intrinsic direction of cluster at position - Theta.
       - double               cl_phi           // Intrinsic direction of cluster at position - Phi.
-    OneToManyRelations:
-      # cluster <-> hit relation is deprecated
-      - eic::ImagingPixel    hits             // hits data
-      - eic::ImagingLayer    layers           // layer data
-
