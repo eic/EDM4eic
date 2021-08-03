@@ -1,4 +1,4 @@
-image: eicweb.phy.anl.gov:4567/containers/eic_container/eic:latest
+image: eicweb.phy.anl.gov:4567/containers/eic_container/jug_dev:testing
 
 workflow:
   rules:

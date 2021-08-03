@@ -6,82 +6,227 @@ options :
   exposePODMembers: False
   includeSubfolder: True
 
-components :
+## right now we rigurously enforce:
+##  - No breaking of PODness:
+##        - No use of relations and vectors
+##     - Use special Relation structures where needed, indexing by ID (index)
+##        - IDs are stored as eic::Index, which is a thin layer of an signed integer
+##          where -1 relates to "no index".
+##        - For 1-to-many relations: Use many-to-1 IDs instead --> use forward links
+##          This puts the burden on the reconstruction algorithm and keeps the data 2D!
+##  - Use float most of the time except for 4-vectors where ppm precision is important.
+##  - Data alignment: 
+##        - data should be aligned with a 64-bit structure where possible.
+##        - when using 32 bit values, use them in pairs (or after all 64-bit variables are defined). 
+##        - same goes for 16-bit values (keep them aligned with the largest following component)
+##  - Explicitly specify the integer length (use the typedefs from <cstdint>, 
+##    such as int32_t etc)
 
-  eic::VectorPxPyPzM:
-    Members :
-      - double px
-      - double py
-      - double pz
-      - double m
+components:
 
-  eic::VectorXYZT:
-    Members :
-      - double x
-      - double y
-      - double z
-      - double t
+  ## simple numerical index, but with good automatic default values
+  eic::Index:
+    Members:
+      - int32_t value
+    ExtraCode:
+      declaration: "
+        Index() : value{-1} {}\n
+        Index(int32_t idx) : value {idx} {}\n
+        Index& operator=(int32_t idx) {value = idx; return *this;}\n
+        operator int32_t() const {return value;}\n
+        bool valid() const {return value >= 0;}\n
+        bool empty() const {return value < 0;}\n
+      "
+  eic::CentralIndex:
+    Members:
+      - int32_t negative
+      - int32_t barrel
+      - int32_t positive
+    ExtraCode:
+      declaration: "
+        CentralIndex() : negative{-1}, barrel{-1}, positive{-1} {}\n
+        CentralIndex(int32_t n, int32_t b, int32_t p) : negative{n}, barrel{b}, positive{p} {}\n
+        bool valid() const {return negative >= 0 || barrel >= 0 || positive >=0 ;}\n
+        bool empty() const {return !valid();}\n
+      "
 
-  eic::VectorXYZ :
-    Members :
-      - double x  // x
-      - double y  // y
-      - double z  // z
+  ## first-second pair of float s
+  eic::FloatPair:
+    Members:
+      - float first
+      - float second
+    ExtraCode:
+      includes: "#include <tuple>"
+      declaration: "
+        FloatPair() : first{0}, second{0} {}\n
+        FloatPair(double  a, double  b) : first{static_cast<float>(a)}, second{static_cast<float>(b)} {}\n
+        FloatPair(const std::pair<float, float>& p) : first{p.first}, second{p.second} {}\n
+        FloatPair& operator=(const std::pair<float, float>& p) {first = p.first; second = p.second; return *this;}\n
+        float& operator[](unsigned i) {return *(&first + i);}\n
+        const float& operator[](unsigned i) const {return *(&first + i);}\n
+        operator std::pair<float, float>() const {return {first, second};}\n
+      "
 
+  eic::VectorXY:
+    Members:
+      - float x          // [mm] or [GeV]
+      - float y          //
+    ExtraCode:
+      includes: "#include <cmath>\n"
+      declaration: "
+        VectorXY() : x{0}, y{0} {}\n
+        VectorXY(double xx, double yy) : x{static_cast<float>(xx)}, y{static_cast<float>(yy)} {}\n
+        float& operator[](unsigned i) {return *(&x + i);}\n
+        const float& operator[](unsigned i) const {return *(&x + i);}\n
+        float mag() const {return std::hypot(x, y);}\n
+        float r() const {return mag();}\n
+        float phi() const {return atan2(y, x);}\n
+        operator std::pair<float, float>() const {return {x, y};}\n
+        float dot(const VectorXY& rhs) const {return x*rhs.x + y*rhs.y;}\n
+        VectorXY add(const VectorXY& rhs) const {return {x+rhs.x, y+rhs.y};}\n
+        VectorXY subtract(const VectorXY& rhs) const {return {x-rhs.x, y-rhs.y};}\n
+        VectorXY scale(double f) const {return {f*x, f*y};}\n
+      "
+
+  eic::Direction:
+    Members:
+      - float theta      // [rad, 0->pi]
+      - float phi        // [rad, -pi->pi]
+    ExtraCode:
+      includes: "#include <cmath>\n#include <tuple>"
+      declaration: "
+        Direction() : theta{0}, phi{0} {}\n
+        Direction(double th, double ph) : theta{static_cast<float>(th)}, phi{static_cast<float>(ph)} {}\n
+        Direction(double x, double y, double z)\n
+          : theta{static_cast<float>(acos(z/std::hypot(x,y,z)))}\n
+          , phi{static_cast<float>(atan2(y,x))} {}\n
+        template <class VectorType> Direction(const VectorType& v) : Direction(v.theta(), v.phi()) {}\n
+        operator std::pair<float, float>() const {return {theta, phi};}\n
+        double eta() const {return -log(tan(0.5*theta));}\n
+        Direction add(const Direction& rhs) const {return {theta+rhs.theta, phi+rhs.phi};}\n
+        Direction subtract(const Direction& rhs) const {return {theta-rhs.theta, phi-rhs.phi};}\n
+      "
+
+  eic::VectorXYZ:
+    Members:
+      - float x          // [mm] or [GeV]
+      - float y          //
+      - float z          //
+    ExtraCode:
+      includes: "#include <cmath>\n#include<tuple>"
+      declaration: "
+        VectorXYZ() : x{0}, y{0}, z{0} {}\n
+        VectorXYZ(double xx, double yy, double zz) : x{static_cast<float>(xx)}, y{static_cast<float>(yy)}, z{static_cast<float>(zz)} {}\n
+        template<class VectorPolarType> VectorXYZ(const VectorPolarType& v) : VectorXYZ(v.x(), v.y(), v.z()) {}\n
+        float& operator[](unsigned i) {return *(&x + i);}\n
+        const float& operator[](unsigned i) const {return *(&x + i);}\n
+        float mag() const {return std::hypot(x, y, z);}\n
+        float r() const {return mag();}\n
+        float theta() const {return acos(z/mag());}\n
+        float phi() const {return atan2(y,x);}\n
+        double eta() const {return -log(tan(0.5*theta()));}\n
+        operator std::tuple<float, float, float>() {return {x, y, z};}\n
+        float dot(const VectorXYZ& rhs) const {return x*rhs.x + y*rhs.y + z*rhs.z;}\n
+        VectorXYZ add(const VectorXYZ& rhs) const {return {x+rhs.x, y+rhs.y, z+rhs.z};}\n
+        VectorXYZ subtract(const VectorXYZ& rhs) const {return {x-rhs.x, y-rhs.y, z-rhs.z};}\n
+        VectorXYZ scale(double f) const {return {f*x, f*y, f*z};}\n
+      "
   eic::VectorPolar:
     Members:
-      - double r
-      - double theta
-      - double phi
+      - float r          // [mm] or [GeV]
+      - float theta      // [rad, 0->pi]
+      - float phi        // [rad, -pi->pi]
+    ExtraCode:
+      includes: "#include <cmath>\n#include<tuple>"
+      declaration: "
+        VectorPolar() : r{0}, theta{0}, phi{0} {}\n
+        VectorPolar(double rr, double th, double ph) : r{static_cast<float>(rr)}, theta{static_cast<float>(th)}, phi{static_cast<float>(ph)} {}\n
+        template<class VectorXYZType> VectorPolar(const VectorXYZType& v) : VectorPolar(v.r(), v.theta(), v.phi()) {}\n
+        float mag() const {return r;}\n
+        float x() const {return r * cos(phi) * sin(theta);}\n
+        float y() const {return r * sin(phi) * cos(theta);}\n
+        float z() const {return r * cos(theta);}\n
+        double eta() const {return -log(tan(0.5*theta));}\n
+        operator std::tuple<float, float, float>() {return {r, theta, phi};}\n
+      "
 
-  eic::VectorXYZLocal :
-    Members :
-      - double local_x
-      - double local_y
-      - double local_z
+  eic::VectorXYZT:
+    Members:
+      - double x        // [mm] or [GeV]
+      - double y        //
+      - double z        //
+      - double t        // [ns] or [GeV]
+    ExtraCode:
+      includes: "#include <cmath>\n#include <tuple>"
+      declaration: "
+        VectorXYZT() : x{0}, y{0}, z{0}, t{0} {}\n
+        VectorXYZT(double xx, double yy, double zz, double tt) : x{xx}, y{yy}, z{zz}, t{tt} {}\n
+        double& operator[](unsigned i) {return *(&x + i);}\n
+        const double& operator[](unsigned i) const {return *(&x + i);}\n
+        double mag() const {return std::hypot(x, y, z);}\n
+        double r() const {return mag();}\n
+        double theta() const {return acos(z/mag());}\n
+        double phi() const {return atan2(y,x);}\n
+        double eta() const {return -log(tan(0.5*theta()));}
+        double energy() const {return t;}\n
+        double mass() const {return sqrt(t*t - x*x - y*y - z*z);}\n
+        operator std::tuple<double, double, double, double>() {return {x, y, z, t};}\n
+        double dot(const VectorXYZT& rhs) const {return t*rhs.t - x*rhs.x - y*rhs.y - z*rhs.z;}\n
+        VectorXYZT add(const VectorXYZT& rhs) const {return {x+rhs.x, y+rhs.y, z+rhs.z, t+rhs.t};}\n
+        VectorXYZT subtract(const VectorXYZT& rhs) const {return {x-rhs.x, y-rhs.y, z-rhs.z, t-rhs.t};}\n
+        VectorXYZT scale(double f) const {return {f*x, f*y, f*z, f*t};}\n
+      "
 
-  eic::DimensionXYZ :
-    Members :
-      - double dim_x
-      - double dim_y
-      - double dim_z
+  eic::CovDiagXYZ:
+    Members:
+      - float xx
+      - float yy
+      - float zz
+    ExtraCode:
+      declaration: "
+        CovDiagXYZ() : xx{0}, yy{0}, zz{0} {}\n
+        CovDiagXYZ(double x, double y, double z) : xx{static_cast<float>(x)}, yy{static_cast<float>(y)}, zz{static_cast<float>(z)} {}\n
+        float operator()(unsigned i, unsigned j) const {return (i == j) ? *(&xx + i) : 0.;}\n
+        "
 
-  eic::CovSymmetricXYZ :
-    Members :
-      - double covsym_xx
-      - double covsym_yy
-      - double covsym_zz
+  eic::CovDiagXYZT:
+    Members:
+      - float xx
+      - float yy
+      - float zz
+      - float tt
+    ExtraCode:
+      declaration: "
+        CovDiagXYZT() : xx{0}, yy{0}, zz{0}, tt{0} {}\n
+        CovDiagXYZT(float x, float y, float z, float t) : xx{x}, yy{y}, zz{z}, tt{t} {}\n
+        float operator()(unsigned i, unsigned j) const {return (i == j) ? *(&xx + i) : 0.;}\n
+        "
 
-  eic::CovXYZ :
-    Members :
-      - double cov_xx
-      - double cov_yy
-      - double cov_zz
-      - double cov_xy
-      - double cov_xz
-      - double cov_yz
-
-  eic::PixelXY :
-    Members :
-      - double pixel_x
-      - double pixel_y
-
-  eic::CellXYZ :
-    Members :
-      - double cell_x
-      - double cell_y
-      - double cell_z
-
-  eic::ElectronBeam :
-    Members :
-      - float eEnergy
-      - int   helicity 
-
-  eic::HadronBeam :
-    Members :
-      - float hEnergy
-      - int   pol 
-
+  eic::CovXYZ:
+    Members:
+      - float xx
+      - float yy
+      - float zz
+      - float xy
+      - float xz
+      - float yz
+    ExtraCode:
+      declaration: "
+        CovXYZ() : xx{0}, yy{0}, zz{0}, xy{0}, xz{0}, yz{0} {}\n
+        CovXYZ(double vx, double vy, double vz, double vxy, double vxz, double vyz)\n
+          : xx{static_cast<float>(vx)}, yy{static_cast<float>(vy)}, zz{static_cast<float>(vz)},\n
+            xy{static_cast<float>(vxy)}, xz{static_cast<float>(vxz)}, yz{static_cast<float>(vyz)} {}\n
+        float operator()(unsigned i, unsigned j) const {\n
+          // diagonal\n
+          if (i == j) {\n
+            return *(&xx + i);\n
+          }\n
+          // off-diagonal\n
+          // we have as options (0, 1), (0, 2) and (1, 2) (and mirrored)\n
+          // note that, starting from xy, we find the correct element at (i+j-1)\n
+          return *(&xy + i + j - 1);\n
+        }\n
+      "
 
 datatypes :
 
@@ -99,8 +244,9 @@ datatypes :
     Description : "Basic Particle used for reconstructed and generated particles"
     Author : "W.Armstrong"
     Members :
-      - eic::VectorPxPyPzM p       // Four momentum.
+      - eic::VectorXYZ     p       // Four momentum.
       - eic::VectorXYZT    v       // vertex.
+      - double             mass    // mass
       - long long          pid     // Particle type identification code
       - long long          status  // Status code
 
@@ -123,8 +269,8 @@ datatypes :
       - float               energy    // The energy of the hit in [GeV].
       - float               time      // The time of the hit in [ns].
       - eic::VectorXYZ      position  // The global position of the hit in world coordinates.
-      - eic::VectorXYZLocal local     // The local position of the hit in detector coordinates.
-      - eic::DimensionXYZ   dimension // The dimension information of the cell
+      - eic::VectorXYZ      local     // The local position of the hit in detector coordinates.
+      - eic::VectorXYZ      dimension // The dimension information of the cell
       - int                 type      // The type of the hit.
 
   eic::RawTrackerHit:
@@ -144,7 +290,7 @@ datatypes :
       - float                EDep      // EDep
       - float                EDepError // error on EDep
       - eic::VectorXYZ       position  // position
-      - eic::CovSymmetricXYZ covMatrix // covMatrix
+      - eic::CovDiagXYZ covMatrix // covMatrix
 
   eic::Cluster:
     Description: "EIC cluster"
@@ -212,7 +358,7 @@ datatypes :
       - float npe                 // estimated number of photo-electrons
       - float time                // time
       - eic::VectorXYZ position   // PMT hit position
-      - eic::VectorXYZLocal local // The local position of the hit in detector coordinates.
+      - eic::VectorXYZ local // The local position of the hit in detector coordinates.
 
   eic::RIChCluster:
     Description: "EIC RICh Cluster"
@@ -235,7 +381,7 @@ datatypes :
       - double              edep              // Energy deposition
       - double              time              // Timestamp
       - double              eta               // Pseudorapidity
-      - eic::VectorXYZLocal local             // Local position in its sector
+      - eic::VectorXYZ     local             // Local position in its sector
       - eic::VectorXYZ      position          // Global position
       - eic::VectorPolar    polar             // Global position in polar coordinates
 
