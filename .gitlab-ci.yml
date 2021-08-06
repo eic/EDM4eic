@@ -43,6 +43,8 @@ env:
 
 compile:
   stage: build
+  rules:
+    - if: '$CI_SERVER_HOST == "eicweb.phy.anl.gov"' 
   needs:
     - ["env"]
   script:
