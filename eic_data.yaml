@@ -102,7 +102,7 @@ components:
           , phi{static_cast<float>(atan2(y,x))} {}\n
         template <class VectorType> Direction(const VectorType& v) : Direction(v.theta(), v.phi()) {}\n
         operator std::pair<float, float>() const {return {theta, phi};}\n
-        double eta() const {return -log(tan(0.5*theta));}\n
+        float eta() const {return -log(tan(0.5*theta));}\n
         Direction add(const Direction& rhs) const {return {theta+rhs.theta, phi+rhs.phi};}\n
         Direction subtract(const Direction& rhs) const {return {theta-rhs.theta, phi-rhs.phi};}\n
       "
@@ -124,7 +124,7 @@ components:
         float r() const {return mag();}\n
         float theta() const {return acos(z/mag());}\n
         float phi() const {return atan2(y,x);}\n
-        double eta() const {return -log(tan(0.5*theta()));}\n
+        float eta() const {return -log(tan(0.5*theta()));}\n
         operator std::tuple<float, float, float>() {return {x, y, z};}\n
         float dot(const VectorXYZ& rhs) const {return x*rhs.x + y*rhs.y + z*rhs.z;}\n
         VectorXYZ add(const VectorXYZ& rhs) const {return {x+rhs.x, y+rhs.y, z+rhs.z};}\n
@@ -146,7 +146,7 @@ components:
         float x() const {return r * cos(phi) * sin(theta);}\n
         float y() const {return r * sin(phi) * cos(theta);}\n
         float z() const {return r * cos(theta);}\n
-        double eta() const {return -log(tan(0.5*theta));}\n
+        float eta() const {return -log(tan(0.5*theta));}\n
         operator std::tuple<float, float, float>() {return {r, theta, phi};}\n
       "
 
@@ -250,29 +250,6 @@ datatypes :
       - long long          pid     // Particle type identification code
       - long long          status  // Status code
 
-  eic::RawCalorimeterHit:
-    Description: "Raw (digitized) calorimeter hit"
-    Author : "W.Armstrong"
-    Members:
-      - long long cellID    // The detector specific (geometrical) cell id.
-      - long long amplitude // The amplitude of the hit in ADC counts.
-      - long long timeStamp // The time stamp for the hit.
-
-  eic::CalorimeterHit:
-    Description: "Calorimeter hit"
-    Author : "W.Armstrong"
-    Members:
-      - long long           cellID    // The detector specific (geometrical) cell id.
-      - int                 clusterID // ID of the cluster that owns this hit
-      - int                 layerID   // ID of the layer that has this hit
-      - int                 sectorID  // ID of the sector that has this hit
-      - float               energy    // The energy of the hit in [GeV].
-      - float               time      // The time of the hit in [ns].
-      - eic::VectorXYZ      position  // The global position of the hit in world coordinates.
-      - eic::VectorXYZ      local     // The local position of the hit in detector coordinates.
-      - eic::VectorXYZ      dimension // The dimension information of the cell
-      - int                 type      // The type of the hit.
-
   eic::RawTrackerHit:
     Description : "Raw (digitized) tracker hit"
     Author : "W.Armstrong"
@@ -291,20 +268,6 @@ datatypes :
       - float                EDepError // error on EDep
       - eic::VectorXYZ       position  // position
       - eic::CovDiagXYZ covMatrix // covMatrix
-
-  eic::Cluster:
-    Description: "EIC cluster"
-    Author : "W.Armstrong, S. Joosten, C.Peng"
-    Members:
-      - int                  clusterID       // Unique ID of this cluster
-      - float                energy          // Reconstructed energy of the cluster.
-      - float                edep            // Energy deposit of the cluster.
-      - int                  nhits           // Number of hits in the cluster.
-      - eic::VectorXYZ       position        // Global position of the cluster.
-      - eic::CovXYZ          positionError   // Covariance matrix of the position (6 Parameters).
-      - eic::VectorPolar     polar           // Polar coordinates for global position.
-      - float                cl_theta        // Intrinsic direction of cluster at position - Theta.
-      - float                cl_phi          // Intrinsic direction of cluster at position - Phi.
 
   eic::ReconstructedParticle:
     Description: "EIC Reconstructed Particle"
@@ -370,48 +333,89 @@ datatypes :
       - float radiusError       // estimated error from the fit
       - float npe               // number of photo-electrons
 
-  eic::ImagingPixel:
-    Description: "Pixel for Imaging Calorimeter"
-    Author: "C. Peng"
+  ## ==========================================================================
+  ## Calorimetry
+  ## ==========================================================================
+  eic::RawCalorimeterHit:
+    Description: "Raw (digitized) calorimeter hit"
+    Author: "W. Armstrong, S. Joosten"
     Members:
-      - int                 clusterID         // Cluster id
-      - int                 layerID           // Layer id
-      - int                 sectorID          // Sector id
-      - int                 hitID             // Hit id
-      - double              edep              // Energy deposition
-      - double              time              // Timestamp
-      - double              eta               // Pseudorapidity
-      - eic::VectorXYZ     local             // Local position in its sector
-      - eic::VectorXYZ      position          // Global position
-      - eic::VectorPolar    polar             // Global position in polar coordinates
+      - int64_t           cellID            // The detector specific (geometrical) cell id.
+      - int64_t           amplitude         // The amplitude of the hit in ADC counts.
+      - int64_t           time              // Timing in TDC
+      - eic::Index        ID                // unique ID for this hit
 
-  eic::ImagingLayer:
-    Description: "Layer for Imaging Calorimeter"
-    Author: "C. Peng"
+  eic::CalorimeterHit:
+    Description: "Calorimeter hit"
+    Author: "W. Armstrong, S. Joosten"
     Members:
-      - int                  clusterID        // Cluster id
-      - int                  layerID          // Layer id
-      - int                  nhits            // Number of hits
-      - double               edep             // Energy deposit
-      - double               radius           // Shower radius
-      - double               skewness         // Skewness of hits distribution
-      - double               eta              // Pseudorapidity
-      - eic::VectorXYZ       position         // Global center position.
-      - eic::VectorPolar     polar            // Global center position in polar coordinates
+      - int64_t           cellID            // The detector specific (geometrical) cell id.
+      - eic::Index        ID                // unique ID for this hit
+      - int32_t           layer             // layer for this hit
+      - int32_t           sector            // sector for this hit
+      - int32_t           type              // The type of the hit.
+      - float             energy            // The energy for this hit in [GeV].
+      - float             energyError       // Error on energy [GeV].
+      - float             time              // The time of the hit in [ns].
+      - eic::VectorXYZ    position          // The global position of the hit in world coordinates [mm].
+      - eic::VectorXYZ    local             // The local position of the hit in detector coordinates [mm].
+      - eic::VectorXYZ    dimension         // The dimension information of the cell [mm].
 
-  eic::ImagingCluster:
-    Description: "Cluster for Imaging Calorimeter"
+  ## ==========================================================================
+  ## Clustering
+  ## ==========================================================================
+  
+  eic::ProtoCluster:
+    Description: "Relational info linking hits to their associated cluster"
+    Author: "S. Joosten"
+    Members:
+      - eic::Index        hitID             // Hit ID
+      - eic::Index        clusterID         // ID of the cluster associated with this hit (-1 if none)
+      - float             weight            // How much of this hit belongs to the cluster? [0->1]
+
+  eic::Cluster:
+    Description: "EIC cluster"
+    Author: "W. Armstrong, S. Joosten, C.Peng"
+    Members:
+      - eic::Index        ID                // unique ID for this cluster
+      - int32_t           type              // Cluster type
+      - float             energy            // Reconstructed energy of the cluster [GeV].
+      - float             energyError       // Error on the cluster energy [GeV]
+      - float             time              // [ns]
+      - uint32_t          nhits             // Number of hits in the cluster.
+      - eic::VectorXYZ    position          // Global position of the cluster [mm].
+      - eic::CovXYZ       positionError     // Covariance matrix of the position (6 Parameters).
+      - float             radius            // shower radius [mm]
+      - float             skewness          // shower skewness [unitless]
+
+  eic::Cluster2DInfo:
+    Description: "Additional info for 3D clusters" 
+    Author: "S. Joosten"
+    Members:
+      - eic::Index        clusterID         // Primary cluster ID
+      - eic::VectorPolar  polar             // Cluster position polar information
+      - float             eta               // Cluster pseudorapidity
+
+  eic::Cluster3DInfo:
+    Description: "Additional info for 3D clusters" 
+    Author: "S. Joosten"
+    Members:
+      - eic::Index        clusterID         // Primary cluster ID
+      - eic::VectorPolar  polar             // Cluster position polar information
+      - float             eta               // Cluster pseudorapidity
+      - eic::Direction    direction         // Intrinsic direction of the cluster at the central position [rad, 0->pi and -pi->pi]
+
+  eic::ClusterLayer:
+    Description: "2D Cluster in a single layer for a multi-layer detector"
     Author: "S. Joosten, C. Peng"
     Members:
-      - int                 clusterID         // Cluster id
-      - int                  nhits            // Number of hits in this cluster.
-      - double               energy           // Energy of the cluster.
-      - double               edep             // Energy deposit of the cluster.
-      - double               radius           // Shower radius
-      - double               skewness         // Skewness of hits distribution
-      - double               leakcorr         // Leakage correction to the cluster
-      - double               eta              // Pseudorapidity
-      - eic::VectorXYZ       position         // Global position of the cluster.
-      - eic::VectorPolar     polar            // Polar coordinates for global position.
-      - double               cl_theta         // Intrinsic direction of cluster at position - Theta.
-      - double               cl_phi           // Intrinsic direction of cluster at position - Phi.
+      - eic::Index        ID                // unique layer ID
+      - eic::Index        clusterID         // associated full 3D cluster, -1 if none
+      - int32_t           layer             // layer number for this cluster layer
+      - uint32_t          nhits             // Number of hits
+      - int32_t           type              // Cluster type
+      - float             energy            // Energy in this cluster layer [GeV]
+      - float             energyError       // Error on energy [GeV]
+      - float             radius            // Shower radius [mm]
+      - float             skewness          // Skewness of hits distribution
+      - eic::VectorXYZ    position          // Global center position. [mm]
