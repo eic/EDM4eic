@@ -144,7 +144,7 @@ components:
         template<class VectorXYZType> VectorPolar(const VectorXYZType& v) : VectorPolar(v.r(), v.theta(), v.phi()) {}\n
         float mag() const {return r;}\n
         float x() const {return r * cos(phi) * sin(theta);}\n
-        float y() const {return r * sin(phi) * cos(theta);}\n
+        float y() const {return r * sin(phi) * sin(theta);}\n
         float z() const {return r * cos(theta);}\n
         float eta() const {return -log(tan(0.5*theta));}\n
         operator std::tuple<float, float, float>() {return {r, theta, phi};}\n
