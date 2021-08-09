@@ -37,17 +37,32 @@ components:
         bool valid() const {return value >= 0;}\n
         bool empty() const {return value < 0;}\n
       "
-  eic::CentralIndex:
+
+  ## Relation to another field. Has 2 components: sourceID and ID where
+  ## sourceID identifies the originating collection and ID the ID of the entry
+  ## within this collection. As for eic::Index, -1 signifies no entry
+  eic::Relation:
     Members:
-      - int32_t negative
-      - int32_t barrel
-      - int32_t positive
+      - eic::Index sourceID
+      - eic::Index ID
     ExtraCode:
       declaration: "
-        CentralIndex() : negative{-1}, barrel{-1}, positive{-1} {}\n
-        CentralIndex(int32_t n, int32_t b, int32_t p) : negative{n}, barrel{b}, positive{p} {}\n
-        bool valid() const {return negative >= 0 || barrel >= 0 || positive >=0 ;}\n
+        Relation() = default;\n
+        Relation(Index source, Index id) : sourceID{source}, ID{id} {}\n
+        bool valid() const {return sourceID.valid() && ID.valid();}\n
         bool empty() const {return !valid();}\n
+      "
+
+  ## simple weight that defaults to 1 if not set
+  eic::Weight:
+    Members:
+      - float value
+    ExtraCode:
+      declaration: "
+        Weight() : value{1.} {}\n
+        Weight(double w) : value {static_cast<float>(w)} {}\n
+        Weight& operator=(double w) {value = static_cast<float>(w); return *this;}\n
+        operator float() const {return value;}
       "
 
   ## first-second pair of float s
@@ -228,27 +243,7 @@ components:
         }\n
       "
 
-datatypes :
-
-  eic::EventInfo:
-    Description : "Event Info"
-    Author : "W.Armstrong"
-    Members :
-      - long long run      // Run number.
-      - long long number   // Event number.
-      - long long genID    // Generator ID (TBD).
-      - long long procID   // Processes ID (TBD).
-      - long long type     // event type ID (TBD).
-
-  eic::Particle :
-    Description : "Basic Particle used for reconstructed and generated particles"
-    Author : "W.Armstrong"
-    Members :
-      - eic::VectorXYZ     p       // Four momentum.
-      - eic::VectorXYZT    v       // vertex.
-      - double             mass    // mass
-      - long long          pid     // Particle type identification code
-      - long long          status  // Status code
+datatypes:
 
   eic::RawTrackerHit:
     Description : "Raw (digitized) tracker hit"
@@ -268,16 +263,6 @@ datatypes :
       - float                EDepError // error on EDep
       - eic::VectorXYZ       position  // position
       - eic::CovDiagXYZ covMatrix // covMatrix
-
-  eic::ReconstructedParticle:
-    Description: "EIC Reconstructed Particle"
-    Author : "W.Armstrong"
-    Members:
-      - long long      pid            // PID of reconstructed particle.
-      - double         energy         // Energy of the reconstructed particle.
-      - eic::VectorXYZ p              // three momentum.
-      - double         charge         // The particle's charge
-      - double         mass           // The mass of the particle in [GeV]
 
   eic::TrackParameters:
     Description: "ACTS Track parameters"
@@ -332,6 +317,64 @@ datatypes :
       - float radius            // radius of the best fit ring
       - float radiusError       // estimated error from the fit
       - float npe               // number of photo-electrons
+
+  ## ==========================================================================
+  ## Event info
+  ## ==========================================================================
+
+  eic::EventInfo:
+    Description: "Event Info"
+    Author: "W. Armstrong, S. Joosten"
+    Members:
+      - uint64_t          run              // Run number.
+      - uint64_t          number           // Event number.
+      - int32_t           type             // event type identifier (TBD).
+      - int32_t           proc             // Process identifier (TBD).
+      - eic::Index        source           // Source/generator identifier (TBD), negative for MC.
+  
+  ## ==========================================================================
+  ## Particle info
+  ## ==========================================================================
+
+  eic::BasicParticle:
+    Description: "Basic particle used internally to communicate basic particle properties."
+    Author: "W. Armstrong, S. Joosten"
+    Members:
+      - eic::Index        ID                // Unique particle index
+      - eic::VectorXYZ    p                 // momentum [GeV]
+      - eic::VectorXYZ    v                 // vertex [mm]
+      - float             time              // Time in [ns]
+      - int32_t           pid               // particle PDG code
+      - int16_t           status            // Status code
+      - int16_t           charge            // Particle charge (or sign)
+
+  eic::ReconstructedParticle:
+    Description: "EIC Reconstructed Particle"
+    Author: "W. Armstrong, S. Joosten"
+    Members:
+      - eic::Index        ID                // Unique particle index
+      - eic::VectorXYZ    p                 // momentum vector [GeV]
+      - eic::VectorXYZ    v                 // vertex [mm]
+      - float             time              // Time in [ns]
+      - int32_t           pid               // PID of reconstructed particle.
+      - int16_t           status            // Status code
+      - int16_t           charge            // Particle charge (or sign)
+      - float             momentum          // particle 3-momentum magnitude [GeV]
+      - float             energy            // Energy (from calorimetery) of the particle [GeV]
+      - float             mass              // The mass of the particle in [GeV]
+      - eic::Weight       weight             // Particle weight, e.g. from PID algorithm [0-1]
+
+  eic::ReconstructedParticleRelations:
+    Description: "Relational info associated with our reconstructed particle"
+    Author: "S. Joosten"
+    Members:
+      - eic::Index        recID             // ReconstructedParticle index
+      - eic::Relation     vertexID          // Start vertex ID for this particle
+      - eic::Relation     trackID           // Index of the associated track, if any
+      - eic::Relation     ecalID            // Index of associated pos/barrel/neg ECAL cluster, if any
+      - eic::Relation     hcalID            // Index of associated pos/barrel/neg HCAL cluster, if any
+      - eic::Relation     cherID            // Index of associated pos/barrel/neg Cherenkov info, if any
+      - eic::Relation     tofID             // Index of the associated TOF info, if any
 
   ## ==========================================================================
   ## Calorimetry
