@@ -245,43 +245,6 @@ components:
 
 datatypes:
 
-  eic::Vertex:
-      Description: "EIC vertex"
-      Author : "W.Armstrong"
-      Members:
-        - int             primary     // Whether it is the primary vertex of the event
-        - float           chi2        // Chi squared of the vertex fit.
-        - float           probability // Probability of the vertex fit
-        - eic::VectorXYZT position    // postion and time of vertex.
-
-  eic::RawPMTHit:
-    Description: "EIC Raw PMT hit"
-    Author: "C. Peng"
-    Members:
-      - long long cellID     // The detector specific (geometrical) cell id.
-      - unsigned  amplitude  // PMT signal amplitude
-      - unsigned  timeStamp  // PMT signal time
-
-  eic::PMTHit:
-    Description: "EIC PMT hit"
-    Author: "C. Peng"
-    Members:
-      - long long cellID          // The detector specific (geometrical) cell id.
-      - float npe                 // estimated number of photo-electrons
-      - float time                // time
-      - eic::VectorXYZ position   // PMT hit position
-      - eic::VectorXYZ local // The local position of the hit in detector coordinates.
-
-  eic::RIChCluster:
-    Description: "EIC RICh Cluster"
-    Author: "C. Peng"
-    Members:
-      - eic::VectorXYZ position // Global position of the cluster.
-      - float theta             // opening angle of the ring
-      - float radius            // radius of the best fit ring
-      - float radiusError       // estimated error from the fit
-      - float npe               // number of photo-electrons
-
   ## ==========================================================================
   ## Event info
   ## ==========================================================================
@@ -326,7 +289,7 @@ datatypes:
       - float             momentum          // particle 3-momentum magnitude [GeV]
       - float             energy            // Energy (from calorimetery) of the particle [GeV]
       - float             mass              // The mass of the particle in [GeV]
-      - eic::Weight       weight             // Particle weight, e.g. from PID algorithm [0-1]
+      - eic::Weight       weight            // Particle weight, e.g. from PID algorithm [0-1]
 
   eic::ReconstructedParticleRelations:
     Description: "Relational info associated with our reconstructed particle"
@@ -429,6 +392,45 @@ datatypes:
       - eic::VectorXYZ    position          // Global center position. [mm]
 
   ## ==========================================================================
+  ## RICH/Cherenkov data structures
+  ## ==========================================================================
+
+  eic::RawPMTHit:
+    Description: "EIC Raw PMT hit"
+    Author: "S. Joosten, C. Peng"
+    Members:
+      - int64_t           cellID            // The detector specific (geometrical) cell id.
+      - eic::Index        ID                // unique hit ID
+      - uint32_t          amplitude         // PMT signal amplitude [ADC]
+      - uint32_t          time              // PMT signal time [TDC]
+
+  eic::PMTHit:
+    Description: "EIC PMT hit"
+    Author: "S. Joosten, C. Peng"
+    Members:
+      - int64_t           cellID            // The detector specific (geometrical) cell id.
+      - eic::Index        ID                // Unique hit ID
+      - float             npe               // estimated number of photo-electrons [#]
+      - float             time              // Time [ns]
+      - float             timeError         // Error on the time [ns]
+      - eic::VectorXYZ    position          // PMT hit position [mm]
+      - eic::VectorXYZ    local             // The local position of the hit in detector coordinates [mm]
+      - eic::VectorXYZ    dimension         // The dimension information of the pixel [mm].
+
+  eic::RingImage:
+    Description: "EIC Ring Image Cluster"
+    Author: "S. Joosten, C. Peng"
+    Members:
+      - eic::Index        ID                // Unique cluster ID
+      - float             npe               // number of photo-electrons [#]
+      - eic::VectorXYZ    position          // Global position of the cluster [mm]
+      - eic::VectorXYZ    positionError     // Error on the position
+      - float             theta             // opening angle of the ring [rad, 0->pi]
+      - float             thetaError        // error on the opening angle
+      - float             radius            // radius of the best fit ring [mm]
+      - float             radiusError       // estimated error from the fit [mm]
+
+  ## ==========================================================================
   ## Tracking
   ## ==========================================================================
   
@@ -465,7 +467,7 @@ datatypes:
     ##   Members:
     ##     eic::Index       hitID             // Unique hit identifier
     ##     eic::Index       trackID           // link to the associated track
-    ##     eic::Weight      weight             // prototrack weight, in case we share pixels [0-1]
+    ##     eic::Weight      weight            // prototrack weight, in case we share pixels [0-1]
   
   eic::TrackParameters:
     Description: "ACTS Bound Track parameters"
@@ -480,4 +482,19 @@ datatypes:
       - float             qOverPError       // error on qOverP
       - float             time              // track time [ns]    
       - float             timeError         // error on the time
+
+  ## ==========================================================================
+  ## Vertexing
+  ## ==========================================================================
+
+  eic::Vertex:
+    Description: "EIC vertex"
+    Author: "W. Armstrong, S. Joosten"
+    Members:
+      - eic::Index        ID                // unique vertex ID
+      - eic::VectorXYZ    position          // postion of vertex [mm]
+      - float             time              // time of vertex [ns]
+      - float             chi2              // Chi squared of the vertex fit.
+      - float             probability       // Probability of the vertex fit
+      - bool              primary           // Whether it is the primary vertex of the event
 
