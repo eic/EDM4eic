@@ -206,15 +206,15 @@ components:
 
   eic::CovDiagXYZT:
     Members:
-      - float xx
-      - float yy
-      - float zz
-      - float tt
+      - double xx
+      - double yy
+      - double zz
+      - double tt
     ExtraCode:
       declaration: "
         CovDiagXYZT() : xx{0}, yy{0}, zz{0}, tt{0} {}\n
-        CovDiagXYZT(float x, float y, float z, float t) : xx{x}, yy{y}, zz{z}, tt{t} {}\n
-        float operator()(unsigned i, unsigned j) const {return (i == j) ? *(&xx + i) : 0.;}\n
+        CovDiagXYZT(double x, double y, double z, double t) : xx{x}, yy{y}, zz{z}, tt{t} {}\n
+        double operator()(unsigned i, unsigned j) const {return (i == j) ? *(&xx + i) : 0.;}\n
         "
 
   eic::CovXYZ:
@@ -244,42 +244,6 @@ components:
       "
 
 datatypes:
-
-  eic::RawTrackerHit:
-    Description : "Raw (digitized) tracker hit"
-    Author : "W.Armstrong"
-    Members:
-      - long long cellID // The detector specific (geometrical) cell id.
-      - int time         // tdc value.
-      - int charge       // adc value
-
-  eic::TrackerHit:
-    Description : "Tracker hit (reconstructed from Raw)"
-    Author : "W.Armstrong"
-    Members :
-      - long long            cellID    // The detector specific (geometrical) cell id.
-      - float                time      // The time of the hit.
-      - float                EDep      // EDep
-      - float                EDepError // error on EDep
-      - eic::VectorXYZ       position  // position
-      - eic::CovDiagXYZ covMatrix // covMatrix
-
-  eic::TrackParameters:
-    Description: "ACTS Track parameters"
-    Author : "W.Armstrong"
-    Members:
-      - double loc0        // loc0      
-      - double loc1        // loc1      
-      - double phi         // phi       
-      - double theta       // theta     
-      - double qOverP      // qOverP    
-      - double time        // time      
-      - double err_loc0    // err_loc0  
-      - double err_loc1    // err_loc1  
-      - double err_phi     // err_phi   
-      - double err_theta   // err_theta 
-      - double err_qOverP  // err_qOverP
-      - double err_time    // err_time  
 
   eic::Vertex:
       Description: "EIC vertex"
@@ -404,6 +368,7 @@ datatypes:
       - eic::VectorXYZ    local             // The local position of the hit in detector coordinates [mm].
       - eic::VectorXYZ    dimension         // The dimension information of the cell [mm].
 
+
   ## ==========================================================================
   ## Clustering
   ## ==========================================================================
@@ -462,3 +427,57 @@ datatypes:
       - float             radius            // Shower radius [mm]
       - float             skewness          // Skewness of hits distribution
       - eic::VectorXYZ    position          // Global center position. [mm]
+
+  ## ==========================================================================
+  ## Tracking
+  ## ==========================================================================
+  
+  eic::RawTrackerHit:
+    Description: "Raw (digitized) tracker hit"
+    Author: "W. Armstrong, S. Joosten"
+    Members:
+      - int64_t           cellID            // The detector specific (geometrical) cell id.
+      - eic::Index        ID                // unique ID for this hit
+      - int32_t           time              // tdc value.
+      - int32_t           charge            // adc value
+
+  eic::TrackerHit:
+    Description: "Tracker hit (reconstructed from Raw)"
+    Author: "W. Armstrong, S. Joosten"
+    Members:
+      - int64_t           cellID            // The detector specific (geometrical) cell id.
+      - eic::Index        ID                // unique ID for this hit
+      - eic::VectorXYZT   position          // Hit (cell) position and time [mm, ns]
+      - eic::CovDiagXYZT  covMatrix         // Covariance Matrix
+      - float             edep              // Energy deposit in this hit [GeV]
+      - float             edepError         // Error on the energy deposit [GeV]
+    ConstExtraCode:
+      declaration: "
+        double time() const {return position().t;}\n
+      "
+
+    ## Here's a stub for a prototrack setup. If this is all we use we should
+    ## probably just use protocluster instead, but I assume there will be other
+    ## members we'll need to communicate
+    ## eic::ProtoTrack:
+    ##   Description: "Proto track info"
+    ##   Author: "S. Joosten"
+    ##   Members:
+    ##     eic::Index       hitID             // Unique hit identifier
+    ##     eic::Index       trackID           // link to the associated track
+    ##     eic::Weight      weight             // prototrack weight, in case we share pixels [0-1]
+  
+  eic::TrackParameters:
+    Description: "ACTS Bound Track parameters"
+    Author: "W. Armstrong, S. Joosten"
+    Members:
+      - eic::Index        ID                // unique ID for this track 
+      - eic::FloatPair    loc               // tracking location
+      - eic::FloatPair    locError          // error on the location
+      - eic::Direction    direction         // track direction (theta, phi) [rad, 0-pi and -pi->pi]
+      - eic::Direction    directionError    // error on the direction [rad]
+      - float             qOverP            // [e/GeV]
+      - float             qOverPError       // error on qOverP
+      - float             time              // track time [ns]    
+      - float             timeError         // error on the time
+
