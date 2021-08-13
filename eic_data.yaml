@@ -256,8 +256,13 @@ datatypes:
       - uint64_t          run              // Run number.
       - uint64_t          number           // Event number.
       - int32_t           type             // event type identifier (TBD).
-      - int32_t           proc             // Process identifier (TBD).
-      - eic::Index        source           // Source/generator identifier (TBD), negative for MC.
+      - eic::Index        proc             // Process identifier (TBD).
+      - int32_t           source           // Source/generator identifier (TBD), negative for MC.
+      - float             weight           // Optional event weight (useful for MC)
+    ExtraCode:
+      declaration: "
+        EventInfo() : run{-1}, number{-1}, type{0}, proc{0}, source{-1}, weight{1} {}\n
+      " 
   
   ## ==========================================================================
   ## Particle info
