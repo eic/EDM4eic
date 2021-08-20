@@ -38,18 +38,18 @@ components:
         bool empty() const {return value < 0;}\n
       "
 
-  ## Relation to another field. Has 2 components: sourceID and ID where
-  ## sourceID identifies the originating collection and ID the ID of the entry
-  ## within this collection. As for eic::Index, -1 signifies no entry
+  ## Relation to another field. Has 2 components: source and ID where
+  ## source identifies the originating collection (or algorithm) and ID 
+  ## the ID of the entry within this collection. 
   eic::Relation:
     Members:
-      - eic::Index sourceID
+      - int32_t    source
       - eic::Index ID
     ExtraCode:
       declaration: "
         Relation() = default;\n
-        Relation(Index source, Index id) : sourceID{source}, ID{id} {}\n
-        bool valid() const {return sourceID.valid() && ID.valid();}\n
+        Relation(Index src, Index id) : source{src}, ID{id} {}\n
+        bool valid() const {return ID.valid();}\n
         bool empty() const {return !valid();}\n
       "
 
@@ -257,7 +257,7 @@ datatypes:
       - uint64_t          number           // Event number.
       - int32_t           type             // event type identifier (TBD).
       - int32_t           proc             // Process identifier (TBD).
-      - int32_t           source           // Source/generator identifier (TBD), negative for MC.
+      - int32_t           source           // Source/identifier (TBD)
       - eic::Weight       weight           // Optional event weight (useful for MC)
 
   
@@ -276,7 +276,8 @@ datatypes:
       - int32_t           pid               // particle PDG code
       - int16_t           status            // Status code
       - int16_t           charge            // Particle charge (or sign)
-      - int32_t           type              // particle algorithm/source info
+      - int32_t           source            // std::hash of producing algorithm name
+      - eic::Weight       weight            // Particle weight, e.g. from PID algorithm [0-1]
 
   eic::ReconstructedParticle:
     Description: "EIC Reconstructed Particle"
@@ -289,11 +290,11 @@ datatypes:
       - int32_t           pid               // PID of reconstructed particle.
       - int16_t           status            // Status code
       - int16_t           charge            // Particle charge (or sign)
-      - int32_t           type              // Reconstructed particle algorithm/source info
+      - int32_t           source            // std::hash of producing algorithm name
+      - eic::Weight       weight            // Particle weight, e.g. from PID algorithm [0-1]
       - float             momentum          // particle 3-momentum magnitude [GeV]
       - float             energy            // Energy (from calorimetery) of the particle [GeV]
       - float             mass              // The mass of the particle in [GeV]
-      - eic::Weight       weight            // Particle weight, e.g. from PID algorithm [0-1]
 
   eic::ReconstructedParticleRelations:
     Description: "Relational info associated with our reconstructed particle"
@@ -327,7 +328,7 @@ datatypes:
       - eic::Index        ID                // unique ID for this hit
       - int32_t           layer             // layer for this hit
       - int32_t           sector            // sector for this hit
-      - int32_t           type              // The type of the hit.
+      - int32_t           source            // std::hash of producing algorithm name
       - float             energy            // The energy for this hit in [GeV].
       - float             energyError       // Error on energy [GeV].
       - float             time              // The time of the hit in [ns].
@@ -353,7 +354,7 @@ datatypes:
     Author: "W. Armstrong, S. Joosten, C.Peng"
     Members:
       - eic::Index        ID                // unique ID for this cluster
-      - int32_t           type              // Cluster type
+      - int32_t           source            // std::hash of producing algorithm name
       - float             energy            // Reconstructed energy of the cluster [GeV].
       - float             energyError       // Error on the cluster energy [GeV]
       - float             time              // [ns]
@@ -388,7 +389,7 @@ datatypes:
       - eic::Index        clusterID         // associated full 3D cluster, -1 if none
       - int32_t           layer             // layer number for this cluster layer
       - uint32_t          nhits             // Number of hits
-      - int32_t           type              // Cluster type
+      - int32_t           source            // std::hash of producing algorithm name
       - float             energy            // Energy in this cluster layer [GeV]
       - float             energyError       // Error on energy [GeV]
       - float             radius            // Shower radius [mm]
@@ -414,7 +415,7 @@ datatypes:
     Members:
       - int64_t           cellID            // The detector specific (geometrical) cell id.
       - eic::Index        ID                // Unique hit ID
-      - int32_t           type              // PMT hit type
+      - int32_t           source            // std::hash of producing algorithm name
       - float             npe               // estimated number of photo-electrons [#]
       - float             time              // Time [ns]
       - float             timeError         // Error on the time [ns]
@@ -427,7 +428,7 @@ datatypes:
     Author: "S. Joosten, C. Peng"
     Members:
       - eic::Index        ID                // Unique cluster ID
-      - int32_t           type              // Ring image type
+      - int32_t           source            // std::hash of producing algorithm name
       - float             npe               // number of photo-electrons [#]
       - eic::VectorXYZ    position          // Global position of the cluster [mm]
       - eic::VectorXYZ    positionError     // Error on the position
@@ -457,7 +458,7 @@ datatypes:
       - eic::Index        ID                // unique ID for this hit
       - eic::VectorXYZT   position          // Hit (cell) position and time [mm, ns]
       - eic::CovDiagXYZT  covMatrix         // Covariance Matrix
-      - int32_t           type              // Tracker hit type
+      - int32_t           source            // std::hash of producing algorithm name
       - float             edep              // Energy deposit in this hit [GeV]
       - float             edepError         // Error on the energy deposit [GeV]
     ConstExtraCode:
@@ -500,7 +501,7 @@ datatypes:
     Members:
       - eic::Index        ID                // unique vertex ID
       - eic::VectorXYZ    position          // postion of vertex [mm]
-      - int32_t           type              // vertex type
+      - int32_t           source            // std::hash of producing algorithm name
       - float             time              // time of vertex [ns]
       - float             chi2              // Chi squared of the vertex fit.
       - float             probability       // Probability of the vertex fit
