@@ -276,6 +276,7 @@ datatypes:
       - int32_t           pid               // particle PDG code
       - int16_t           status            // Status code
       - int16_t           charge            // Particle charge (or sign)
+      - int32_t           type              // particle algorithm/source info
 
   eic::ReconstructedParticle:
     Description: "EIC Reconstructed Particle"
@@ -288,6 +289,7 @@ datatypes:
       - int32_t           pid               // PID of reconstructed particle.
       - int16_t           status            // Status code
       - int16_t           charge            // Particle charge (or sign)
+      - int32_t           type              // Reconstructed particle algorithm/source info
       - float             momentum          // particle 3-momentum magnitude [GeV]
       - float             energy            // Energy (from calorimetery) of the particle [GeV]
       - float             mass              // The mass of the particle in [GeV]
@@ -412,6 +414,7 @@ datatypes:
     Members:
       - int64_t           cellID            // The detector specific (geometrical) cell id.
       - eic::Index        ID                // Unique hit ID
+      - int32_t           type              // PMT hit type
       - float             npe               // estimated number of photo-electrons [#]
       - float             time              // Time [ns]
       - float             timeError         // Error on the time [ns]
@@ -424,6 +427,7 @@ datatypes:
     Author: "S. Joosten, C. Peng"
     Members:
       - eic::Index        ID                // Unique cluster ID
+      - int32_t           type              // Ring image type
       - float             npe               // number of photo-electrons [#]
       - eic::VectorXYZ    position          // Global position of the cluster [mm]
       - eic::VectorXYZ    positionError     // Error on the position
@@ -453,6 +457,7 @@ datatypes:
       - eic::Index        ID                // unique ID for this hit
       - eic::VectorXYZT   position          // Hit (cell) position and time [mm, ns]
       - eic::CovDiagXYZT  covMatrix         // Covariance Matrix
+      - int32_t           type              // Tracker hit type
       - float             edep              // Energy deposit in this hit [GeV]
       - float             edepError         // Error on the energy deposit [GeV]
     ConstExtraCode:
@@ -495,6 +500,7 @@ datatypes:
     Members:
       - eic::Index        ID                // unique vertex ID
       - eic::VectorXYZ    position          // postion of vertex [mm]
+      - int32_t           type              // vertex type
       - float             time              // time of vertex [ns]
       - float             chi2              // Chi squared of the vertex fit.
       - float             probability       // Probability of the vertex fit
