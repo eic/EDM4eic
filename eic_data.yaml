@@ -301,12 +301,12 @@ datatypes:
     Author: "S. Joosten"
     Members:
       - eic::Index        recID             // ReconstructedParticle index
-      - eic::Relation     vertexID          // Start vertex ID for this particle
-      - eic::Relation     trackID           // Index of the associated track, if any
-      - eic::Relation     ecalID            // Index of associated pos/barrel/neg ECAL cluster, if any
-      - eic::Relation     hcalID            // Index of associated pos/barrel/neg HCAL cluster, if any
-      - eic::Relation     cherID            // Index of associated pos/barrel/neg Cherenkov info, if any
-      - eic::Relation     tofID             // Index of the associated TOF info, if any
+      - eic::Relation     vertex            // Start vertex for this particle
+      - eic::Relation     track             // Index of the associated track, if any
+      - eic::Relation     ecal              // Index of associated pos/barrel/neg ECAL cluster, if any
+      - eic::Relation     hcal              // Index of associated pos/barrel/neg HCAL cluster, if any
+      - eic::Relation     cher              // Index of associated pos/barrel/neg Cherenkov info, if any
+      - eic::Relation     tof               // Index of the associated TOF info, if any
 
   ## ==========================================================================
   ## Calorimetry
@@ -395,6 +395,14 @@ datatypes:
       - float             radius            // Shower radius [mm]
       - float             skewness          // Skewness of hits distribution
       - eic::VectorXYZ    position          // Global center position. [mm]
+
+  eic::MergedClusterRelations:
+    Description: "Relational info between a merged cluster and its parents"
+    Author: "S. Joosten"
+    Members:
+      - eic::Index        clusterID         // associated cluster ID
+      - uint32_t          size              // number of valid parents
+      - std::array<eic::Relation, 4> parent // (up to 4) parents for this cluster
 
   ## ==========================================================================
   ## RICH/Cherenkov data structures
