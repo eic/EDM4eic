@@ -292,8 +292,9 @@ datatypes:
       - int16_t           charge            // Particle charge (or sign)
       - int32_t           source            // std::hash of producing algorithm name
       - eic::Weight       weight            // Particle weight, e.g. from PID algorithm [0-1]
+      - eic::Direction    direction         // Direction (theta/phi of this particle [mrad])
       - float             momentum          // particle 3-momentum magnitude [GeV]
-      - float             energy            // Energy (from calorimetery) of the particle [GeV]
+      - float             energy            // Particle energy, consistent with PID assigment [GeV]
       - float             mass              // The mass of the particle in [GeV]
 
   eic::ReconstructedParticleRelations:
