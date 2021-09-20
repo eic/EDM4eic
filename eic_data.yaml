@@ -35,6 +35,7 @@ components:
     ExtraCode:
       declaration: "
         Index() : source{0}, value{-1} {}\n
+        Index(int32_t id) : value{id}, source{0} {}\n
         Index(int32_t id, int32_t src) : value{id}, source{src} {}\n
         Index(Index rhs, int32_t new_src) : Index(rhs.value, new_src) {} \n
         bool empty() const {return value < 0;}\n
@@ -465,11 +466,13 @@ datatypes:
     ## members we'll need to communicate
     ## eic::ProtoTrack:
     ##   Description: "Proto track info"
-    ##   Author: "S. Joosten"
+    ##   Author: "W. Armstrong, S. Joosten"
     ##   Members:
-    ##     eic::Index       hitID             // Unique hit identifier
-    ##     eic::Index       trackID           // link to the associated track
+    ##     eic::Index       ID                // Unique identifier
+    ##     eic::Index       seedID            // Index of corresponding initial track parameters
     ##     eic::Weight      weight            // prototrack weight, in case we share pixels [0-1]
+    ##   VectorMembers:
+    ##     int32_t          hits              // tracker hit indicies
   
   eic::TrackParameters:
     Description: "ACTS Bound Track parameters"
@@ -484,6 +487,29 @@ datatypes:
       - float             qOverPError       // error on qOverP
       - float             time              // track time [ns]    
       - float             timeError         // error on the time
+      - float             charge            // assumed track charge, units of [e]
+
+  eic::Trajectory:
+    Description: "Trajectory"
+    Author: "W. Armstrong, S. Joosten"
+    Members:
+      - eic::Index        ID                // unique ID for this trajectory 
+      - eic::Index        protoTrackID      // proto track index
+      - eic::Index        parameters        // index for track parameters
+      - eic::VectorXYZT   momentum          // postion of vertex [mm]
+      - float             length            // track length from first to last hit[mm]
+      - float             charge            // charge of particle trajectory
+      - float             TOF               // time of flight from first to last hit [ns]
+
+
+  eic::Track:
+    Description: "Particle Track"
+    Author: "W. Armstrong, S. Joosten"
+    Members:
+      - eic::Index        ID                // unique ID for this track 
+      - eic::Index        parameters        // index for track parameters
+      - eic::VectorXYZT   momentum          // momentum of vertex [mm]
+
 
   ## ==========================================================================
   ## Vertexing
