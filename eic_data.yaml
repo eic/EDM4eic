@@ -58,6 +58,12 @@ components:
         operator float() const {return value;}
       "
 
+  ## Index with weight
+  eic::WeightedIndex:
+    Members:
+      - eic::Index  ID
+      - eic::Weight weight
+
   ## first-second pair of float s
   eic::FloatPair:
     Members:
@@ -248,7 +254,7 @@ datatypes:
     Members:
       - uint64_t          run              // Run number.
       - uint64_t          number           // Event number.
-      - int32_t           type             // event type identifier (TBD).
+      - int32_t           type             // Event type identifier (TBD).
       - int32_t           proc             // Process identifier (TBD).
       - int32_t           source           // Source/identifier (TBD)
       - eic::Weight       weight           // Optional event weight (useful for MC)
@@ -263,10 +269,10 @@ datatypes:
     Author: "W. Armstrong, S. Joosten"
     Members:
       - eic::Index        ID                // Unique particle index
-      - eic::VectorXYZ    p                 // momentum [GeV]
-      - eic::VectorXYZ    v                 // vertex [mm]
+      - eic::VectorXYZ    p                 // Momentum [GeV]
+      - eic::VectorXYZ    v                 // Vertex [mm]
       - float             time              // Time in [ns]
-      - int32_t           pid               // particle PDG code
+      - int32_t           pid               // Particle PDG code
       - int16_t           status            // Status code
       - int16_t           charge            // Particle charge (or sign)
       - eic::Weight       weight            // Particle weight, e.g. from PID algorithm [0-1]
@@ -276,8 +282,8 @@ datatypes:
     Author: "W. Armstrong, S. Joosten"
     Members:
       - eic::Index        ID                // Unique particle index
-      - eic::VectorXYZ    p                 // momentum vector [GeV]
-      - eic::VectorXYZ    v                 // vertex [mm]
+      - eic::VectorXYZ    p                 // Momentum vector [GeV]
+      - eic::VectorXYZ    v                 // Vertex [mm]
       - float             time              // Time in [ns]
       - int32_t           pid               // PID of reconstructed particle.
       - int16_t           status            // Status code
@@ -308,7 +314,7 @@ datatypes:
     Description: "Raw (digitized) calorimeter hit"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - eic::Index        ID                // unique ID for this hit
+      - eic::Index        ID                // Unique hit ID. For MC, the value equals the Geant4 hit index.
       - int64_t           cellID            // The detector specific (geometrical) cell id.
       - int64_t           amplitude         // The amplitude of the hit in ADC counts.
       - int64_t           time              // Timing in TDC
@@ -317,10 +323,10 @@ datatypes:
     Description: "Calorimeter hit"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - eic::Index        ID                // unique ID for this hit
+      - eic::Index        ID                // Unique hit ID, same as one of the involved raw hits.
       - int64_t           cellID            // The detector specific (geometrical) cell id.
-      - int32_t           layer             // layer for this hit
-      - int32_t           sector            // sector for this hit
+      - int32_t           layer             // Layer for this hit
+      - int32_t           sector            // Sector for this hit
       - float             energy            // The energy for this hit in [GeV].
       - float             energyError       // Error on energy [GeV].
       - float             time              // The time of the hit in [ns].
@@ -337,48 +343,35 @@ datatypes:
     Description: "Relational info linking hits to their associated cluster"
     Author: "S. Joosten"
     Members:
-      - eic::Index        hitID             // Hit ID
-      - eic::Index        clusterID         // ID of the cluster associated with this hit (-1 if none)
-      - eic::Weight       weight            // How much of this hit belongs to the cluster? [0->1]
+      - eic::Index        ID                // ID of the cluster 
+    VectorMembers:
+      - eic::WeightedIndex hits             // List of hits associated with the cluster
 
   eic::Cluster:
     Description: "EIC cluster"
     Author: "W. Armstrong, S. Joosten, C.Peng"
     Members:
-      - eic::Index        ID                // unique ID for this cluster
+      - eic::Index        ID                // Unique ID for this cluster, value identical to ProtoCluster ID
       - float             energy            // Reconstructed energy of the cluster [GeV].
       - float             energyError       // Error on the cluster energy [GeV]
       - float             time              // [ns]
       - uint32_t          nhits             // Number of hits in the cluster.
       - eic::VectorXYZ    position          // Global position of the cluster [mm].
       - eic::CovXYZ       positionError     // Covariance matrix of the position (6 Parameters).
-      - float             radius            // shower radius [mm]
-      - float             skewness          // shower skewness [unitless]
-
-  eic::Cluster2DInfo:
-    Description: "Additional info for 3D clusters" 
-    Author: "S. Joosten"
-    Members:
-      - eic::Index        clusterID         // Primary cluster ID
+      - float             radius            // Shower radius [mm]
+      - float             skewness          // Shower skewness [unitless]
       - eic::VectorPolar  polar             // Cluster position polar information
       - float             eta               // Cluster pseudorapidity
-
-  eic::Cluster3DInfo:
-    Description: "Additional info for 3D clusters" 
-    Author: "S. Joosten"
-    Members:
-      - eic::Index        clusterID         // Primary cluster ID
-      - eic::VectorPolar  polar             // Cluster position polar information
-      - float             eta               // Cluster pseudorapidity
-      - eic::Direction    direction         // Intrinsic direction of the cluster at the central position [rad, 0->pi and -pi->pi]
+      - eic::Direction    direction         // Intrinsic direction of the cluster propagation [rad, 0->pi, -pi->pi]
+      - eic::Index        mcID              // For MC only - associated MC particle
 
   eic::ClusterLayer:
     Description: "2D Cluster in a single layer for a multi-layer detector"
     Author: "S. Joosten, C. Peng"
     Members:
-      - eic::Index        ID                // unique layer ID
-      - eic::Index        clusterID         // associated full 3D cluster, -1 if none
-      - int32_t           layer             // layer number for this cluster layer
+      - eic::Index        ID                // Unique layer ID
+      - eic::Index        clusterID         // Associated full 3D cluster, -1 if none
+      - int32_t           layer             // Layer number for this cluster layer
       - uint32_t          nhits             // Number of hits
       - float             energy            // Energy in this cluster layer [GeV]
       - float             energyError       // Error on energy [GeV]
@@ -390,9 +383,9 @@ datatypes:
     Description: "Relational info between a merged cluster and its parents"
     Author: "S. Joosten"
     Members:
-      - eic::Index        clusterID         // associated cluster ID
-      - uint32_t          size              // number of valid parents
-      - std::array<eic::Index, 4> parent    // (up to 4) parents for this cluster
+      - eic::Index        clusterID         // Associated cluster ID
+      - uint32_t          size              // Number of valid parents
+      - std::array<eic::Index, 4> parent    // (Up to 4) parents for this cluster
 
   ## ==========================================================================
   ## RICH/Cherenkov data structures
@@ -402,7 +395,7 @@ datatypes:
     Description: "EIC Raw PMT hit"
     Author: "S. Joosten, C. Peng"
     Members:
-      - eic::Index        ID                // unique hit ID
+      - eic::Index        ID                // Unique hit ID. For MC, the value equals the Geant4 hit index.
       - int64_t           cellID            // The detector specific (geometrical) cell id.
       - uint32_t          amplitude         // PMT signal amplitude [ADC]
       - uint32_t          time              // PMT signal time [TDC]
@@ -411,9 +404,9 @@ datatypes:
     Description: "EIC PMT hit"
     Author: "S. Joosten, C. Peng"
     Members:
-      - eic::Index        ID                // Unique hit ID
+      - eic::Index        ID                // Unique hit ID, same as one of the involved raw hits.
       - int64_t           cellID            // The detector specific (geometrical) cell id.
-      - float             npe               // estimated number of photo-electrons [#]
+      - float             npe               // Estimated number of photo-electrons [#]
       - float             time              // Time [ns]
       - float             timeError         // Error on the time [ns]
       - eic::VectorXYZ    position          // PMT hit position [mm]
@@ -425,13 +418,13 @@ datatypes:
     Author: "S. Joosten, C. Peng"
     Members:
       - eic::Index        ID                // Unique cluster ID
-      - float             npe               // number of photo-electrons [#]
+      - float             npe               // Number of photo-electrons [#]
       - eic::VectorXYZ    position          // Global position of the cluster [mm]
       - eic::VectorXYZ    positionError     // Error on the position
-      - float             theta             // opening angle of the ring [rad, 0->pi]
-      - float             thetaError        // error on the opening angle
-      - float             radius            // radius of the best fit ring [mm]
-      - float             radiusError       // estimated error from the fit [mm]
+      - float             theta             // Opening angle of the ring [rad, 0->pi]
+      - float             thetaError        // Error on the opening angle
+      - float             radius            // Radius of the best fit ring [mm]
+      - float             radiusError       // Estimated error from the fit [mm]
 
   ## ==========================================================================
   ## Tracking
@@ -441,16 +434,16 @@ datatypes:
     Description: "Raw (digitized) tracker hit"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - eic::Index        ID                // unique ID for this hit
+      - eic::Index        ID                // Unique hit ID. For MC, the value equals the Geant4 hit index.
       - int64_t           cellID            // The detector specific (geometrical) cell id.
-      - int32_t           time              // tdc value.
-      - int32_t           charge            // adc value
+      - int32_t           time              // TDC value.
+      - int32_t           charge            // ADC value
 
   eic::TrackerHit:
     Description: "Tracker hit (reconstructed from Raw)"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - eic::Index        ID                // unique ID for this hit
+      - eic::Index        ID                // Unique hit ID, same as one of the involved raw hits.
       - int64_t           cellID            // The detector specific (geometrical) cell id.
       - eic::VectorXYZT   position          // Hit (cell) position and time [mm, ns]
       - eic::CovDiagXYZT  covMatrix         // Covariance Matrix
@@ -478,37 +471,37 @@ datatypes:
     Description: "ACTS Bound Track parameters"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - eic::Index        ID                // unique ID for this track 
-      - eic::FloatPair    loc               // tracking location
-      - eic::FloatPair    locError          // error on the location
-      - eic::Direction    direction         // track direction (theta, phi) [rad, 0-pi and -pi->pi]
-      - eic::Direction    directionError    // error on the direction [rad]
+      - eic::Index        ID                // Unique track ID.
+      - eic::FloatPair    loc               // Tracking location
+      - eic::FloatPair    locError          // Error on the location
+      - eic::Direction    direction         // Track direction (theta, phi) [rad, 0-pi and -pi->pi]
+      - eic::Direction    directionError    // Error on the direction [rad]
       - float             qOverP            // [e/GeV]
-      - float             qOverPError       // error on qOverP
-      - float             time              // track time [ns]    
-      - float             timeError         // error on the time
-      - float             charge            // assumed track charge, units of [e]
+      - float             qOverPError       // Error on qOverP
+      - float             time              // Track time [ns]    
+      - float             timeError         // Error on the time
+      - float             charge            // Assumed track charge, units of [e]
 
   eic::Trajectory:
     Description: "Trajectory"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - eic::Index        ID                // unique ID for this trajectory 
-      - eic::Index        protoTrackID      // proto track index
-      - eic::Index        parameters        // index for track parameters
-      - eic::VectorXYZT   momentum          // postion of vertex [mm]
-      - float             length            // track length from first to last hit[mm]
-      - float             charge            // charge of particle trajectory
-      - float             TOF               // time of flight from first to last hit [ns]
+      - eic::Index        ID                // Unique trajectory ID, the value equals the track ID.
+      - eic::Index        protoTrackID      // Proto track index
+      - eic::Index        parameters        // Index for track parameters
+      - eic::VectorXYZT   momentum          // Postion of vertex [mm]
+      - float             length            // Track length from first to last hit[mm]
+      - float             charge            // Charge of particle trajectory
+      - float             TOF               // Time of flight from first to last hit [ns]
 
 
   eic::Track:
     Description: "Particle Track"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - eic::Index        ID                // unique ID for this track 
-      - eic::Index        parameters        // index for track parameters
-      - eic::VectorXYZT   momentum          // momentum of vertex [mm]
+      - eic::Index        ID                // Unique track ID.
+      - eic::Index        parameters        // Index for track parameters
+      - eic::VectorXYZT   momentum          // Momentum of vertex [mm]
 
 
   ## ==========================================================================
@@ -519,9 +512,9 @@ datatypes:
     Description: "EIC vertex"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - eic::Index        ID                // unique vertex ID
-      - eic::VectorXYZ    position          // postion of vertex [mm]
-      - float             time              // time of vertex [ns]
+      - eic::Index        ID                // Unique vertex ID
+      - eic::VectorXYZ    position          // Postion of vertex [mm]
+      - float             time              // Time of vertex [ns]
       - float             chi2              // Chi squared of the vertex fit.
       - float             probability       // Probability of the vertex fit
       - bool              primary           // Whether it is the primary vertex of the event
