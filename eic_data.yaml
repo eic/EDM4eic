@@ -58,11 +58,6 @@ components:
         operator float() const {return value;}
       "
 
-  ## Index with weight
-  eic::WeightedIndex:
-    Members:
-      - eic::Index  ID
-      - eic::Weight weight
 
   ## first-second pair of float s
   eic::FloatPair:
@@ -241,6 +236,12 @@ components:
           return *(&xy + i + j - 1);\n
         }\n
       "
+  ## ProtoCluster hit relation
+  eic::ProtoClusterHit:
+    Members:
+      - eic::Index  ID            // ID of the hit
+      - uint32_t    index         // Raw index of the hit in the relevant array
+      - eic::Weight weight        // weight of the hit
 
 datatypes:
 
@@ -345,7 +346,7 @@ datatypes:
     Members:
       - eic::Index        ID                // ID of the cluster 
     VectorMembers:
-      - eic::WeightedIndex hits             // List of hits associated with the cluster
+      - eic::ProtoClusterHit hits           // List of hits associated with the cluster
 
   eic::Cluster:
     Description: "EIC cluster"
