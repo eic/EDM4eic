@@ -43,6 +43,8 @@ components:
         bool equals(const eic::Index& rhs) const {return rhs.source == source && rhs.value == value;}\n
         bool operator==(const eic::Index& rhs) const {return equals(rhs);}\n
         bool operator!=(const eic::Index& rhs) const {return !equals(rhs);}\n
+        bool operator<(const eic::Index& rhs) const {return long_form() < rhs.long_form();}\n
+        int64_t long_form() const {int64_t l = static_cast<int64_t>(source) << 32 | value; return l;}\n
         explicit operator bool() const {return valid();}
       "
 

@@ -12,6 +12,8 @@ workflow:
 default:
   before_script:
     - mkdir -p images && mkdir -p doc/
+  tags:
+    - phy
   artifacts:
     paths:
       - images/
