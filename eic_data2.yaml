@@ -520,7 +520,7 @@ datatypes:
   ## Kinematic reconstruction
   ## ==========================================================================
 
-  eic::InclusiveKinematics:
+  eic::ScatteringKinematics:
     Description: "Kinematic variables for DIS events"
     Author: "S. Joosten, W. Deconinck"
     Members:
