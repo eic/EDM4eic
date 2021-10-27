@@ -245,6 +245,13 @@ components:
       - uint32_t    index         // Raw index of the hit in the relevant array
       - eic::Weight weight        // weight of the hit
 
+  ## A point along a trajectory
+  eic::TrajectoryPoint:
+    Members:
+      - eic::VectorXYZ    position      // Position of the trajectory point
+      - eic::VectorPolar  p             // 3-momentum at the point (in P, theta, phi)
+      - float             pathlength    // Pathlength from the origin to this point
+ 
 datatypes:
 
   ## ==========================================================================
@@ -483,23 +490,22 @@ datatypes:
     Description: "Trajectory"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - eic::Index        ID                // Unique trajectory ID, the value equals the track ID.
-      - eic::Index        protoTrackID      // Proto track index
-      - eic::Index        parameters        // Index for track parameters
-      - eic::VectorXYZT   momentum          // Postion of vertex [mm]
-      - float             length            // Track length from first to last hit[mm]
+      - eic::Index        ID                // Unique trajectory ID
+      - eic::Index        trackID           // Corresponding track ID
+      - eic::VectorXYZ    momentum          // 3-momentum at the vertex for the trajectory
       - float             charge            // Charge of particle trajectory
-      - float             TOF               // Time of flight from first to last hit [ns]
-
+    VectorMembers:
+      - eic::TrajectoryPoint  points        // Points along this trajectory
 
   eic::Track:
-    Description: "Particle Track"
+    Description: "Track information"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - eic::Index        ID                // Unique track ID.
-      - eic::Index        parameters        // Index for track parameters
-      - eic::VectorXYZT   momentum          // Momentum of vertex [mm]
-
+      - eic::Index        ID                // Unique track ID, same as the ID in the corresponding TrackParameters
+      - eic::VectorXYZ    momentum          // Track momementum
+      - float             charge            // Charge of particle trajectory
+      - float             length            // Track length from first to last hit[mm]
+      - float             TOF               // Time of flight from first to last hit [ns]
 
   ## ==========================================================================
   ## Vertexing
