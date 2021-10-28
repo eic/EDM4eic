@@ -248,8 +248,10 @@ components:
   ## A point along a trajectory
   eic::TrajectoryPoint:
     Members:
-      - eic::VectorXYZ    position      // Position of the trajectory point
-      - eic::VectorPolar  p             // 3-momentum at the point (in P, theta, phi)
+      - eic::VectorXYZ    position      // Position of the trajectory point [mm]
+      - eic::VectorXYZ    p             // 3-momentum at the point [GeV]
+      - eic::Direction    direction     // (theta, phi) direction of track at the surface [mrad]
+      - float             momentum      // magnitude of 3-momentum [GeV]
       - float             pathlength    // Pathlength from the origin to this point
  
 datatypes:
@@ -492,8 +494,8 @@ datatypes:
     Members:
       - eic::Index        ID                // Unique trajectory ID
       - eic::Index        trackID           // Corresponding track ID
-      - eic::VectorXYZ    momentum          // 3-momentum at the vertex for the trajectory
-      - float             charge            // Charge of particle trajectory
+      - eic::VectorXYZ    p                 // 3-momentum at the vertex for the trajectory
+      - float             charge            // Charge of the particle trajectory
     VectorMembers:
       - eic::TrajectoryPoint  points        // Points along this trajectory
 
@@ -502,7 +504,7 @@ datatypes:
     Author: "W. Armstrong, S. Joosten"
     Members:
       - eic::Index        ID                // Unique track ID, same as the ID in the corresponding TrackParameters
-      - eic::VectorXYZ    momentum          // Track momementum
+      - eic::VectorXYZ    p                 // Track momementum
       - float             charge            // Charge of particle trajectory
       - float             length            // Track length from first to last hit[mm]
       - float             TOF               // Time of flight from first to last hit [ns]
