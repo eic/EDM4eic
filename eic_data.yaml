@@ -6,14 +6,11 @@ options :
   exposePODMembers: False
   includeSubfolder: True
 
-## right now we rigurously enforce:
-##  - No breaking of PODness:
-##        - No use of relations and vectors
-##     - Use special Relation structures where needed, indexing by ID (index)
-##        - IDs are stored as eic::Index, which is a thin layer of an signed integer
-##          where -1 relates to "no index".
-##        - For 1-to-many relations: Use many-to-1 IDs instead --> use forward links
-##          This puts the burden on the reconstruction algorithm and keeps the data 2D!
+## Some guidance:
+##  - Ensure data products usable without library dependencies (favor PODness where
+##    possible).
+##  - Move towards EDM4hep compatibility (to allow a transition to mainly use EDM4hep).
+##        - migrate away from custom indices in favor of podio relations
 ##  - Use float most of the time except for 4-vectors where ppm precision is important.
 ##  - Data alignment: 
 ##        - data should be aligned with a 64-bit structure where possible.
@@ -213,6 +210,34 @@ components:
         double operator()(unsigned i, unsigned j) const {return (i == j) ? *(&xx + i) : 0.;}\n
         "
 
+  eic::CovXY:
+    Members:
+      - float xx
+      - float yy
+      - float xy
+    ExtraCode:
+      declaration: "
+        CovXY() : xx{0}, yy{0}, xy{0} {}\n
+        CovXY(double vx, double vy, double vxy)\n
+          : xx{static_cast<float>(vx)}, yy{static_cast<float>(vy)}, xy{static_cast<float>(vxy)} {}\n
+        float operator()(unsigned i, unsigned j) const {\n
+          // diagonal\n
+          if (i == j) {\n
+            return *(&xx + i);\n
+          }\n
+          // off-diagonal\n
+          // we have as options (0, 1), and (1, 0)\n
+          // note that, starting from xy, we find the correct element at (i+j-1)\n
+          return *(&xy + i + j - 1);\n
+        }\n
+      "
+  ## ProtoCluster hit relation
+  eic::ProtoClusterHit:
+    Members:
+      - eic::Index  ID            // ID of the hit
+      - uint32_t    index         // Raw index of the hit in the relevant array
+      - eic::Weight weight        // weight of the hit
+
   eic::CovXYZ:
     Members:
       - float xx
@@ -245,14 +270,20 @@ components:
       - uint32_t    index         // Raw index of the hit in the relevant array
       - eic::Weight weight        // weight of the hit
 
-  ## A point along a trajectory
-  eic::TrajectoryPoint:
+  ## A point along a track
+  eic::TrackPoint:
     Members:
-      - eic::VectorXYZ    position      // Position of the trajectory point [mm]
-      - eic::VectorXYZ    p             // 3-momentum at the point [GeV]
-      - eic::Direction    direction     // (theta, phi) direction of track at the surface [mrad]
-      - float             momentum      // magnitude of 3-momentum [GeV]
-      - float             pathlength    // Pathlength from the origin to this point
+      - eic::VectorXYZ    position        // Position of the trajectory point [mm]
+      - eic::CovXYZ       positionError   // Error on the position
+      - eic::VectorXYZ    momentum        // 3-momentum at the point [GeV]
+      - eic::CovXYZ       momentumError   // Error on the 3-momentum
+      - float             time            // Time at this point [ns]
+      - float             timeError       // Error on the time at this point
+      - float             theta           // polar direction of the track at the surface [rad]
+      - float             phi             // azimuthal direction of the track at the surface [rad]
+      - eic::CovXY        directionError  // Error on the polar and azimuthal angles
+      - float             pathlength      // Pathlength from the origin to this point
+      - float             pathlengthError // Error on the pathlenght
  
 datatypes:
 
@@ -301,7 +332,7 @@ datatypes:
       - int16_t           status            // Status code
       - int16_t           charge            // Particle charge (or sign)
       - eic::Weight       weight            // Particle weight, e.g. from PID algorithm [0-1]
-      - eic::Direction    direction         // Direction (theta/phi of this particle [mrad])
+      - eic::Direction    direction         // Direction (theta/phi of this particle [rad])
       - float             momentum          // particle 3-momentum magnitude [GeV]
       - float             energy            // Particle energy, consistent with PID assigment [GeV]
       - float             mass              // The mass of the particle in [GeV]
@@ -472,42 +503,67 @@ datatypes:
     ##     eic::Weight      weight            // prototrack weight, in case we share pixels [0-1]
     ##   VectorMembers:
     ##     int32_t          hits              // tracker hit indicies
+    
+  eic::Trajectory:
+    Description: "Raw trajectory from the tracking algorithm"
+    Author: "S. Joosten, S. Li"
+    Members:
+      - uint32_t          type              // 0 (does not have good track fit), 1 (has good track fit)
+      - uint32_t          nStates           // Number of tracking steps
+      - uint32_t          nMeasurements     // Number of hits used 
+      - uint32_t          nOutliers         // Number of hits not considered 
+      - uint32_t          nHoles            // Number of missing hits
+      - float             chi2              // Total chi2
+      - uint32_t          ndf               // Number of degrees of freedom
+      - uint32_t          nSharedHits       // Number of shared hits with other trajectories
+    VectorMembers:
+      - float             measurementChi2   // Chi2 for each of the measurements
+      - float             outlierChi2       // Chi2 for each of the outliers
+    OneToManyRelations:
+      - eic::TrackerHit   measurementHits   // Measurement hits used in this trajectory
+      - eic::TrackerHit   outlierHits       // Outlier hits not used in this trajectory
   
   eic::TrackParameters:
     Description: "ACTS Bound Track parameters"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - eic::Index        ID                // Unique track ID.
-      - eic::FloatPair    loc               // Tracking location
-      - eic::FloatPair    locError          // Error on the location
-      - eic::Direction    direction         // Track direction (theta, phi) [rad, 0-pi and -pi->pi]
-      - eic::Direction    directionError    // Error on the direction [rad]
+      - int32_t           type              // Type of track parameters (0/head, ...)
+      - eic::VectorXY     loc               // 2D location on surface
+      - float             theta             // Track polar angle [rad]
+      - float             phi               // Track azimuthal angle [rad]
       - float             qOverP            // [e/GeV]
-      - float             qOverPError       // Error on qOverP
       - float             time              // Track time [ns]    
-      - float             timeError         // Error on the time
-      - float             charge            // Assumed track charge, units of [e]
-
-  eic::Trajectory:
-    Description: "Trajectory"
-    Author: "W. Armstrong, S. Joosten"
-    Members:
-      - eic::Index        ID                // Unique trajectory ID
-      - eic::Index        trackID           // Corresponding track ID
-      - eic::VectorXYZ    p                 // 3-momentum at the vertex for the trajectory
-      - float             charge            // Charge of the particle trajectory
-    VectorMembers:
-      - eic::TrajectoryPoint  points        // Points along this trajectory
+      - std::array<float, 15> covMatrix     // Lower triangle of the track parameter covariance matrix
+    OneToOneRelations:
+      - eic::Trajectory   trajectory        // Trajectory associated with these track parameters
 
   eic::Track:
-    Description: "Track information"
-    Author: "W. Armstrong, S. Joosten"
+    Description: "Track information at the vertex"
+    Author: "S. Joosten"
     Members:
-      - eic::Index        ID                // Unique track ID, same as the ID in the corresponding TrackParameters
-      - eic::VectorXYZ    p                 // Track momementum
-      - float             charge            // Charge of particle trajectory
-      - float             length            // Track length from first to last hit[mm]
-      - float             TOF               // Time of flight from first to last hit [ns]
+      - int32_t           type              // Flag that defines the type of track
+      - float             chi2              // Total chi2 (sum) of the track fit
+      - int32_t           ndf               // Numbers of degrees of freedom of the track fit
+      - eic::VectorXYZ    momentum          // Track 3-momentum at the vertex [GeV]
+      - eic::CovXYZ       momentumError     // Covariance matrix on the momentum
+      - float             time              // Track time at the vertex [ns]
+      - float             timeError         // Error on the track vertex time
+      - float             charge            // Particle charge
+    OneToManyRelations:
+      - eic::TrackParameters parameters     // Track fit parameters, the first entry (if present) is evaluated at the track head
+      - eic::TrackerHit   trackerHits       // Hits that were used for this track
+      - eic::Track        tracks            // Tracks (segments) that have been combined to create this track
+
+  eic::TrackProjection:
+    Description: "The position of a particle track at a set of reference surfaces."
+    Author: "S. Joosten"
+    Members:
+      - eic::VectorXYZ    momentum          // Track 3-momenutm
+      - float             charge            // Particle charge
+    OneToOneRelations:
+      - eic::Track        track             // Track used for this projection
+    VectorMembers:
+      - eic::TrackPoint   points            // Points where the track parameters were evaluated
 
   ## ==========================================================================
   ## Vertexing
