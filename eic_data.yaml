@@ -527,13 +527,13 @@ datatypes:
     Description: "ACTS Bound Track parameters"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - int32_t           type              // Type of track parameters (0/head, ...)
+      - int32_t           type              // Type of track parameters (-1/seed, 0/head, ...)
       - eic::VectorXY     loc               // 2D location on surface
       - float             theta             // Track polar angle [rad]
       - float             phi               // Track azimuthal angle [rad]
       - float             qOverP            // [e/GeV]
       - float             time              // Track time [ns]    
-      - std::array<float, 15> covMatrix     // Lower triangle of the track parameter covariance matrix
+      - std::array<float, 21> covMatrix     // Lower triangle of the track parameter covariance matrix, flattened similar to CovXYZ
     OneToOneRelations:
       - eic::Trajectory   trajectory        // Trajectory associated with these track parameters
 
