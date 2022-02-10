@@ -218,7 +218,7 @@ components:
     ExtraCode:
       declaration: "
         CovXY() : xx{0}, yy{0}, xy{0} {}\n
-        CovXY(double vx, double vy, double vxy)\n
+        CovXY(double vx, double vy, double vxy = 0)\n
           : xx{static_cast<float>(vx)}, yy{static_cast<float>(vy)}, xy{static_cast<float>(vxy)} {}\n
         float operator()(unsigned i, unsigned j) const {\n
           // diagonal\n
@@ -252,6 +252,8 @@ components:
         CovXYZ(double vx, double vy, double vz, double vxy, double vxz, double vyz)\n
           : xx{static_cast<float>(vx)}, yy{static_cast<float>(vy)}, zz{static_cast<float>(vz)},\n
             xy{static_cast<float>(vxy)}, xz{static_cast<float>(vxz)}, yz{static_cast<float>(vyz)} {}\n
+        CovXYZ(double vx, double vy, double vz)\n
+          : CovXYZ(vx, vy, vz, 0, 0, 0) {} \n
         float operator()(unsigned i, unsigned j) const {\n
           // diagonal\n
           if (i == j) {\n
@@ -529,11 +531,14 @@ datatypes:
     Members:
       - int32_t           type              // Type of track parameters (-1/seed, 0/head, ...)
       - eic::VectorXY     loc               // 2D location on surface
+      - eic::CovXY        covLoc            // Covariance on loc
       - float             theta             // Track polar angle [rad]
       - float             phi               // Track azimuthal angle [rad]
       - float             qOverP            // [e/GeV]
+      - eic::CovXYZ       covMomentum       // Covariance on theta, phi and qOverP
       - float             time              // Track time [ns]    
-      - std::array<float, 21> covMatrix     // Lower triangle of the track parameter covariance matrix, flattened similar to CovXYZ
+      - float             timeError         // Error on the time
+      - float             charge            // Particle charge
     OneToOneRelations:
       - eic::Trajectory   trajectory        // Trajectory associated with these track parameters
 
@@ -545,7 +550,7 @@ datatypes:
       - float             chi2              // Total chi2 (sum) of the track fit
       - int32_t           ndf               // Numbers of degrees of freedom of the track fit
       - eic::VectorXYZ    momentum          // Track 3-momentum at the vertex [GeV]
-      - eic::CovXYZ       momentumError     // Covariance matrix on the momentum
+      - eic::CovXYZ       covMomentum       // Covariance matrix on the momentum
       - float             time              // Track time at the vertex [ns]
       - float             timeError         // Error on the track vertex time
       - float             charge            // Particle charge
