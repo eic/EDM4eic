@@ -372,6 +372,8 @@ datatypes:
       - eic::VectorXYZ    position          // The global position of the hit in world coordinates [mm].
       - eic::VectorXYZ    local             // The local position of the hit in detector coordinates [mm].
       - eic::VectorXYZ    dimension         // The dimension information of the cell [mm].
+      ## TODO: deterimine if position/dimension is really what we want
+      ##       compared to position/positionError for consistency with TrackerHit
 
 
   ## ==========================================================================
@@ -484,14 +486,12 @@ datatypes:
     Members:
       - eic::Index        ID                // Unique hit ID, same as one of the involved raw hits.
       - int64_t           cellID            // The detector specific (geometrical) cell id.
-      - eic::VectorXYZT   position          // Hit (cell) position and time [mm, ns]
-      - eic::CovDiagXYZT  covMatrix         // Covariance Matrix
+      - eic::VectorXYZ    position          // Hit (cell) position and time [mm, ns]
+      - eic::CovDiagXYZ   positionError     // Covariance Matrix
+      - float             time              // Hit time
+      - float             timeError         // Error on the time
       - float             edep              // Energy deposit in this hit [GeV]
       - float             edepError         // Error on the energy deposit [GeV]
-    ConstExtraCode:
-      declaration: "
-        double time() const {return position().t;}\n
-      "
 
     ## Here's a stub for a prototrack setup. If this is all we use we should
     ## probably just use protocluster instead, but I assume there will be other
@@ -531,11 +531,11 @@ datatypes:
     Members:
       - int32_t           type              // Type of track parameters (-1/seed, 0/head, ...)
       - eic::VectorXY     loc               // 2D location on surface
-      - eic::CovXY        covLoc            // Covariance on loc
+      - eic::CovXY        locError          // Covariance on loc
       - float             theta             // Track polar angle [rad]
       - float             phi               // Track azimuthal angle [rad]
       - float             qOverP            // [e/GeV]
-      - eic::CovXYZ       covMomentum       // Covariance on theta, phi and qOverP
+      - eic::CovXYZ       momentumError     // Covariance on theta, phi and qOverP
       - float             time              // Track time [ns]    
       - float             timeError         // Error on the time
       - float             charge            // Particle charge
@@ -550,7 +550,7 @@ datatypes:
       - float             chi2              // Total chi2 (sum) of the track fit
       - int32_t           ndf               // Numbers of degrees of freedom of the track fit
       - eic::VectorXYZ    momentum          // Track 3-momentum at the vertex [GeV]
-      - eic::CovXYZ       covMomentum       // Covariance matrix on the momentum
+      - eic::CovXYZ       momentumError     // Covariance matrix on the momentum
       - float             time              // Track time at the vertex [ns]
       - float             timeError         // Error on the track vertex time
       - float             charge            // Particle charge
@@ -559,12 +559,12 @@ datatypes:
       - eic::TrackerHit   trackerHits       // Hits that were used for this track
       - eic::Track        tracks            // Tracks (segments) that have been combined to create this track
 
-  eic::TrackProjection:
-    Description: "The position of a particle track at a set of reference surfaces."
+  eic::TrackSegment:
+    Description: "A track segment defined by one or more points along a track."
     Author: "S. Joosten"
     Members:
-      - eic::VectorXYZ    momentum          // Track 3-momenutm
-      - float             charge            // Particle charge
+      - float             length            // Pathlength from the first to the last point
+      - float             lengthError       // Error on the segment length
     OneToOneRelations:
       - eic::Track        track             // Track used for this projection
     VectorMembers:
