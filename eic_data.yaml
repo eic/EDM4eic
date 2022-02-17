@@ -125,7 +125,7 @@ components:
       declaration: "
         VectorXYZ() : x{0}, y{0}, z{0} {}\n
         VectorXYZ(double xx, double yy, double zz) : x{static_cast<float>(xx)}, y{static_cast<float>(yy)}, z{static_cast<float>(zz)} {}\n
-        template<class VectorPolarType> VectorXYZ(const VectorPolarType& v) : VectorXYZ(v.x, v.y, v.z) {}\n
+        template<class VectorPolarType> VectorXYZ(const VectorPolarType& v) : VectorXYZ(v.x(), v.y(), v.z()) {}\n
         float& operator[](unsigned i) {return *(&x + i);}\n
         const float& operator[](unsigned i) const {return *(&x + i);}\n
         float mag() const {return std::hypot(x, y, z);}\n
