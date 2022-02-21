@@ -1,7 +1,10 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.12)
 project(EICD 
   VERSION 1.1.0
   LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #--- Declare options -----------------------------------------------------------
 option(BUILD_DATA_MODEL "Run podio class generator yaml file" ON)
@@ -47,7 +50,7 @@ PODIO_GENERATE_DICTIONARY(eicd ${headers}
 set_target_properties(eicd-dictgen PROPERTIES EXCLUDE_FROM_ALL TRUE)
 target_sources(eicd PRIVATE eicd.cxx)
 
-add_subdirectory(source)
+add_subdirectory(utils)
 
 
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/eicd

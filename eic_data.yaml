@@ -41,7 +41,7 @@ components:
         bool operator==(const eic::Index& rhs) const {return equals(rhs);}\n
         bool operator!=(const eic::Index& rhs) const {return !equals(rhs);}\n
         bool operator<(const eic::Index& rhs) const {return long_form() < rhs.long_form();}\n
-        int64_t long_form() const {int64_t l = static_cast<int64_t>(source) << 32 | value; return l;}\n
+        uint64_t long_form() const {int64_t l = static_cast<int64_t>(source) << 32 | value; return l;}\n
         explicit operator bool() const {return valid();}
       "
 
@@ -55,24 +55,6 @@ components:
         Weight(double w) : value {static_cast<float>(w)} {}\n
         Weight& operator=(double w) {value = static_cast<float>(w); return *this;}\n
         operator float() const {return value;}
-      "
-
-
-  ## first-second pair of float s
-  eic::FloatPair:
-    Members:
-      - float first
-      - float second
-    ExtraCode:
-      includes: "#include <tuple>"
-      declaration: "
-        FloatPair() : first{0}, second{0} {}\n
-        FloatPair(double  a, double  b) : first{static_cast<float>(a)}, second{static_cast<float>(b)} {}\n
-        FloatPair(const std::pair<float, float>& p) : first{p.first}, second{p.second} {}\n
-        FloatPair& operator=(const std::pair<float, float>& p) {first = p.first; second = p.second; return *this;}\n
-        float& operator[](unsigned i) {return *(&first + i);}\n
-        const float& operator[](unsigned i) const {return *(&first + i);}\n
-        operator std::pair<float, float>() const {return {first, second};}\n
       "
 
   eic::VectorXY:
@@ -96,23 +78,44 @@ components:
         VectorXY scale(double f) const {return {f*x, f*y};}\n
       "
 
-  eic::Direction:
+  # Copy from EDM4hep with conversion operators added
+  # TODO: uncomment Vector2f conversions when we migrate to new EDM4hep version
+  eicd::Vector2f :
     Members:
-      - float theta      // [rad, 0->pi]
-      - float phi        // [rad, -pi->pi]
+      - float a
+      - float b
     ExtraCode:
-      includes: "#include <cmath>\n#include <tuple>"
       declaration: "
-        Direction() : theta{0}, phi{0} {}\n
-        Direction(double th, double ph) : theta{static_cast<float>(th)}, phi{static_cast<float>(ph)} {}\n
-        Direction(double x, double y, double z)\n
-          : theta{static_cast<float>(acos(z/std::hypot(x,y,z)))}\n
-          , phi{static_cast<float>(atan2(y,x))} {}\n
-        template <class VectorType> Direction(const VectorType& v) : Direction(v.theta(), v.phi()) {}\n
-        operator std::pair<float, float>() const {return {theta, phi};}\n
-        float eta() const {return -log(tan(0.5*theta));}\n
-        Direction add(const Direction& rhs) const {return {theta+rhs.theta, phi+rhs.phi};}\n
-        Direction subtract(const Direction& rhs) const {return {theta-rhs.theta, phi-rhs.phi};}\n
+        Vector2f() : a(0),b(0) {}\n
+        Vector2f(float aa,float bb) : a(aa),b(bb) {}\n
+        Vector2f(const float* v) : a(v[0]), b(v[1]) {}\n
+        bool operator==(const Vector2f& v) const { return (a==v.a&&b==v.b) ; }\n
+        float operator[](unsigned i) const { return *( &a + i ) ; }\n
+        //Vector2f(const edm4hep::Vector2f& v) : a{v.a}, b{v.b} {}\n
+        //operator edm4hep::Vector2f() const {return {a, b};}\n
+        "
+      includes: "
+       // #include <edm4hep/Vector2f.h>\n
+      "
+
+  # Copy from EDM4hep with conversion operators added
+  eicd::Vector3f :
+    Members:
+      - float x
+      - float y
+      - float z
+    ExtraCode:
+      declaration: "
+        Vector3f() : x(0),y(0),z(0) {}\n
+        Vector3f(float xx, float yy, float zz) : x(xx),y(yy),z(zz) {}\n
+        Vector3f(const float* v) : x(v[0]),y(v[1]),z(v[2]) {}\n
+        bool operator==(const Vector3f& v) const { return (x==v.x&&y==v.y&&z==v.z) ; }\n
+        float operator[](unsigned i) const { return *( &x + i ) ; }\n
+        Vector3f(const edm4hep::Vector3f& v) : x{v.x}, y{v.y}, z{v.z} {}
+        operator edm4hep::Vector3f() const {return {x, y, z};}\n
+        "
+      includes: "
+        #include <edm4hep/Vector3f.h>\n
       "
 
   eic::VectorXYZ:
@@ -125,7 +128,8 @@ components:
       declaration: "
         VectorXYZ() : x{0}, y{0}, z{0} {}\n
         VectorXYZ(double xx, double yy, double zz) : x{static_cast<float>(xx)}, y{static_cast<float>(yy)}, z{static_cast<float>(zz)} {}\n
-        template<class VectorPolarType> VectorXYZ(const VectorPolarType& v) : VectorXYZ(v.x(), v.y(), v.z()) {}\n
+        template <class V>
+        VectorXYZ(const V& v) : x{v.x}, y{v.y}, z{v.z} {}\n
         float& operator[](unsigned i) {return *(&x + i);}\n
         const float& operator[](unsigned i) const {return *(&x + i);}\n
         float mag() const {return std::hypot(x, y, z);}\n
@@ -138,25 +142,7 @@ components:
         VectorXYZ add(const VectorXYZ& rhs) const {return {x+rhs.x, y+rhs.y, z+rhs.z};}\n
         VectorXYZ subtract(const VectorXYZ& rhs) const {return {x-rhs.x, y-rhs.y, z-rhs.z};}\n
         VectorXYZ scale(double f) const {return {f*x, f*y, f*z};}\n
-      "
-  eic::VectorPolar:
-    Members:
-      - float r          // [mm] or [GeV]
-      - float theta      // [rad, 0->pi]
-      - float phi        // [rad, -pi->pi]
-    ExtraCode:
-      includes: "#include <cmath>\n#include<tuple>"
-      declaration: "
-        VectorPolar() : r{0}, theta{0}, phi{0} {}\n
-        VectorPolar(double rr, double th, double ph) : r{static_cast<float>(rr)}, theta{static_cast<float>(th)}, phi{static_cast<float>(ph)} {}\n
-        template<class VectorXYZType> VectorPolar(const VectorXYZType& v) : VectorPolar(v.r(), v.theta(), v.phi()) {}\n
-        float mag() const {return r;}\n
-        float x() const {return r * cos(phi) * sin(theta);}\n
-        float y() const {return r * sin(phi) * sin(theta);}\n
-        float z() const {return r * cos(theta);}\n
-        float eta() const {return -log(tan(0.5*theta));}\n
-        operator std::tuple<float, float, float>() {return {r, theta, phi};}\n
-      "
+     "
 
   eic::VectorXYZT:
     Members:
@@ -265,12 +251,6 @@ components:
           return *(&xy + i + j - 1);\n
         }\n
       "
-  ## ProtoCluster hit relation
-  eic::ProtoClusterHit:
-    Members:
-      - eic::Index  ID            // ID of the hit
-      - uint32_t    index         // Raw index of the hit in the relevant array
-      - eic::Weight weight        // weight of the hit
 
   ## A point along a track
   eic::TrackPoint:
@@ -314,8 +294,8 @@ datatypes:
     Author: "W. Armstrong, S. Joosten"
     Members:
       - eic::Index        ID                // Unique particle index
-      - eic::VectorXYZ    p                 // Momentum [GeV]
-      - eic::VectorXYZ    v                 // Vertex [mm]
+      - eicd::Vector3f     p                 // Momentum [GeV]
+      - eicd::Vector3f     v                 // Vertex [mm]
       - float             time              // Time in [ns]
       - int32_t           pid               // Particle PDG code
       - int16_t           status            // Status code
@@ -334,7 +314,8 @@ datatypes:
       - int16_t           status            // Status code
       - int16_t           charge            // Particle charge (or sign)
       - eic::Weight       weight            // Particle weight, e.g. from PID algorithm [0-1]
-      - eic::Direction    direction         // Direction (theta/phi of this particle [rad])
+      - float             theta             // Polar angle of this particle [rad]
+      - float             phi               // Azimuthal angle of this particle [rad]
       - float             momentum          // particle 3-momentum magnitude [GeV]
       - float             energy            // Particle energy, consistent with PID assigment [GeV]
       - float             mass              // The mass of the particle in [GeV]
@@ -353,80 +334,61 @@ datatypes:
     Description: "Raw (digitized) calorimeter hit"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - eic::Index        ID                // Unique hit ID. For MC, the value equals the Geant4 hit index.
-      - int64_t           cellID            // The detector specific (geometrical) cell id.
-      - int64_t           amplitude         // The amplitude of the hit in ADC counts.
-      - int64_t           time              // Timing in TDC
+      - uint64_t           cellID            // The detector specific (geometrical) cell id.
+      - uint64_t           amplitude         // The amplitude of the hit in ADC counts.
+      - uint64_t           timeStamp         // Timing in TDC
 
   eic::CalorimeterHit:
     Description: "Calorimeter hit"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - eic::Index        ID                // Unique hit ID, same as one of the involved raw hits.
-      - int64_t           cellID            // The detector specific (geometrical) cell id.
-      - int32_t           layer             // Layer for this hit
-      - int32_t           sector            // Sector for this hit
+      - uint64_t          cellID            // The detector specific (geometrical) cell id.
       - float             energy            // The energy for this hit in [GeV].
       - float             energyError       // Error on energy [GeV].
       - float             time              // The time of the hit in [ns].
+      - float             timeError         // Error on the time
       - eic::VectorXYZ    position          // The global position of the hit in world coordinates [mm].
-      - eic::VectorXYZ    local             // The local position of the hit in detector coordinates [mm].
       - eic::VectorXYZ    dimension         // The dimension information of the cell [mm].
-      ## TODO: deterimine if position/dimension is really what we want
-      ##       compared to position/positionError for consistency with TrackerHit
-
+      - int32_t           sector            // Sector that this hit occured in
+      - int32_t           layer             // Layer that the hit occured in
+      - eic::VectorXYZ    local             // The local coordinates of the hit in the detector segment [mm]. 
 
   ## ==========================================================================
   ## Clustering
   ## ==========================================================================
   
   eic::ProtoCluster:
-    Description: "Relational info linking hits to their associated cluster"
+    Description: "Collection of hits identified by the clustering algorithm to belong together"
     Author: "S. Joosten"
-    Members:
-      - eic::Index        ID                // ID of the cluster 
+    OneToManyRelations:
+      - eic::CalorimeterHit  hits           // Hits associated with this cluster
     VectorMembers:
-      - eic::ProtoClusterHit hits           // List of hits associated with the cluster
+      - float                weights        // Weight for each of the hits, mirrors hits array
 
   eic::Cluster:
-    Description: "EIC cluster"
+    Description: "EIC hit cluster, reworked to more closely resemble EDM4hep"
     Author: "W. Armstrong, S. Joosten, C.Peng"
     Members:
-      - eic::Index        ID                // Unique ID for this cluster, value identical to ProtoCluster ID
+      # main variables
+      - int32_t           type              // Flagword that defines the type of the cluster
       - float             energy            // Reconstructed energy of the cluster [GeV].
       - float             energyError       // Error on the cluster energy [GeV]
       - float             time              // [ns]
+      - float             timeError         // Error on the cluster time
       - uint32_t          nhits             // Number of hits in the cluster.
       - eic::VectorXYZ    position          // Global position of the cluster [mm].
       - eic::CovXYZ       positionError     // Covariance matrix of the position (6 Parameters).
-      - float             radius            // Shower radius [mm]
-      - float             skewness          // Shower skewness [unitless]
-      - eic::VectorPolar  polar             // Cluster position polar information
-      - float             eta               // Cluster pseudorapidity
-      - eic::Direction    direction         // Intrinsic direction of the cluster propagation [rad, 0->pi, -pi->pi]
-      - eic::Index        mcID              // For MC only - associated MC particle
-
-  eic::ClusterLayer:
-    Description: "2D Cluster in a single layer for a multi-layer detector"
-    Author: "S. Joosten, C. Peng"
-    Members:
-      - eic::Index        ID                // Unique layer ID
-      - eic::Index        clusterID         // Associated full 3D cluster, -1 if none
-      - int32_t           layer             // Layer number for this cluster layer
-      - uint32_t          nhits             // Number of hits
-      - float             energy            // Energy in this cluster layer [GeV]
-      - float             energyError       // Error on energy [GeV]
-      - float             radius            // Shower radius [mm]
-      - float             skewness          // Skewness of hits distribution
-      - eic::VectorXYZ    position          // Global center position. [mm]
-
-  eic::MergedClusterRelations:
-    Description: "Relational info between a merged cluster and its parents"
-    Author: "S. Joosten"
-    Members:
-      - eic::Index        clusterID         // Associated cluster ID
-      - uint32_t          size              // Number of valid parents
-      - std::array<eic::Index, 4> parent    // (Up to 4) parents for this cluster
+      - float             intrinsicTheta    // Intrinsic cluster propagation direction polar angle [rad]
+      - float             intrinsicPhi      // Intrinsic cluster propagation direction azimuthal angle [rad]
+      - eic::CovXY        intrinsicDirectionError // Error on the intrinsic cluster propagation direction
+    VectorMembers:
+      - float             shapeParameters   // Should be set in metadata, for now radius/skewness
+      - float             hitContributions  // Energy contributions of the hits. Runs parallel to ::hits()
+      - float             subdetectorEnergies // Energies observed in each subdetector used for this cluster.
+    OneToManyRelations:
+      - eic::Cluster      clusters          // Clusters that have been combined to form this cluster
+      - eic::CalorimeterHit hits            // Hits that have been combined to form this cluster
+      #- eic::ParticleID  particleIDs       // Particle IDs sorted by likelihood, TODO
 
   ## ==========================================================================
   ## RICH/Cherenkov data structures
@@ -437,7 +399,7 @@ datatypes:
     Author: "S. Joosten, C. Peng"
     Members:
       - eic::Index        ID                // Unique hit ID. For MC, the value equals the Geant4 hit index.
-      - int64_t           cellID            // The detector specific (geometrical) cell id.
+      - uint64_t          cellID            // The detector specific (geometrical) cell id.
       - uint32_t          amplitude         // PMT signal amplitude [ADC]
       - uint32_t          time              // PMT signal time [TDC]
 
@@ -446,7 +408,7 @@ datatypes:
     Author: "S. Joosten, C. Peng"
     Members:
       - eic::Index        ID                // Unique hit ID, same as one of the involved raw hits.
-      - int64_t           cellID            // The detector specific (geometrical) cell id.
+      - uint64_t          cellID            // The detector specific (geometrical) cell id.
       - float             npe               // Estimated number of photo-electrons [#]
       - float             time              // Time [ns]
       - float             timeError         // Error on the time [ns]
@@ -476,7 +438,7 @@ datatypes:
     Author: "W. Armstrong, S. Joosten"
     Members:
       - eic::Index        ID                // Unique hit ID. For MC, the value equals the Geant4 hit index.
-      - int64_t           cellID            // The detector specific (geometrical) cell id.
+      - uint64_t          cellID            // The detector specific (geometrical) cell id.
       - int32_t           time              // TDC value.
       - int32_t           charge            // ADC value
 
@@ -485,7 +447,7 @@ datatypes:
     Author: "W. Armstrong, S. Joosten"
     Members:
       - eic::Index        ID                // Unique hit ID, same as one of the involved raw hits.
-      - int64_t           cellID            // The detector specific (geometrical) cell id.
+      - uint64_t          cellID            // The detector specific (geometrical) cell id.
       - eic::VectorXYZ    position          // Hit (cell) position and time [mm, ns]
       - eic::CovDiagXYZ   positionError     // Covariance Matrix
       - float             time              // Hit time
