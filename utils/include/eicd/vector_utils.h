@@ -1,20 +1,14 @@
 #ifndef EICD_UTILS_VECTOR_HH
 #define EICD_UTILS_VECTOR_HH
 
-#include <algorithm>
+// These ultilies require concepts. If not available, use the fallback
+// vector_utils_legacy.h instead to capture most functionality.
+#if !__cpp_concepts
+#include <eicd/vector_utils_legacy.h>
+#else
 #include <cmath>
-#include <exception>
-#include <limits>
-#include <string>
-#include <vector>
-
-#include <Math/Vector4D.h>
 
 #include <edm4hep/Vector3f.h>
-
-#include <eicd/ReconstructedParticleCollection.h>
-#include <eicd/ReconstructedParticleData.h>
-#include <eicd/TrackParametersCollection.h>
 
 namespace eicd {
 
@@ -121,30 +115,34 @@ template <Vector3D V> double projection(const V& v, const V& v1) {
 
 } // namespace eicd
 template <eicd::Vector2D V> V operator+(const V& v1, const V& v2) {
-  return {vector_x(v1) + vector_x(v2), vector_y(v1) + vector_y(v2)};
+  return {eicd::vector_x(v1) + eicd::vector_x(v2),
+          eicd::vector_y(v1) + eicd::vector_y(v2)};
 }
 template <eicd::Vector3D V> V operator+(const V& v1, const V& v2) {
-  return {vector_x(v1) + vector_x(v2), vector_y(v1) + vector_y(v2),
-          vector_z(v1) + vector_z(v2)};
+  return {eicd::vector_x(v1) + eicd::vector_x(v2),
+          eicd::vector_y(v1) + eicd::vector_y(v2),
+          eicd::vector_z(v1) + eicd::vector_z(v2)};
 }
 template <eicd::Vector2D V> double operator*(const V& v1, const V& v2) {
-  return vector_x(v1) * vector_x(v2) + vector_y(v1) * vector_y(v2);
+  return eicd::vector_x(v1) * eicd::vector_x(v2) +
+         eicd::vector_y(v1) * eicd::vector_y(v2);
 }
 template <eicd::Vector3D V> double operator*(const V& v1, const V& v2) {
-  return vector_x(v1) * vector_x(v2) + vector_y(v1) * vector_y(v2) +
-         vector_z(v1) * vector_z(v2);
+  return eicd::vector_x(v1) * eicd::vector_x(v2) +
+         eicd::vector_y(v1) * eicd::vector_y(v2) +
+         eicd::vector_z(v1) * eicd::vector_z(v2);
 }
 template <eicd::Vector2D V> V operator*(const double d, const V& v) {
-  return {d * vector_x(v), d * vector_y(v)};
+  return {d * eicd::vector_x(v), d * eicd::vector_y(v)};
 }
 template <eicd::Vector3D V> V operator*(const double d, const V& v) {
-  return {d * vector_x(v), d * vector_y(v), d * vector_z(v)};
+  return {d * eicd::vector_x(v), d * eicd::vector_y(v), d * eicd::vector_z(v)};
 }
 template <eicd::Vector2D V> V operator*(const V& v, const double d) {
-  return {d * vector_x(v), d * vector_y(v)};
+  return {d * eicd::vector_x(v), d * eicd::vector_y(v)};
 }
 template <eicd::Vector3D V> V operator*(const V& v, const double d) {
-  return {d * vector_x(v), d * vector_y(v), d * vector_z(v)};
+  return {d * eicd::vector_x(v), d * eicd::vector_y(v), d * eicd::vector_z(v)};
 }
 template <eicd::VectorND V> V operator-(const V& v1, const V& v2) {
   return v1 + (-1. * v2);
@@ -152,4 +150,5 @@ template <eicd::VectorND V> V operator-(const V& v1, const V& v2) {
 template <eicd::VectorND V> V operator/(const V& v, const double d) {
   return (1. / d) * v;
 }
+#endif
 #endif

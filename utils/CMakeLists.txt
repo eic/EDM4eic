@@ -40,6 +40,7 @@ target_include_directories(eicd_utils
 install(FILES 
   include/eicd/analysis_utils.h
   include/eicd/vector_utils.h
+  include/eicd/vector_utils_legacy.h
   DESTINATION include/eicd
   )
 #install(FILES
