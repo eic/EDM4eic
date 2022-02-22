@@ -32,6 +32,7 @@ add_library(eicd SHARED
   )
 
 target_link_libraries(eicd
+  PUBLIC EDM4HEP::edm4hep
   PUBLIC podio::podio
   PUBLIC ROOT::Core
   )
