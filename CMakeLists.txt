@@ -17,6 +17,8 @@ endif(APPLE)
 find_package(podio 0.11.0 REQUIRED)
 include_directories(${podio_INCLUDE_DIR})
 
+find_package(EDM4HEP REQUIRED)
+
 #include(cmake/root.cmake)
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
