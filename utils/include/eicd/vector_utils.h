@@ -21,14 +21,21 @@ namespace eicd {
 template <class V> concept VectorHasX = requires(V v) { v.x; };
 template <class V> concept VectorHasY = requires(V v) { v.y; };
 template <class V> concept VectorHasZ = requires(V v) { v.z; };
+template <class V> concept VectorHasA = requires(V v) { v.a; };
+template <class V> concept VectorHasB = requires(V v) { v.b; };
 template <class V> concept ClassVector = requires(V v) { v.x(); };
 template <class V>
-concept Vector2D =
+concept Vector2D_XY =
     VectorHasX<V>&& VectorHasY<V> && !VectorHasZ<V> && !ClassVector<V>;
+template <class V>
+concept Vector2D_AB =
+    VectorHasA<V>&& VectorHasB<V> && !VectorHasZ<V> && !ClassVector<V>;
+template <class V> concept Vector2D = Vector2D_XY<V> || Vector2D_AB<V>;
 template <class V>
 concept Vector3D =
     VectorHasX<V>&& VectorHasY<V>&& VectorHasZ<V> && !ClassVector<V>;
 template <class V> concept VectorND = Vector2D<V> || Vector3D<V>;
+template <class V> concept VectorND_XYZ = Vector2D_XY<V> || Vector3D<V>;
 
 inline double etaToAngle(const double eta) {
   return std::atan(std::exp(-eta)) * 2.;
@@ -37,13 +44,20 @@ inline double angleToEta(const double theta) {
   return -std::log(std::tan(0.5 * theta));
 }
 
+// Utility getters to accomodate different vector types
+template <VectorND_XYZ V> auto vector_x(const V& v) { return v.x; }
+template <VectorND_XYZ V> auto vector_y(const V& v) { return v.y; }
+template <Vector3D V> auto vector_z(const V& v) { return v.z; }
+template <Vector2D_AB V> auto vector_x(const V& v) { return v.a; }
+template <Vector2D_AB V> auto vector_y(const V& v) { return v.b; }
+
 // inline edm4hep::Vector2f VectorFromPolar(const double r, const double theta)
 // {
 //  return {r * sin(theta), r * cos(theta)};
 //}
 template <Vector3D V = edm4hep::Vector3f>
 V sphericalToVector(const double r, const double theta, const double phi) {
-  using FloatType = decltype(V().x);
+  using FloatType = decltype(vector_x(V()));
   const double sth = sin(theta);
   const double cth = cos(theta);
   const double sph = sin(phi);
@@ -55,24 +69,26 @@ V sphericalToVector(const double r, const double theta, const double phi) {
 }
 
 template <Vector3D V> double anglePolar(const V& v) {
-  return std::atan2(std::hypot(v.x, v.y), v.z);
+  return std::atan2(std::hypot(vector_x(v), vector_y(v)), vector_z(v));
 }
 template <VectorND V> double angleAzimuthal(const V& v) {
-  return std::atan2(v.y, v.x);
+  return std::atan2(vector_y(v), vector_x(v));
 }
 template <Vector3D V> double eta(const V& v) {
   return angleToEta(anglePolar(v));
 }
 template <Vector2D V> double magnitude(const V& v) {
-  return std::hypot(v.x, v.y);
+  return std::hypot(vector_x(v), vector_y(v));
 }
 template <Vector3D V> double magnitude(const V& v) {
-  return std::hypot(v.x, v.y, v.z);
+  return std::hypot(vector_x(v), vector_y(v), vector_z(v));
 }
 template <Vector3D V> double magnitudeTransverse(const V& v) {
-  return std::hypot(v.x, v.y);
+  return std::hypot(vector_x(v), vector_y(v));
 }
-template <Vector3D V> double magnitudeLongitudinal(const V& v) { return v.z; }
+template <Vector3D V> double magnitudeLongitudinal(const V& v) {
+  return vector_z(v);
+}
 template <VectorND V> V normalizeVector(const V& v, double norm = 1.) {
   const double old = magnitude(v);
   if (old == 0) {
@@ -80,8 +96,12 @@ template <VectorND V> V normalizeVector(const V& v, double norm = 1.) {
   }
   return (norm > 0) ? v * norm / old : v * 0;
 }
-template <Vector3D V> V vectorTransverse(const V& v) { return {v.x, v.y, 0}; }
-template <Vector3D V> V vectorLongitudinal(const V& v) { return {0, 0, v.z}; }
+template <Vector3D V> V vectorTransverse(const V& v) {
+  return {vector_x(v), vector_y(v), 0};
+}
+template <Vector3D V> V vectorLongitudinal(const V& v) {
+  return {0, 0, vector_z(v)};
+}
 // Two vector functions
 template <VectorND V> double angleBetween(const V& v1, const V& v2) {
   const double dot = v1 * v2;
@@ -101,28 +121,30 @@ template <Vector3D V> double projection(const V& v, const V& v1) {
 
 } // namespace eicd
 template <eicd::Vector2D V> V operator+(const V& v1, const V& v2) {
-  return {v1.x + v2.x, v1.y + v2.y};
+  return {vector_x(v1) + vector_x(v2), vector_y(v1) + vector_y(v2)};
 }
 template <eicd::Vector3D V> V operator+(const V& v1, const V& v2) {
-  return {v1.x + v2.x, v1.y + v2.y, v1.z + v2.z};
+  return {vector_x(v1) + vector_x(v2), vector_y(v1) + vector_y(v2),
+          vector_z(v1) + vector_z(v2)};
 }
 template <eicd::Vector2D V> double operator*(const V& v1, const V& v2) {
-  return v1.x * v2.x + v1.y * v2.y;
+  return vector_x(v1) * vector_x(v2) + vector_y(v1) * vector_y(v2);
 }
 template <eicd::Vector3D V> double operator*(const V& v1, const V& v2) {
-  return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+  return vector_x(v1) * vector_x(v2) + vector_y(v1) * vector_y(v2) +
+         vector_z(v1) * vector_z(v2);
 }
 template <eicd::Vector2D V> V operator*(const double d, const V& v) {
-  return {d * v.x, d * v.y};
+  return {d * vector_x(v), d * vector_y(v)};
 }
 template <eicd::Vector3D V> V operator*(const double d, const V& v) {
-  return {d * v.x, d * v.y, d * v.z};
+  return {d * vector_x(v), d * vector_y(v), d * vector_z(v)};
 }
 template <eicd::Vector2D V> V operator*(const V& v, const double d) {
-  return {d * v.x, d * v.y};
+  return {d * vector_x(v), d * vector_y(v)};
 }
 template <eicd::Vector3D V> V operator*(const V& v, const double d) {
-  return {d * v.x, d * v.y, d * v.z};
+  return {d * vector_x(v), d * vector_y(v), d * vector_z(v)};
 }
 template <eicd::VectorND V> V operator-(const V& v1, const V& v2) {
   return v1 + (-1. * v2);
