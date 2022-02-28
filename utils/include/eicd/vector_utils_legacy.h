@@ -8,10 +8,8 @@
 #else
 #include <cmath>
 
-#include <edm4hep/Vector3d.h>
 #include <edm4hep/Vector3f.h>
 #include <eicd/Vector2f.h>
-#include <eicd/Vector3d.h>
 #include <eicd/Vector3f.h>
 
 namespace eicd {

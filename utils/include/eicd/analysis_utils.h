@@ -21,7 +21,7 @@ namespace eicd {
  * provided particle mass assumption.
  */
 inline auto
-momenta_from_tracking(const std::vector<eic::TrackParametersData>& tracks,
+momenta_from_tracking(const std::vector<eicd::TrackParametersData>& tracks,
                       const double mass) {
   std::vector<ROOT::Math::PxPyPzMVector> momenta{tracks.size()};
   // transform our raw tracker info into proper 4-momenta
