@@ -28,9 +28,11 @@ components:
       - float b
     ExtraCode:
       declaration: "
-        Vector2f() : a(0),b(0) {}\n
-        Vector2f(float aa,float bb) : a(aa),b(bb) {}\n
-        Vector2f(const float* v) : a(v[0]), b(v[1]) {}\n
+        Vector2f() : a{0},b{0} {}\n
+        Vector2f(float aa, float bb) : a{aa},b{bb} {}\n
+        Vector2f(double aa, double bb)\n
+          : a{static_cast<float>(aa)},b{static_cast<float>(bb)} {}\n
+        Vector2f(const float* v) : a{v[0]}, b{v[1]} {}\n
         bool operator==(const Vector2f& v) const { return (a==v.a&&b==v.b) ; }\n
         float operator[](unsigned i) const { return *( &a + i ) ; }\n
         //Vector2f(const edm4hep::Vector2f& v) : a{v.a}, b{v.b} {}\n
@@ -48,9 +50,11 @@ components:
       - float z
     ExtraCode:
       declaration: "
-        Vector3f() : x(0),y(0),z(0) {}\n
-        Vector3f(float xx, float yy, float zz) : x(xx),y(yy),z(zz) {}\n
-        Vector3f(const float* v) : x(v[0]),y(v[1]),z(v[2]) {}\n
+        Vector3f() : x{0},y{0},z{0} {}\n
+        Vector3f(float xx, float yy, float zz) : x{xx},y{yy},z{zz} {}\n
+        Vector3f(double xx, double yy, double zz)\n
+          : x{static_cast<float>(xx)},y{static_cast<float>(yy)},z{static_cast<float>(zz)} {}\n
+        Vector3f(const float* v) : x{v[0]},y{v[1]},z{v[2]} {}\n
         bool operator==(const Vector3f& v) const { return (x==v.x&&y==v.y&&z==v.z) ; }\n
         float operator[](unsigned i) const { return *( &x + i ) ; }\n
         Vector3f(const edm4hep::Vector3f& v) : x{v.x}, y{v.y}, z{v.z} {}
@@ -67,9 +71,9 @@ components:
       - double z
     ExtraCode:
       declaration: "
-        Vector3d() : x(0),y(0),z(0) {}\n
-        Vector3d(double xx, double yy, double zz) : x(xx),y(yy),z(zz) {}\n
-        Vector3d(const double* v) : x(v[0]),y(v[1]),z(v[2]) {}\n
+        Vector3d() : x{0},y{0},z{0} {}\n
+        Vector3d(double xx, double yy, double zz) : x{xx},y{yy},z{zz} {}\n
+        Vector3d(const double* v) : x{v[0]},y{v[1]},z{v[2]} {}\n
         bool operator==(const Vector3d& v) const { return (x==v.x&&y==v.y&&z==v.z) ; }\n
         double operator[](unsigned i) const { return *( &x + i ) ; }\n
         Vector3d(const edm4hep::Vector3d& v) : x{v.x}, y{v.y}, z{v.z} {}
@@ -87,7 +91,8 @@ components:
     ExtraCode:
       declaration: "
         CovDiag3f() : xx{0}, yy{0}, zz{0} {}\n
-        CovDiag3f(double x, double y, double z) : xx{static_cast<float>(x)}, yy{static_cast<float>(y)}, zz{static_cast<float>(z)} {}\n
+        CovDiag3f(double x, double y, double z)\n
+          : xx{static_cast<float>(x)}, yy{static_cast<float>(y)}, zz{static_cast<float>(z)} {}\n
         float operator()(unsigned i, unsigned j) const {return (i == j) ? *(&xx + i) : 0.;}\n
         "
 
@@ -124,11 +129,9 @@ components:
     ExtraCode:
       declaration: "
         Cov3f() : xx{0}, yy{0}, zz{0}, xy{0}, xz{0}, yz{0} {}\n
-        Cov3f(double vx, double vy, double vz, double vxy, double vxz, double vyz)\n
+        Cov3f(double vx, double vy, double vz, double vxy = 0, double vxz = 0, double vyz = 0)\n
           : xx{static_cast<float>(vx)}, yy{static_cast<float>(vy)}, zz{static_cast<float>(vz)},\n
             xy{static_cast<float>(vxy)}, xz{static_cast<float>(vxz)}, yz{static_cast<float>(vyz)} {}\n
-        Cov3f(double vx, double vy, double vz)\n
-          : Cov3f(vx, vy, vz, 0, 0, 0) {} \n
         float operator()(unsigned i, unsigned j) const {\n
           // diagonal\n
           if (i == j) {\n
@@ -155,13 +158,13 @@ components:
       - float zt
     ExtraCode:
       declaration: "
-        Cov4f() : xx{0}, yy{0}, zz{0}, xy{0}, xz{0}, xt{0}, yz{0}, yt{0}, zt{0} {}\n
-        Cov4f(double vx, double vy, double vz, double vxy, double vxz, double vxt, double vyz, double vyt, double vzt)\n
-          : xx{static_cast<float>(vx)}, yy{static_cast<float>(vy)}, zz{static_cast<float>(vz)},\n
-            xy{static_cast<float>(vxy)}, xz{static_cast<float>(vxz)}, xt{static_cast<float>(vxt)},
+        Cov4f() : xx{0}, yy{0}, zz{0}, tt{0}, xy{0}, xz{0}, xt{0}, yz{0}, yt{0}, zt{0} {}\n
+        Cov4f(double vx, double vy, double vz, double vt,\n
+              double vxy = 0, double vxz = 0, double vxt = 0,\n
+              double vyz = 0, double vyt = 0, double vzt = 0)\n
+          : xx{static_cast<float>(vx)}, yy{static_cast<float>(vy)}, zz{static_cast<float>(vz)}, tt{static_cast<float>(vt)},\n
+            xy{static_cast<float>(vxy)}, xz{static_cast<float>(vxz)}, xt{static_cast<float>(vxt)},\n
             yz{static_cast<float>(vyz)}, yt{static_cast<float>(vyt)}, zt{static_cast<float>(vzt)} {}\n
-        Cov4f(double vx, double vy, double vz, double vt)\n
-          : Cov4f(vx, vy, vz, vt, 0, 0, 0, 0, 0) {} \n
         float operator()(unsigned i, unsigned j) const {\n
           // diagonal\n
           if (i == j) {\n
@@ -193,7 +196,7 @@ components:
       - float             timeError       // Error on the time at this point
       - float             theta           // polar direction of the track at the surface [rad]
       - float             phi             // azimuthal direction of the track at the surface [rad]
-      - eicd::Cov2f        directionError  // Error on the polar and azimuthal angles
+      - eicd::Cov2f       directionError  // Error on the polar and azimuthal angles
       - float             pathlength      // Pathlength from the origin to this point
       - float             pathlengthError // Error on the pathlenght
  
