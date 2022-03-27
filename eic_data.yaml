@@ -529,7 +529,7 @@ datatypes:
     Description: "Used to keep track of the correspondence between MC and reconstructed particles"
     Author: "S. Joosten"
     Members:
-      - int32_t           simID             // Index of corresponding MCParticle (position in MCParticles array) 
+      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array) 
       - float             weight            // weight of this association
     OneToOneRelations :
       - eicd::ReconstructedParticle  rec    // reference to the reconstructed particle
@@ -540,7 +540,7 @@ datatypes:
     Description: "Association between a Cluster and a MCParticle"
     Author : "S. Joosten"
     Members:
-      - int32_t           simID             // Index of corresponding MCParticle (position in MCParticles array) 
+      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array) 
       - float             weight            // weight of this association
     OneToOneRelations:
       - eicd::Cluster     rec               // reference to the cluster
@@ -550,7 +550,7 @@ datatypes:
     Description: "Association between a Track and a MCParticle"
     Author : "S. Joosten"
     Members:
-      - int32_t           simID             // Index of corresponding MCParticle (position in MCParticles array) 
+      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array) 
       - float             weight            // weight of this association
     OneToOneRelations:
       - eicd::Track       rec               // reference to the track
@@ -561,7 +561,7 @@ datatypes:
     Description: "Association between a Vertex and a MCParticle"
     Author : "S. Joosten"
     Members:
-      - int32_t           simID             // Index of corresponding MCParticle (position in MCParticles array) 
+      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array) 
       - float             weight            // weight of this association
     OneToOneRelations:
       - eicd::Vertex       rec               // reference to the vertex
