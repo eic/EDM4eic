@@ -1,0 +1,22 @@
+name: linux-eic-shell
+
+on: [push, pull_request]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: cvmfs-contrib/github-action-cvmfs@v2
+    - uses: eic/run-cvmfs-osg-eic-shell@main
+      with:
+        platform-release: "jug_xl:nightly"
+        run: |
+          PREFIX=${PWD}/install
+          cmake -B build -S . -DCMAKE_INSTALL_PREFIX=${PREFIX}
+          cmake --build build -- install
+    - uses: actions/upload-artifact@v3
+      with:
+        name: build-eic-shell
+        path: install/
+        if-no-files-found: error
