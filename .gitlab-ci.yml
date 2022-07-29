@@ -57,7 +57,7 @@ checks:juggler:
   rules:
     - if: '$CI_SERVER_HOST == "eicweb.phy.anl.gov"' 
   variables:
-    EICD_VERSION: "$EIC_DATA_MODEL_VERSION"
+    JUGGLER_EICD_VERSION: "$EIC_DATA_MODEL_VERSION"
   trigger:
     project: EIC/juggler
     strategy: depend
