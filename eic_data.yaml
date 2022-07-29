@@ -221,19 +221,6 @@ datatypes:
   ## Particle info
   ## ==========================================================================
 
-  eicd::BasicParticle:
-    #DEPRECATED
-    Description: "Basic particle used internally to communicate basic particle properties."
-    Author: "W. Armstrong, S. Joosten"
-    Members:
-      - eicd::Vector3f    p                 // Momentum [GeV]
-      - eicd::Vector3d    v                 // Vertex [mm]
-      - float             time              // Time in [ns]
-      - int32_t           pid               // Particle PDG code
-      - int16_t           status            // Status code
-      - int16_t           charge            // Particle charge (or sign)
-      - float             weight            // Particle weight, e.g. from PID algorithm [0-1]
-
   eicd::ReconstructedParticle:
     Description: "EIC Reconstructed Particle"
     Author: "W. Armstrong, S. Joosten, F. Gaede"
