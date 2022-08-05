@@ -516,7 +516,8 @@ datatypes:
     Description: "Used to keep track of the correspondence between MC and reconstructed particles"
     Author: "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array) 
+      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
+      - uint32_t          recID             // Index of corresponding ReconstructedParticle (position in ReconstructedParticles array)
       - float             weight            // weight of this association
     OneToOneRelations :
       - eicd::ReconstructedParticle  rec    // reference to the reconstructed particle
@@ -527,7 +528,8 @@ datatypes:
     Description: "Association between a Cluster and a MCParticle"
     Author : "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array) 
+      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
+      - uint32_t          recID             // Index of corresponding Cluster (position in Clusters array)
       - float             weight            // weight of this association
     OneToOneRelations:
       - eicd::Cluster     rec               // reference to the cluster
@@ -537,7 +539,8 @@ datatypes:
     Description: "Association between a Track and a MCParticle"
     Author : "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array) 
+      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
+      - uint32_t          recID             // Index of corresponding Track (position in Tracks array)
       - float             weight            // weight of this association
     OneToOneRelations:
       - eicd::Track       rec               // reference to the track
@@ -548,7 +551,8 @@ datatypes:
     Description: "Association between a Vertex and a MCParticle"
     Author : "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array) 
+      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
+      - uint32_t          recID             // Index of corresponding Vertex (position in Vertices array)
       - float             weight            // weight of this association
     OneToOneRelations:
       - eicd::Vertex       rec               // reference to the vertex
