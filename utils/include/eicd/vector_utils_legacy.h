@@ -8,6 +8,7 @@
 #else
 #include <cmath>
 
+#include <edm4hep/Vector2f.h>
 #include <edm4hep/Vector3f.h>
 #include <eicd/Vector2f.h>
 #include <eicd/Vector3f.h>
@@ -34,9 +35,22 @@ template <>
 inline auto vector_y<eicd::Vector2f>(const eicd::Vector2f& v) {
   return v.b;
 }
+// Vector2f uses a,b instead of x,y
+template <>
+inline auto vector_x<edm4hep::Vector2f>(const edm4hep::Vector2f& v) {
+  return v.a;
+}
+template <>
+inline auto vector_y<edm4hep::Vector2f>(const edm4hep::Vector2f& v) {
+  return v.b;
+}
 // no z-component for 2D vectors
 template <>
 inline auto vector_z<eicd::Vector2f>(const eicd::Vector2f& v) {
+  return 0;
+}
+template <>
+inline auto vector_z<edm4hep::Vector2f>(const edm4hep::Vector2f& v) {
   return 0;
 }
 
