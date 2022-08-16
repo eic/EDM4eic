@@ -14,7 +14,7 @@ if(APPLE)
 endif(APPLE)
 
 
-find_package(podio 0.14.1 REQUIRED)
+find_package(podio 0.15 REQUIRED)
 include_directories(${podio_INCLUDE_DIR})
 
 find_package(EDM4HEP 0.4.1 REQUIRED)
@@ -25,7 +25,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package(ROOT REQUIRED COMPONENTS Core RIO Tree)
 include(${ROOT_USE_FILE})
 
-PODIO_GENERATE_DATAMODEL(eicd eic_data.yaml headers sources OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR})
+PODIO_GENERATE_DATAMODEL(eicd eic_data.yaml headers sources 
+  UPSTREAM_EDM edm4hep:${EDM4HEP_DATA_DIR}/edm4hep.yaml
+  OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
+  )
 
 add_library(eicd SHARED
   ${sources}
