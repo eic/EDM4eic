@@ -65,13 +65,23 @@ install(FILES
   "${PROJECT_BINARY_DIR}/libeicdDict_rdict.pcm"
   DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT dev)
 
-add_custom_target( doc_doxygen #ALL 
-  COMMAND doxygen ${CMAKE_SOURCE_DIR}/docs/Doxyfile
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-  COMMENT "Generating API documentation with Doxygen"
-  VERBATIM )
+# -------------------------
+# install class documentation
 
-
+find_package(Doxygen COMPONENTS dot)
+if(DOXYGEN_FOUND)
+  configure_file(
+    ${CMAKE_SOURCE_DIR}/docs/Doxyfile.in
+    ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+    @ONLY)
+  add_custom_target(docs ALL
+    COMMAND doxygen ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Generating API documentation with Doxygen"
+    VERBATIM)
+else()
+  message(STATUS "Doxygen not found; no documentation will be built.")
+endif()
 
 # -------------------------
 # install library config
