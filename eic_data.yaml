@@ -20,68 +20,6 @@ options :
 ##    such as int32_t etc)
 
 components:
-  # Copy from EDM4hep with conversion operators added
-  # TODO: uncomment Vector2f conversions when we migrate to new EDM4hep version
-  eicd::Vector2f :
-    Members:
-      - float a
-      - float b
-    ExtraCode:
-      declaration: "
-        Vector2f() : a{0},b{0} {}\n
-        Vector2f(double aa, double bb)\n
-          : a{static_cast<float>(aa)},b{static_cast<float>(bb)} {}\n
-        Vector2f(const float* v) : a{v[0]}, b{v[1]} {}\n
-        Vector2f(const double* v) : a{static_cast<float>(v[0])}, b{static_cast<float>(v[1])} {}\n
-        bool operator==(const Vector2f& v) const { return (a==v.a&&b==v.b) ; }\n
-        float operator[](unsigned i) const { return *( &a + i ) ; }\n
-        //Vector2f(const edm4hep::Vector2f& v) : a{v.a}, b{v.b} {}\n
-        //operator edm4hep::Vector2f() const {return {a, b};}\n
-        "
-      includes: "
-       // #include <edm4hep/Vector2f.h>\n
-      "
-
-  # Copy from EDM4hep with conversion operators added
-  eicd::Vector3f :
-    Members:
-      - float x
-      - float y
-      - float z
-    ExtraCode:
-      declaration: "
-        Vector3f() : x{0},y{0},z{0} {}\n
-        Vector3f(double xx, double yy, double zz)\n
-          : x{static_cast<float>(xx)},y{static_cast<float>(yy)},z{static_cast<float>(zz)} {}\n
-        Vector3f(const float* v) : x{v[0]},y{v[1]},z{v[2]} {}\n
-        Vector3f(const double* v) : x{static_cast<float>(v[0])},y{static_cast<float>(v[1])},z{static_cast<float>(v[2])} {}\n
-        bool operator==(const Vector3f& v) const { return (x==v.x&&y==v.y&&z==v.z) ; }\n
-        float operator[](unsigned i) const { return *( &x + i ) ; }\n
-        Vector3f(const edm4hep::Vector3f& v) : x{v.x}, y{v.y}, z{v.z} {}
-        operator edm4hep::Vector3f() const {return {x, y, z};}\n
-        "
-      includes: "
-        #include <edm4hep/Vector3f.h>\n
-      "
-  # Copy from EDM4hep with conversion operators added
-  eicd::Vector3d :
-    Members:
-      - double x
-      - double y
-      - double z
-    ExtraCode:
-      declaration: "
-        Vector3d() : x{0},y{0},z{0} {}\n
-        Vector3d(double xx, double yy, double zz) : x{xx},y{yy},z{zz} {}\n
-        Vector3d(const double* v) : x{v[0]},y{v[1]},z{v[2]} {}\n
-        bool operator==(const Vector3d& v) const { return (x==v.x&&y==v.y&&z==v.z) ; }\n
-        double operator[](unsigned i) const { return *( &x + i ) ; }\n
-        Vector3d(const edm4hep::Vector3d& v) : x{v.x}, y{v.y}, z{v.z} {}
-        operator edm4hep::Vector3d() const {return {x, y, z};}\n
-        "
-      includes: "
-        #include <edm4hep/Vector3d.h>\n
-      "
 
   eicd::CovDiag3f:
     Members:
@@ -188,9 +126,9 @@ components:
   ## A point along a track
   eicd::TrackPoint:
     Members:
-      - eicd::Vector3f    position        // Position of the trajectory point [mm]
+      - edm4hep::Vector3f position        // Position of the trajectory point [mm]
       - eicd::Cov3f       positionError   // Error on the position
-      - eicd::Vector3f    momentum        // 3-momentum at the point [GeV]
+      - edm4hep::Vector3f momentum        // 3-momentum at the point [GeV]
       - eicd::Cov3f       momentumError   // Error on the 3-momentum
       - float             time            // Time at this point [ns]
       - float             timeError       // Error on the time at this point
@@ -203,21 +141,6 @@ components:
 datatypes:
 
   ## ==========================================================================
-  ## Event info
-  ## ==========================================================================
-
-  ## Event info --> use edm4hep::EventHeader
-
-  ## ==========================================================================
-  ## Simulation info
-  ## ==========================================================================
-
-  ## MCParticles --> Use edm4hep::MCParticle
-  ## Simulated tracker hit --> Use edm4hep::SimTrackerHit
-  ## Simulated calorimeter hit --> Use edm4hep::SimCalorimeterHit
-
-  
-  ## ==========================================================================
   ## Particle info
   ## ==========================================================================
 
@@ -227,8 +150,8 @@ datatypes:
     Members:
       - int32_t           type              // type of reconstructed particle. Check/set collection parameters ReconstructedParticleTypeNames and ReconstructedParticleTypeValues.
       - float             energy            // [GeV] energy of the reconstructed particle. Four momentum state is not kept consistent internally.
-      - eicd::Vector3f    momentum          // [GeV] particle momentum. Four momentum state is not kept consistent internally.
-      - eicd::Vector3f    referencePoint    // [mm] reference, i.e. where the particle has been measured
+      - edm4hep::Vector3f momentum          // [GeV] particle momentum. Four momentum state is not kept consistent internally.
+      - edm4hep::Vector3f referencePoint    // [mm] reference, i.e. where the particle has been measured
       - float             charge            // charge of the reconstructed particle.
       - float             mass              // [GeV] mass of the reconstructed particle, set independently from four vector. Four momentum state is not kept consistent internally.
       - float             goodnessOfPID     // overall goodness of the PID on a scale of [0;1]
@@ -244,12 +167,12 @@ datatypes:
       ## @TODO: Do we need timing info? Or do we rely on the start vertex time?
     OneToOneRelations:
       - eicd::Vertex      startVertex       // Start vertex associated to this particle
-      - eicd::ParticleID  particleIDUsed    // particle ID used for the kinematics of this particle
+      - edm4hep::ParticleID  particleIDUsed    // particle ID used for the kinematics of this particle
     OneToManyRelations:
       - eicd::Cluster     clusters          // Clusters used for this particle
       - eicd::Track       tracks            // Tracks used for this particle
       - eicd::ReconstructedParticle particles // Reconstructed particles that have been combined to this particle
-      - eicd::ParticleID  particleIDs       // All associated particle IDs for this particle (not sorted by likelihood)
+      - edm4hep::ParticleID  particleIDs       // All associated particle IDs for this particle (not sorted by likelihood)
     ExtraCode:
       declaration: "
         bool isCompound() const {return particles_size() > 0;}\n
@@ -278,11 +201,11 @@ datatypes:
       - float             energyError       // Error on energy [GeV].
       - float             time              // The time of the hit in [ns].
       - float             timeError         // Error on the time
-      - eicd::Vector3f    position          // The global position of the hit in world coordinates [mm].
-      - eicd::Vector3f    dimension         // The dimension information of the cell [mm].
+      - edm4hep::Vector3f position          // The global position of the hit in world coordinates [mm].
+      - edm4hep::Vector3f dimension         // The dimension information of the cell [mm].
       - int32_t           sector            // Sector that this hit occured in
       - int32_t           layer             // Layer that the hit occured in
-      - eicd::Vector3f    local             // The local coordinates of the hit in the detector segment [mm]. 
+      - edm4hep::Vector3f local             // The local coordinates of the hit in the detector segment [mm]. 
 
   ## ==========================================================================
   ## Clustering
@@ -307,7 +230,7 @@ datatypes:
       - float             time              // [ns]
       - float             timeError         // Error on the cluster time
       - uint32_t          nhits             // Number of hits in the cluster.
-      - eicd::Vector3f    position          // Global position of the cluster [mm].
+      - edm4hep::Vector3f position          // Global position of the cluster [mm].
       - eicd::Cov3f       positionError     // Covariance matrix of the position (6 Parameters).
       - float             intrinsicTheta    // Intrinsic cluster propagation direction polar angle [rad]
       - float             intrinsicPhi      // Intrinsic cluster propagation direction azimuthal angle [rad]
@@ -319,7 +242,7 @@ datatypes:
     OneToManyRelations:
       - eicd::Cluster     clusters          // Clusters that have been combined to form this cluster
       - eicd::CalorimeterHit hits           // Hits that have been combined to form this cluster
-      - eicd::ParticleID  particleIDs       // Particle IDs sorted by likelihood
+      - edm4hep::ParticleID  particleIDs       // Particle IDs sorted by likelihood
 
   ## ==========================================================================
   ## RICH/Cherenkov and PID
@@ -344,10 +267,10 @@ datatypes:
       # @TODO do we need an uncertainty on NPE?
       - float             time              // Time [ns]
       - float             timeError         // Error on the time [ns]
-      - eicd::Vector3f    position          // PMT hit position [mm]
-      - eicd::Vector3f    dimension         // The dimension information of the pixel [mm].
+      - edm4hep::Vector3f position          // PMT hit position [mm]
+      - edm4hep::Vector3f dimension         // The dimension information of the pixel [mm].
       - int32_t           sector            // The sector this hit occured in
-      - eicd::Vector3f    local             // The local position of the hit in detector coordinates (relative to the sector) [mm]
+      - edm4hep::Vector3f local             // The local position of the hit in detector coordinates (relative to the sector) [mm]
 
   eicd::RingImage:
     ##@TODO: RICH reconstruction still needs an overhaul
@@ -355,23 +278,12 @@ datatypes:
     Author: "S. Joosten, C. Peng"
     Members:
       - float             npe               // Number of photo-electrons [#]
-      - eicd::Vector3f    position          // Global position of the cluster [mm]
-      - eicd::Vector3f    positionError     // Error on the position
+      - edm4hep::Vector3f position          // Global position of the cluster [mm]
+      - edm4hep::Vector3f positionError     // Error on the position
       - float             theta             // Opening angle of the ring [rad, 0->pi]
       - float             thetaError        // Error on the opening angle
       - float             radius            // Radius of the best fit ring [mm]
       - float             radiusError       // Estimated error from the fit [mm]
-
-  eicd::ParticleID:
-    Description: "Particle identification information"
-    Author: "S. Joosten, based off EDM4hep"
-    Members:
-      - int32_t           type              // User defined type info
-      - int32_t           PDG               // PDG Code of this ID (999999 if unknown)
-      - int32_t           algorithmType     // Type of algorithm/module that created this hypothesis
-      - float             likelihood        // likelihood of this hypothesis - in a user defined normalization
-    VectorMembers:
-      - float             parameters        // parameters associated with this hypothesis. Check/set collection ParameterNames_PIDAlgorithmTypeName for decoding.
 
   ## ==========================================================================
   ## Tracking
@@ -391,7 +303,7 @@ datatypes:
     Author: "W. Armstrong, S. Joosten"
     Members:
       - uint64_t          cellID            // The detector specific (geometrical) cell id.
-      - eicd::Vector3f    position          // Hit (cell) position and time [mm, ns]
+      - edm4hep::Vector3f position          // Hit (cell) position and time [mm, ns]
       - eicd::CovDiag3f   positionError     // Covariance Matrix
       - float             time              // Hit time
       - float             timeError         // Error on the time
@@ -424,7 +336,7 @@ datatypes:
     Author: "W. Armstrong, S. Joosten"
     Members:
       - int32_t           type              // Type of track parameters (-1/seed, 0/head, ...)
-      - eicd::Vector2f    loc               // 2D location on surface
+      - edm4hep::Vector2f loc               // 2D location on surface
       - eicd::Cov2f       locError          // Covariance on loc
       - float             theta             // Track polar angle [rad]
       - float             phi               // Track azimuthal angle [rad]
@@ -443,7 +355,7 @@ datatypes:
       - int32_t           type              // Flag that defines the type of track
       - float             chi2              // Total chi2 (sum) of the track fit
       - int32_t           ndf               // Numbers of degrees of freedom of the track fit
-      - eicd::Vector3f    momentum          // Track 3-momentum at the vertex [GeV]
+      - edm4hep::Vector3f momentum          // Track 3-momentum at the vertex [GeV]
       - eicd::Cov3f       momentumError     // Covariance matrix on the momentum
       - float             time              // Track time at the vertex [ns]
       - float             timeError         // Error on the track vertex time
@@ -475,7 +387,7 @@ datatypes:
       - int32_t             primary       // Boolean flag, if vertex is the primary vertex of the event
       - float               chi2          // Chi-squared of the vertex fit
       - float               probability   // Probability of the vertex fit
-      - eicd::Vector3f      position      // [mm] position of the vertex.
+      - edm4hep::Vector3f   position      // [mm] position of the vertex.
       ## this is named "covMatrix" in EDM4hep, renamed for consistency with the rest of EICD
       - eicd::Cov3f         positionError // Covariance matrix of the position 
       - int32_t             algorithmType // Type code for the algorithm that has been used to create the vertex - check/set the collection parameters AlgorithmName and AlgorithmType. 
@@ -509,9 +421,6 @@ datatypes:
   ## Data-Montecarlo relations
   ## ==========================================================================
 
-  ## This is similar to the EDM4hep association, except that we can't
-  ## explicitly refer to MCParticles (as it's not part of EICD...).
-  ## To work around this, we can just store the index in MCParticles.
   eicd::MCRecoParticleAssociation:
     Description: "Used to keep track of the correspondence between MC and reconstructed particles"
     Author: "S. Joosten"
@@ -521,8 +430,7 @@ datatypes:
       - float             weight            // weight of this association
     OneToOneRelations :
       - eicd::ReconstructedParticle  rec    // reference to the reconstructed particle
-      #- edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
-      #                                      --> not possible as not in EICD
+      - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
 
   eicd::MCRecoClusterParticleAssociation:
     Description: "Association between a Cluster and a MCParticle"
@@ -533,8 +441,8 @@ datatypes:
       - float             weight            // weight of this association
     OneToOneRelations:
       - eicd::Cluster     rec               // reference to the cluster
-      #- edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
-      #                                      --> not possible as not in EICD
+      - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
+
   eicd::MCRecoTrackParticleAssociation:
     Description: "Association between a Track and a MCParticle"
     Author : "S. Joosten"
@@ -544,9 +452,8 @@ datatypes:
       - float             weight            // weight of this association
     OneToOneRelations:
       - eicd::Track       rec               // reference to the track
-      #- edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
-      #                                      --> not possible as not in EICD
-      #                                      --> not possible as not in EICD
+      - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
+
   eicd::MCRecoVertexParticleAssociation:
     Description: "Association between a Vertex and a MCParticle"
     Author : "S. Joosten"
@@ -555,6 +462,5 @@ datatypes:
       - uint32_t          recID             // Index of corresponding Vertex (position in Vertices array)
       - float             weight            // weight of this association
     OneToOneRelations:
-      - eicd::Vertex       rec               // reference to the vertex
-      #- edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
-      #                                      --> not possible as not in EICD
+      - eicd::Vertex        rec             // reference to the vertex
+      - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
