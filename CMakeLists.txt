@@ -13,6 +13,7 @@ if(APPLE)
   set(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
 endif(APPLE)
 
+include(GNUInstallDirs)
 
 find_package(podio 0.15 REQUIRED)
 include_directories(${podio_INCLUDE_DIR})
@@ -22,60 +23,47 @@ find_package(EDM4HEP 0.4.1 REQUIRED)
 #include(cmake/root.cmake)
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-find_package(ROOT REQUIRED COMPONENTS Core RIO Tree)
+find_package(ROOT 6 REQUIRED COMPONENTS Core RIO Tree)
 include(${ROOT_USE_FILE})
 
 PODIO_GENERATE_DATAMODEL(eicd eic_data.yaml headers sources 
   UPSTREAM_EDM edm4hep:${EDM4HEP_DATA_DIR}/edm4hep.yaml
+  IO_BACKEND_HANDLERS ${PODIO_IO_HANDLERS}
   OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
   )
 
-add_library(eicd SHARED
-  ${sources}
-  )
+PODIO_ADD_DATAMODEL_CORE_LIB(eicd "${headers}" "${sources}"
+  OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
+)
 
-target_link_libraries(eicd
-  PUBLIC EDM4HEP::edm4hep
-  PUBLIC podio::podio
-  PUBLIC ROOT::Core
-  )
-target_include_directories(eicd
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-  $<INSTALL_INTERFACE:include>)
+PODIO_ADD_ROOT_IO_DICT(eicdDict eicd "${headers}" src/selection.xml
+  OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
+)
 
-target_compile_features(eicd
-  PUBLIC cxx_auto_type
-  PUBLIC cxx_trailing_return_types
-  PRIVATE cxx_variadic_templates
-  PRIVATE cxx_std_17)
+add_library(eicd::eicdDict ALIAS eicdDict )
 
-PODIO_GENERATE_DICTIONARY(eicd ${headers} 
-  SELECTION ${CMAKE_CURRENT_BINARY_DIR}/src/selection.xml
-  OPTIONS --library ${CMAKE_SHARED_LIBRARY_PREFIX}eicd${CMAKE_SHARED_LIBRARY_SUFFIX}
-  )
-set_target_properties(eicd-dictgen PROPERTIES EXCLUDE_FROM_ALL TRUE)
-target_sources(eicd PRIVATE eicd.cxx)
+list(APPEND EICD_INSTALL_LIBS eicd eicdDict)
 
 add_subdirectory(utils)
 
-
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/eicd
-  DESTINATION include
-  FILES_MATCHING PATTERN *.h
-  )
-
-install(TARGETS eicd
-  EXPORT ${PROJECT_NAME}Targets
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include
-  )
+install(TARGETS ${EICD_INSTALL_LIBS}
+  EXPORT EICDTargets
+  RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT bin
+  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT shlib
+  PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/eicd"
+  COMPONENT dev)
 
 install(FILES
-  "${PROJECT_BINARY_DIR}/eicdDict.rootmap"
-  "${PROJECT_BINARY_DIR}/libeicd_rdict.pcm"
-  DESTINATION lib)
+  "${PROJECT_BINARY_DIR}/eicdDictDict.rootmap"
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT dev)
+
+install(FILES
+  eic_data.yaml
+  DESTINATION "${CMAKE_INSTALL_DATADIR}/eicd" COMPONENT dev)
+
+install(FILES
+  "${PROJECT_BINARY_DIR}/libeicdDict_rdict.pcm"
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT dev)
 
 add_custom_target( doc_doxygen #ALL 
   COMMAND doxygen ${CMAKE_SOURCE_DIR}/docs/Doxyfile
