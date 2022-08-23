@@ -20,3 +20,31 @@ jobs:
         name: build-eic-shell
         path: install/
         if-no-files-found: error
+
+  trigger-juggler:
+    runs-on: ubuntu-latest
+    needs: build-test
+    steps:
+    - uses: eic/trigger-gitlab-ci@v2
+      id: trigger
+      with:
+        url: https://eicweb.phy.anl.gov
+        project_id: 369
+        token: ${{ secrets.EICWEB_JUGGLER_TRIGGER }}
+        ref_name: master
+        variables: |
+          JUGGLER_EICD_REPOSITORYURL=${{ github.server_url }}/${{ github.repository }}
+          JUGGLER_EICD_VERSION=${{ github.ref_name }}
+          GITHUB_REPOSITORY=${{ github.repository }}
+          GITHUB_SHA=${{ github.event.pull_request.head.sha || github.sha }}
+    - run: |
+        gh api \
+           --method POST \
+          -H "Accept: application/vnd.github+json" \
+          /repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha || github.sha }} \
+          -f state='pending' \
+          -f target_url=${{ steps.trigger.outputs.web_url }} \
+          -f description='The juggler pipelines have been triggered...' \
+          -f context='eicweb/juggler'
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
