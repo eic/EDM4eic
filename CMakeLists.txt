@@ -47,7 +47,7 @@ list(APPEND EDM4EIC_INSTALL_LIBS edm4eic edm4eicDict)
 add_subdirectory(utils)
 
 install(TARGETS ${EDM4EIC_INSTALL_LIBS}
-  EXPORT edm4eicTargets
+  EXPORT ${PROJECT_NAME}Targets
   RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT bin
   LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT shlib
   PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/edm4eic"
@@ -93,27 +93,27 @@ include(CMakePackageConfigHelpers)
 # Install and export targets
 install(EXPORT ${PROJECT_NAME}Targets
   FILE ${PROJECT_NAME}Targets.cmake
-  NAMESPACE EDM4EIC::
-  DESTINATION lib/EDM4EIC
+  NAMESPACE ${PROJECT_NAME}::
+  DESTINATION lib/${PROJECT_NAME}
   )
 
-set(TARGETS_INSTALL_PATH lib/EDM4EIC/EDM4EICTargets.cmake)
+set(TARGETS_INSTALL_PATH lib/${PROJECT_NAME}/${PROJECT_NAME}Targets.cmake)
 
 configure_package_config_file(
-  cmake/EDM4EICConfig.cmake.in  
-  ${CMAKE_CURRENT_BINARY_DIR}/EDM4EICConfig.cmake
-  INSTALL_DESTINATION lib/EDM4EIC
+  cmake/${PROJECT_NAME}Config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+  INSTALL_DESTINATION lib/${PROJECT_NAME}
   PATH_VARS TARGETS_INSTALL_PATH
   )
 
-write_basic_package_version_file("EDM4EICConfigVersion.cmake"
+write_basic_package_version_file(
+  ${PROJECT_NAME}ConfigVersion.cmake
   VERSION ${VERSION}
   COMPATIBILITY SameMajorVersion
   )
 
 install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/EDM4EICConfig.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/EDM4EICConfigVersion.cmake
-  DESTINATION lib/EDM4EIC
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+  DESTINATION lib/${PROJECT_NAME}
   )
-
