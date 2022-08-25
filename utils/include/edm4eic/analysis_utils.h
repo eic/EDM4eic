@@ -1,5 +1,5 @@
-#ifndef EICD_UTILS_ANALYSIS_HH
-#define EICD_UTILS_ANALYSIS_HH
+#ifndef EDM4EIC_UTILS_ANALYSIS_HH
+#define EDM4EIC_UTILS_ANALYSIS_HH
 
 #include <algorithm>
 #include <cmath>
@@ -10,18 +10,18 @@
 
 #include <Math/Vector4D.h>
 
-#include <eicd/ReconstructedParticleCollection.h>
-#include <eicd/ReconstructedParticleData.h>
-#include <eicd/TrackParametersCollection.h>
+#include <edm4eic/ReconstructedParticleCollection.h>
+#include <edm4eic/ReconstructedParticleData.h>
+#include <edm4eic/TrackParametersCollection.h>
 
-namespace eicd {
+namespace edm4eic {
 
 /** Four momentum from track and mass.
  * Get a vector of 4-momenta from raw tracking info, using an externally
  * provided particle mass assumption.
  */
 inline auto
-momenta_from_tracking(const std::vector<eicd::TrackParametersData>& tracks,
+momenta_from_tracking(const std::vector<edm4eic::TrackParametersData>& tracks,
                       const double mass) {
   std::vector<ROOT::Math::PxPyPzMVector> momenta{tracks.size()};
   // transform our raw tracker info into proper 4-momenta
@@ -39,5 +39,5 @@ momenta_from_tracking(const std::vector<eicd::TrackParametersData>& tracks,
                  });
   return momenta;
 }
-} // namespace eicd
+} // namespace edm4eic
 #endif

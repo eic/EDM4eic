@@ -1,16 +1,16 @@
-#ifndef EICD_UTILS_VECTOR_HH
-#define EICD_UTILS_VECTOR_HH
+#ifndef EDM4EIC_UTILS_VECTOR_HH
+#define EDM4EIC_UTILS_VECTOR_HH
 
 // These ultilies require concepts. If not available, use the fallback
 // vector_utils_legacy.h instead to capture most functionality.
 #if !__cpp_concepts
-#include <eicd/vector_utils_legacy.h>
+#include <edm4eic/vector_utils_legacy.h>
 #else
 #include <cmath>
 
 #include <edm4hep/Vector3f.h>
 
-namespace eicd {
+namespace edm4eic {
 
 template <class V> concept VectorHasX = requires(V v) { v.x; };
 template <class V> concept VectorHasY = requires(V v) { v.y; };
@@ -113,41 +113,41 @@ template <Vector3D V> double projection(const V& v, const V& v1) {
   return v * v1 / norm;
 }
 
-} // namespace eicd
-template <eicd::Vector2D V> V operator+(const V& v1, const V& v2) {
-  return {eicd::vector_x(v1) + eicd::vector_x(v2),
-          eicd::vector_y(v1) + eicd::vector_y(v2)};
+} // namespace edm4eic
+template <edm4eic::Vector2D V> V operator+(const V& v1, const V& v2) {
+  return {edm4eic::vector_x(v1) + edm4eic::vector_x(v2),
+          edm4eic::vector_y(v1) + edm4eic::vector_y(v2)};
 }
-template <eicd::Vector3D V> V operator+(const V& v1, const V& v2) {
-  return {eicd::vector_x(v1) + eicd::vector_x(v2),
-          eicd::vector_y(v1) + eicd::vector_y(v2),
-          eicd::vector_z(v1) + eicd::vector_z(v2)};
+template <edm4eic::Vector3D V> V operator+(const V& v1, const V& v2) {
+  return {edm4eic::vector_x(v1) + edm4eic::vector_x(v2),
+          edm4eic::vector_y(v1) + edm4eic::vector_y(v2),
+          edm4eic::vector_z(v1) + edm4eic::vector_z(v2)};
 }
-template <eicd::Vector2D V> double operator*(const V& v1, const V& v2) {
-  return eicd::vector_x(v1) * eicd::vector_x(v2) +
-         eicd::vector_y(v1) * eicd::vector_y(v2);
+template <edm4eic::Vector2D V> double operator*(const V& v1, const V& v2) {
+  return edm4eic::vector_x(v1) * edm4eic::vector_x(v2) +
+         edm4eic::vector_y(v1) * edm4eic::vector_y(v2);
 }
-template <eicd::Vector3D V> double operator*(const V& v1, const V& v2) {
-  return eicd::vector_x(v1) * eicd::vector_x(v2) +
-         eicd::vector_y(v1) * eicd::vector_y(v2) +
-         eicd::vector_z(v1) * eicd::vector_z(v2);
+template <edm4eic::Vector3D V> double operator*(const V& v1, const V& v2) {
+  return edm4eic::vector_x(v1) * edm4eic::vector_x(v2) +
+         edm4eic::vector_y(v1) * edm4eic::vector_y(v2) +
+         edm4eic::vector_z(v1) * edm4eic::vector_z(v2);
 }
-template <eicd::Vector2D V> V operator*(const double d, const V& v) {
-  return {d * eicd::vector_x(v), d * eicd::vector_y(v)};
+template <edm4eic::Vector2D V> V operator*(const double d, const V& v) {
+  return {d * edm4eic::vector_x(v), d * edm4eic::vector_y(v)};
 }
-template <eicd::Vector3D V> V operator*(const double d, const V& v) {
-  return {d * eicd::vector_x(v), d * eicd::vector_y(v), d * eicd::vector_z(v)};
+template <edm4eic::Vector3D V> V operator*(const double d, const V& v) {
+  return {d * edm4eic::vector_x(v), d * edm4eic::vector_y(v), d * edm4eic::vector_z(v)};
 }
-template <eicd::Vector2D V> V operator*(const V& v, const double d) {
-  return {d * eicd::vector_x(v), d * eicd::vector_y(v)};
+template <edm4eic::Vector2D V> V operator*(const V& v, const double d) {
+  return {d * edm4eic::vector_x(v), d * edm4eic::vector_y(v)};
 }
-template <eicd::Vector3D V> V operator*(const V& v, const double d) {
-  return {d * eicd::vector_x(v), d * eicd::vector_y(v), d * eicd::vector_z(v)};
+template <edm4eic::Vector3D V> V operator*(const V& v, const double d) {
+  return {d * edm4eic::vector_x(v), d * edm4eic::vector_y(v), d * edm4eic::vector_z(v)};
 }
-template <eicd::VectorND V> V operator-(const V& v1, const V& v2) {
+template <edm4eic::VectorND V> V operator-(const V& v1, const V& v2) {
   return v1 + (-1. * v2);
 }
-template <eicd::VectorND V> V operator/(const V& v, const double d) {
+template <edm4eic::VectorND V> V operator/(const V& v, const double d) {
   return (1. / d) * v;
 }
 #endif

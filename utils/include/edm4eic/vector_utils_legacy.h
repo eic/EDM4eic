@@ -1,17 +1,17 @@
-#ifndef EICD_UTILS_VECTOR_LEGACY_HH
-#define EICD_UTILS_VECTOR_LEGACY_HH
+#ifndef EDM4EIC_UTILS_VECTOR_LEGACY_HH
+#define EDM4EIC_UTILS_VECTOR_LEGACY_HH
 
 // This is the legacy implementation of vector_utils. If possible, use
 // the better vector_utils.h instead (if concepts are available).
 #if __cpp_concepts
-#include <eicd/vector_utils.h>
+#include <edm4eic/vector_utils.h>
 #else
 #include <cmath>
 
 #include <edm4hep/Vector2f.h>
 #include <edm4hep/Vector3f.h>
 
-namespace eicd {
+namespace edm4eic {
 
 inline double etaToAngle(const double eta) {
   return std::atan(std::exp(-eta)) * 2.;
@@ -45,7 +45,7 @@ inline auto vector_z<edm4hep::Vector2f>(const edm4hep::Vector2f& v) {
 //}
 template <class V = edm4hep::Vector3f>
 V sphericalToVector(const double r, const double theta, const double phi) {
-  using FloatType = decltype(eicd::vector_x(V()));
+  using FloatType = decltype(edm4eic::vector_x(V()));
   const double sth = sin(theta);
   const double cth = cos(theta);
   const double sph = sin(phi);
@@ -57,21 +57,21 @@ V sphericalToVector(const double r, const double theta, const double phi) {
 }
 
 template <class V> double anglePolar(const V& v) {
-  return std::atan2(std::hypot(eicd::vector_x(v), eicd::vector_y(v)),
-                    eicd::vector_z(v));
+  return std::atan2(std::hypot(edm4eic::vector_x(v), edm4eic::vector_y(v)),
+                    edm4eic::vector_z(v));
 }
 template <class V> double angleAzimuthal(const V& v) {
-  return std::atan2(eicd::vector_y(v), eicd::vector_x(v));
+  return std::atan2(edm4eic::vector_y(v), edm4eic::vector_x(v));
 }
 template <class V> double eta(const V& v) { return angleToEta(anglePolar(v)); }
 template <class V> double magnitude(const V& v) {
-  return std::hypot(eicd::vector_x(v), eicd::vector_y(v), eicd::vector_z(v));
+  return std::hypot(edm4eic::vector_x(v), edm4eic::vector_y(v), edm4eic::vector_z(v));
 }
 template <class V> double magnitudeTransverse(const V& v) {
-  return std::hypot(eicd::vector_x(v), eicd::vector_y(v));
+  return std::hypot(edm4eic::vector_x(v), edm4eic::vector_y(v));
 }
 template <class V> double magnitudeLongitudinal(const V& v) {
-  return eicd::vector_z(v);
+  return edm4eic::vector_z(v);
 }
 template <class V> V normalizeVector(const V& v, double norm = 1.) {
   const double old = magnitude(v);
@@ -81,10 +81,10 @@ template <class V> V normalizeVector(const V& v, double norm = 1.) {
   return (norm > 0) ? v * norm / old : v * 0;
 }
 template <class V> V vectorTransverse(const V& v) {
-  return {eicd::vector_x(v), eicd::vector_y(v), 0};
+  return {edm4eic::vector_x(v), edm4eic::vector_y(v), 0};
 }
 template <class V> V vectorLongitudinal(const V& v) {
-  return {0, 0, eicd::vector_z(v)};
+  return {0, 0, edm4eic::vector_z(v)};
 }
 // Two vector functions
 template <class V> double angleBetween(const V& v1, const V& v2) {
@@ -103,43 +103,43 @@ template <class V> double projection(const V& v, const V& v1) {
   return v * v1 / norm;
 }
 
-} // namespace eicd
+} // namespace edm4eic
 
 inline edm4hep::Vector2f operator+(const edm4hep::Vector2f& v1,
                                    const edm4hep::Vector2f& v2) {
-  using ValueType = decltype(eicd::vector_x(edm4hep::Vector2f()));
-  const ValueType x = eicd::vector_x(v1) + eicd::vector_x(v2);
-  const ValueType y = eicd::vector_y(v1) + eicd::vector_y(v2);
+  using ValueType = decltype(edm4eic::vector_x(edm4hep::Vector2f()));
+  const ValueType x = edm4eic::vector_x(v1) + edm4eic::vector_x(v2);
+  const ValueType y = edm4eic::vector_y(v1) + edm4eic::vector_y(v2);
   return {x, y};
 }
 inline edm4hep::Vector3f operator+(const edm4hep::Vector3f& v1,
                                    const edm4hep::Vector3f& v2) {
-  using ValueType = decltype(eicd::vector_x(edm4hep::Vector3f()));
-  const ValueType x = eicd::vector_x(v1) + eicd::vector_x(v2);
-  const ValueType y = eicd::vector_y(v1) + eicd::vector_y(v2);
-  const ValueType z = eicd::vector_z(v1) + eicd::vector_z(v2);
+  using ValueType = decltype(edm4eic::vector_x(edm4hep::Vector3f()));
+  const ValueType x = edm4eic::vector_x(v1) + edm4eic::vector_x(v2);
+  const ValueType y = edm4eic::vector_y(v1) + edm4eic::vector_y(v2);
+  const ValueType z = edm4eic::vector_z(v1) + edm4eic::vector_z(v2);
   return {x, y, z};
 }
 inline double operator*(const edm4hep::Vector2f& v1, const edm4hep::Vector2f& v2) {
-  return eicd::vector_x(v1) * eicd::vector_x(v2) +
-         eicd::vector_y(v1) * eicd::vector_y(v2);
+  return edm4eic::vector_x(v1) * edm4eic::vector_x(v2) +
+         edm4eic::vector_y(v1) * edm4eic::vector_y(v2);
 }
 inline double operator*(const edm4hep::Vector3f& v1, const edm4hep::Vector3f& v2) {
-  return eicd::vector_x(v1) * eicd::vector_x(v2) +
-         eicd::vector_y(v1) * eicd::vector_y(v2) +
-         eicd::vector_z(v1) * eicd::vector_z(v2);
+  return edm4eic::vector_x(v1) * edm4eic::vector_x(v2) +
+         edm4eic::vector_y(v1) * edm4eic::vector_y(v2) +
+         edm4eic::vector_z(v1) * edm4eic::vector_z(v2);
 }
 inline edm4hep::Vector2f operator*(const double d, const edm4hep::Vector2f& v) {
-  using ValueType = decltype(eicd::vector_x(edm4hep::Vector2f()));
-  const ValueType x = d * eicd::vector_x(v);
-  const ValueType y = d * eicd::vector_y(v);
+  using ValueType = decltype(edm4eic::vector_x(edm4hep::Vector2f()));
+  const ValueType x = d * edm4eic::vector_x(v);
+  const ValueType y = d * edm4eic::vector_y(v);
   return {x, y};
 }
 inline edm4hep::Vector3f operator*(const double d, const edm4hep::Vector3f& v) {
-  using ValueType = decltype(eicd::vector_x(edm4hep::Vector3f()));
-  const ValueType x = d * eicd::vector_x(v);
-  const ValueType y = d * eicd::vector_y(v);
-  const ValueType z = d * eicd::vector_z(v);
+  using ValueType = decltype(edm4eic::vector_x(edm4hep::Vector3f()));
+  const ValueType x = d * edm4eic::vector_x(v);
+  const ValueType y = d * edm4eic::vector_y(v);
+  const ValueType z = d * edm4eic::vector_z(v);
   return {x, y, z};
 }
 inline edm4hep::Vector2f operator*(const edm4hep::Vector2f& v, const double d) {

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(EICD 
+project(EDM4EIC
   VERSION 1.1.0
   LANGUAGES CXX)
 
@@ -26,43 +26,43 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package(ROOT 6 REQUIRED COMPONENTS Core RIO Tree)
 include(${ROOT_USE_FILE})
 
-PODIO_GENERATE_DATAMODEL(eicd eic_data.yaml headers sources
+PODIO_GENERATE_DATAMODEL(edm4eic edm4eic.yaml headers sources
   UPSTREAM_EDM edm4hep:${EDM4HEP_DATA_DIR}/edm4hep.yaml
   IO_BACKEND_HANDLERS ${PODIO_IO_HANDLERS}
   OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
   )
 
-PODIO_ADD_DATAMODEL_CORE_LIB(eicd "${headers}" "${sources}"
+PODIO_ADD_DATAMODEL_CORE_LIB(edm4eic "${headers}" "${sources}"
   OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-PODIO_ADD_ROOT_IO_DICT(eicdDict eicd "${headers}" src/selection.xml
+PODIO_ADD_ROOT_IO_DICT(edm4eicDict edm4eic "${headers}" src/selection.xml
   OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-add_library(eicd::eicdDict ALIAS eicdDict )
+add_library(edm4eic::edm4hepDict ALIAS edm4eicDict )
 
-list(APPEND EICD_INSTALL_LIBS eicd eicdDict)
+list(APPEND EDM4EIC_INSTALL_LIBS edm4eic edm4eicDict)
 
 add_subdirectory(utils)
 
-install(TARGETS ${EICD_INSTALL_LIBS}
-  EXPORT EICDTargets
+install(TARGETS ${EDM4EIC_INSTALL_LIBS}
+  EXPORT edm4eicTargets
   RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT bin
   LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT shlib
-  PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/eicd"
+  PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/edm4eic"
   COMPONENT dev)
 
 install(FILES
-  "${PROJECT_BINARY_DIR}/eicdDictDict.rootmap"
+  "${PROJECT_BINARY_DIR}/edm4eicDictDict.rootmap"
   DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT dev)
 
 install(FILES
-  eic_data.yaml
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/eicd" COMPONENT dev)
+  edm4eic.yaml
+  DESTINATION "${CMAKE_INSTALL_DATADIR}/edm4eic" COMPONENT dev)
 
 install(FILES
-  "${PROJECT_BINARY_DIR}/libeicdDict_rdict.pcm"
+  "${PROJECT_BINARY_DIR}/libedm4eicDict_rdict.pcm"
   DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT dev)
 
 # -------------------------
@@ -93,27 +93,27 @@ include(CMakePackageConfigHelpers)
 # Install and export targets
 install(EXPORT ${PROJECT_NAME}Targets
   FILE ${PROJECT_NAME}Targets.cmake
-  NAMESPACE EICD::
-  DESTINATION lib/EICD
+  NAMESPACE EDM4EIC::
+  DESTINATION lib/EDM4EIC
   )
 
-set(TARGETS_INSTALL_PATH lib/EICD/EICDTargets.cmake)
+set(TARGETS_INSTALL_PATH lib/EDM4EIC/EDM4EICTargets.cmake)
 
 configure_package_config_file(
-  cmake/EICDConfig.cmake.in  
-  ${CMAKE_CURRENT_BINARY_DIR}/EICDConfig.cmake
-  INSTALL_DESTINATION lib/EICD
+  cmake/EDM4EICConfig.cmake.in  
+  ${CMAKE_CURRENT_BINARY_DIR}/EDM4EICConfig.cmake
+  INSTALL_DESTINATION lib/EDM4EIC
   PATH_VARS TARGETS_INSTALL_PATH
   )
 
-write_basic_package_version_file("EICDConfigVersion.cmake"
+write_basic_package_version_file("EDM4EICConfigVersion.cmake"
   VERSION ${VERSION}
   COMPATIBILITY SameMajorVersion
   )
 
 install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/EICDConfig.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/EICDConfigVersion.cmake
-  DESTINATION lib/EICD
+  ${CMAKE_CURRENT_BINARY_DIR}/EDM4EICConfig.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/EDM4EICConfigVersion.cmake
+  DESTINATION lib/EDM4EIC
   )
 

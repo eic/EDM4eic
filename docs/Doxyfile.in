@@ -32,7 +32,7 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "EICd"
+PROJECT_NAME           = "EDM4eic"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
@@ -866,7 +866,7 @@ WARN_LOGFILE           =
 
 INPUT                  = README.md \
                          @CMAKE_CURRENT_BINARY_RELATIVE_DIR@/src \
-                         @CMAKE_CURRENT_BINARY_RELATIVE_DIR@/eicd \
+                         @CMAKE_CURRENT_BINARY_RELATIVE_DIR@/edm4eic \
                          @CMAKE_CURRENT_BINARY_RELATIVE_DIR@/utils
 
 # This tag can be used to specify the character encoding of the source files

@@ -1,20 +1,20 @@
-EICd - EIC data model
-=====================
+EDM4eic - EIC data model
+========================
 
 A data model for EIC defined with [podio](https://github.com/AIDASoft/podio) and based on [EDM4hep](https://github.com/key4hep/EDM4hep).
 
 ## Full Description File
 
-The entire data model is defined with a single YAML file, `eic_data.yml`.
+The entire data model is defined with a single YAML file, `edm4eic.yml`.
 
-\verbinclude eic_data.yaml
+\verbinclude edm4eic.yaml
 
 ## Installing
 
 To install the data model into `~/local`, use the following commands:
 ```console
-git clone https://github.com/eic/eicd
-cd eicd
+git clone https://github.com/eic/edm4eic
+cd edm4eic
 cmake -S . -B build -DCMAKE_INSTALL_PREFIX=~/local
 cmake --build build
 cmake --install build

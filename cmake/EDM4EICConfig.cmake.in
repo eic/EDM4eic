@@ -2,4 +2,4 @@
 
 include("@PACKAGE_TARGETS_INSTALL_PATH@")
 
-check_required_components(EICD)
+check_required_components(EDM4EIC)
