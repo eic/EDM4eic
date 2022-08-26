@@ -56,14 +56,14 @@ jobs:
         apk add tar bash
         # FIXME bash not really required: see https://github.com/actions/upload-pages-artifact/pull/14
     - uses: actions/upload-pages-artifact@v1
-      if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/main'
       with:
         path: build/docs/html/
         retention-days: 7
 
   deploy-docs:
     needs: build-docs
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     permissions:
       pages: write
       id-token: write
