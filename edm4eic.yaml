@@ -138,6 +138,23 @@ components:
       - float             pathlength      // Pathlength from the origin to this point
       - float             pathlengthError // Error on the pathlenght
  
+  ## PID hypothesis from Cherenkov detectors
+  edm4eic::CherenkovPdgHypothesis:
+    Members:
+      - char              radiator          // Radiator number (0/1/..) in a sequence of the IRTAlgorithm configuration file
+      - int32_t           pdg               // PDG code
+      - float             npe               // Overall p.e. count associated with this hypothesis for a given track
+      - float             weight            // The weight associated with this hypothesis (the higher the more probable)
+
+  ## Cherenkov angle measurement for a given radiator
+  edm4eic::CherenkovThetaAngleMeasurement:
+    Members:
+      - char              radiator          // Radiator number (0/1/..) in a sequence of the IRTAlgorithm configuration file
+      - float             npe               // Overall p.e. count associated with this estimate
+      - float             theta             // Cherenkov theta angle
+      - float             rindex            // Average refractive index for this collection of photons
+      - float             wavelength        // Average wavelength for this collection of photons
+
 datatypes:
 
   ## ==========================================================================
@@ -177,6 +194,16 @@ datatypes:
       declaration: "
         bool isCompound() const {return particles_size() > 0;}\n
         "
+
+  edm4eic::CherenkovParticleID:
+    Description: "Cherenkov detector PID"
+    Author: "A. Kiselev, C. Dilks"
+    VectorMembers:
+      - edm4eic::CherenkovPdgHypothesis options        // Evaluated PDG hypotheses, typically (e/pi/K/p)
+      - edm4eic::CherenkovThetaAngleMeasurement angles // Evaluated Cherenkov angles for different radiators
+    OneToOneRelations:
+      ## @TODO: should it be one-to-one?
+      - edm4hep::MCParticle associatedParticle // associated reconstructed particle
 
   ## ==========================================================================
   ## Calorimetry
