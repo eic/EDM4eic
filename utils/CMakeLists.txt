@@ -1,5 +1,17 @@
 find_package(ROOT REQUIRED COMPONENTS GenVector MathCore)
 
+add_executable(edm4eic_merge src/merge.cpp)
+
+target_link_libraries(edm4eic_merge
+  PUBLIC edm4eic
+  PUBLIC EDM4HEP::edm4hep
+  PUBLIC ROOT::GenVector ROOT::MathCore)
+
+install(TARGETS edm4eic_merge
+  EXPORT ${PROJECT_NAME}Targets
+  RUNTIME DESTINATION bin
+  )
+
 add_library(edm4eic_utils SHARED
   src/utils.cxx
   )
@@ -11,24 +23,24 @@ target_compile_features(edm4eic_utils
     PRIVATE cxx_variadic_templates
     )
 
-target_compile_options(edm4eic_utils PRIVATE 
+target_compile_options(edm4eic_utils PRIVATE
   -Wno-extra
   -Wno-ignored-qualifiers
   -Wno-overloaded-virtual
   -Wno-shadow)
 
-target_link_libraries(edm4eic_utils 
+target_link_libraries(edm4eic_utils
   PUBLIC edm4eic
   PUBLIC EDM4HEP::edm4hep
   PUBLIC ROOT::GenVector ROOT::MathCore)
 
-target_include_directories(edm4eic_utils 
+target_include_directories(edm4eic_utils
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   PUBLIC $<INSTALL_INTERFACE:include>
   )
 
-install(FILES 
+install(FILES
   include/edm4eic/analysis_utils.h
   include/edm4eic/vector_utils.h
   include/edm4eic/vector_utils_legacy.h
