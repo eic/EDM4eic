@@ -19,8 +19,8 @@ find_package(podio 0.15 REQUIRED)
 include_directories(${podio_INCLUDE_DIR})
 
 find_package(EDM4HEP 0.4.1 REQUIRED)
+include_directories(${EDM4HEP_INCLUDE_DIR})
 
-#include(cmake/root.cmake)
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package(ROOT 6 REQUIRED COMPONENTS Core RIO Tree)
