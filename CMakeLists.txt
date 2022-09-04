@@ -36,7 +36,7 @@ PODIO_ADD_DATAMODEL_CORE_LIB(edm4eic "${headers}" "${sources}"
 )
 # The target for the data model library is defined in podio/cmake/podioMacros.cmake
 # Any changes to that target name upstream may require changes to the target used here 
-target_include_directories(eicd PUBLIC ${EDM4HEP_INCLUDE_DIR})
+target_include_directories(edm4eic PUBLIC ${EDM4HEP_INCLUDE_DIR})
 
 PODIO_ADD_ROOT_IO_DICT(edm4eicDict edm4eic "${headers}" src/selection.xml
   OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
