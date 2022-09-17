@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (C) 2022 Sylvester Joosten
+
 #ifndef EDM4EIC_UTILS_VECTOR_LEGACY_HH
 #define EDM4EIC_UTILS_VECTOR_LEGACY_HH
 

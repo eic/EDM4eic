@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2022 Whitney Armstrong, Sylvester Joosten, Wouter Deconinck
+
 cmake_minimum_required(VERSION 3.12)
 project(EDM4EIC
   VERSION 1.1.0
@@ -82,6 +85,7 @@ configure_file(
 find_package(Doxygen COMPONENTS dot)
 if(DOXYGEN_FOUND)
   add_custom_target(docs ALL
+    DEPENDS edm4eic.yaml ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Generating API documentation with Doxygen"
