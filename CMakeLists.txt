@@ -75,8 +75,8 @@ install(FILES
 # -------------------------
 # install class documentation
 
-cmake_path(RELATIVE_PATH CMAKE_CURRENT_BINARY_DIR
-  OUTPUT_VARIABLE CMAKE_CURRENT_BINARY_RELATIVE_DIR)
+file(RELATIVE_PATH CMAKE_CURRENT_BINARY_RELATIVE_DIR
+  ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 configure_file(
   ${CMAKE_SOURCE_DIR}/docs/Doxyfile.in
   ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
