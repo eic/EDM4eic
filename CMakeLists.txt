@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2022 Whitney Armstrong, Sylvester Joosten, Wouter Deconinck
+
 cmake_minimum_required(VERSION 3.12)
 project(EDM4EIC
   VERSION 1.1.0
@@ -34,9 +37,6 @@ PODIO_GENERATE_DATAMODEL(edm4eic edm4eic.yaml headers sources
 PODIO_ADD_DATAMODEL_CORE_LIB(edm4eic "${headers}" "${sources}"
   OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
 )
-# The target for the data model library is defined in podio/cmake/podioMacros.cmake
-# Any changes to that target name upstream may require changes to the target used here 
-target_include_directories(edm4eic PUBLIC ${EDM4HEP_INCLUDE_DIR})
 # It's our responsibility to link to upstream datamodel
 target_link_libraries(edm4eic PRIVATE EDM4HEP::edm4hep)
 
@@ -72,8 +72,8 @@ install(FILES
 # -------------------------
 # install class documentation
 
-cmake_path(RELATIVE_PATH CMAKE_CURRENT_BINARY_DIR
-  OUTPUT_VARIABLE CMAKE_CURRENT_BINARY_RELATIVE_DIR)
+file(RELATIVE_PATH CMAKE_CURRENT_BINARY_RELATIVE_DIR
+  ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 configure_file(
   ${CMAKE_SOURCE_DIR}/docs/Doxyfile.in
   ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
@@ -82,6 +82,7 @@ configure_file(
 find_package(Doxygen COMPONENTS dot)
 if(DOXYGEN_FOUND)
   add_custom_target(docs ALL
+    DEPENDS edm4eic.yaml ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Generating API documentation with Doxygen"
