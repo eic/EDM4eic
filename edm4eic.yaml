@@ -201,6 +201,8 @@ datatypes:
     VectorMembers:
       - edm4eic::CherenkovPdgHypothesis options        // Evaluated PDG hypotheses, typically (e/pi/K/p)
       - edm4eic::CherenkovThetaAngleMeasurement angles // Evaluated Cherenkov angles for different radiators
+      - float thetaphoton // calculated theta for each photon
+      - float phiphoton   // calculated phi   for each photon
     OneToOneRelations:
       ## @TODO: should it be one-to-one?
       - edm4hep::MCParticle associatedParticle // associated reconstructed particle
