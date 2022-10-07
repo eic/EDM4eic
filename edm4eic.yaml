@@ -374,6 +374,7 @@ datatypes:
     Members:
       - float             length            // Pathlength from the first to the last point
       - float             lengthError       // Error on the segment length
+      - edm4hep::Vector3f hcalencapN_proj   // Position of track projection to electron endcap hcal
     OneToOneRelations:
       - edm4eic::Track    track             // Track used for this projection
     VectorMembers:
