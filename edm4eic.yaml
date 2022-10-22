@@ -144,7 +144,7 @@ components:
   ## PID hypothesis from Cherenkov detectors
   edm4eic::CherenkovPdgHypothesis:
     Members:
-      - char              radiator          // Radiator number (0/1/..) in a sequence of the IRTAlgorithm configuration file
+      - char              radiator          // Radiator number (0/1/..)
       - int32_t           pdg               // PDG code
       - float             npe               // Overall p.e. count associated with this hypothesis for a given track
       - float             weight            // The weight associated with this hypothesis (the higher the more probable)
@@ -152,7 +152,7 @@ components:
   ## Cherenkov angle measurement for a given radiator
   edm4eic::CherenkovThetaAngleMeasurement:
     Members:
-      - char              radiator          // Radiator number (0/1/..) in a sequence of the IRTAlgorithm configuration file
+      - char              radiator          // Radiator number (0/1/..)
       - float             npe               // Overall p.e. count associated with this estimate
       - float             theta             // Cherenkov theta angle
       - float             rindex            // Average refractive index for this collection of photons
