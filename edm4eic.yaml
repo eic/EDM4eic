@@ -200,7 +200,7 @@ datatypes:
 
   edm4eic::CherenkovParticleID:
     Description: "Cherenkov detector PID"
-    Author: "A. Kiselev, C. Dilks"
+    Author: "A. Kiselev, C. Chatterjee, C. Dilks"
     VectorMembers:
       - edm4eic::CherenkovPdgHypothesis options        // Evaluated PDG hypotheses, typically (e/pi/K/p)
       - edm4eic::CherenkovThetaAngleMeasurement angles // Evaluated Cherenkov angles for different radiators
