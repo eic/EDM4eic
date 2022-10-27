@@ -38,7 +38,7 @@ PODIO_ADD_DATAMODEL_CORE_LIB(edm4eic "${headers}" "${sources}"
   OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
 )
 # It's our responsibility to link to upstream datamodel
-target_link_libraries(edm4eic PRIVATE EDM4HEP::edm4hep)
+target_link_libraries(edm4eic PUBLIC EDM4HEP::edm4hep)
 
 PODIO_ADD_ROOT_IO_DICT(edm4eicDict edm4eic "${headers}" src/selection.xml
   OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
