@@ -44,7 +44,7 @@ PODIO_ADD_ROOT_IO_DICT(edm4eicDict edm4eic "${headers}" src/selection.xml
   OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-add_library(edm4eic::edm4hepDict ALIAS edm4eicDict )
+add_library(edm4eic::edm4eicDict ALIAS edm4eicDict )
 
 list(APPEND EDM4EIC_INSTALL_LIBS edm4eic edm4eicDict)
 
