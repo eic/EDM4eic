@@ -289,6 +289,8 @@ datatypes:
       ## @TODO: same question as posed by RawCalorimeterHits, needs revisiting
       ##        when we increase realism
       - uint32_t          timeStamp         // PMT signal time [TDC]
+      # - edm4hep::Vector3d position          // test position
+      # - uint32_t          npe               // test npe
 
   edm4eic::PMTHit:
     Description: "EIC PMT hit"
