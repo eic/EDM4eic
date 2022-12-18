@@ -260,8 +260,6 @@ datatypes:
       ## @TODO: same question as posed by RawCalorimeterHits, needs revisiting
       ##        when we increase realism
       - uint32_t          timeStamp         // PMT signal time [TDC]
-      # - edm4hep::Vector3d position          // test position
-      # - uint32_t          npe               // test npe
 
   edm4eic::PMTHit:
     Description: "EIC PMT hit"
@@ -292,9 +290,9 @@ datatypes:
     OneToManyRelations:
       - edm4hep::ParticleID   hypotheses          // Evaluated PDG hypotheses; VectorMember "parameters" are (npe)
       - edm4hep::MCParticle   photons             // MC photons
-    # OneToOneRelations:
-    #   ## @TODO: link to a more useful charged particle object: track, reconstructed particle, ...?
-    #   - edm4eic::TrackSegment chargedParticle     // associated reconstructed particle
+    OneToOneRelations:
+      ## @TODO: link to a more useful charged particle object: track, reconstructed particle, ...?
+      - edm4eic::TrackSegment chargedParticle     // associated reconstructed particle
 
   edm4eic::RingImage:
     ##@TODO: Juggler support; not used in EICrecon
