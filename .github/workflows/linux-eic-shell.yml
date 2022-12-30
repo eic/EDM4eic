@@ -10,8 +10,8 @@ jobs:
   build-test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: cvmfs-contrib/github-action-cvmfs@v2
+    - uses: actions/checkout@v3
+    - uses: cvmfs-contrib/github-action-cvmfs@v3
     - uses: eic/run-cvmfs-osg-eic-shell@main
       with:
         platform-release: "jug_xl:nightly"
@@ -39,7 +39,7 @@ jobs:
       - /home/runner/work/_temp:/home/runner/work/_temp
       # FIXME hard-coded: see https://github.com/actions/upload-pages-artifact/pull/14
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: actions/download-artifact@v3
       with:
         name: build-eic-shell
