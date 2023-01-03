@@ -140,6 +140,13 @@ components:
       - edm4eic::Cov2f    directionError  // Error on the polar and azimuthal angles
       - float             pathlength      // Pathlength from the origin to this point
       - float             pathlengthError // Error on the pathlenght
+
+  ## PID hypothesis from Cherenkov detectors
+  edm4eic::CherenkovPdgHypothesis:
+    Members:
+      - int32_t           pdg             // PDG code
+      - float             npe             // Overall p.e. count associated with this hypothesis for a given track
+      - float             weight          // The weight associated with this hypothesis (the higher the more probable)
  
 datatypes:
 
@@ -275,8 +282,27 @@ datatypes:
       - int32_t           sector            // The sector this hit occured in
       - edm4hep::Vector3f local             // The local position of the hit in detector coordinates (relative to the sector) [mm]
 
+  edm4eic::CherenkovParticleID:
+    Description: "Cherenkov detector PID"
+    Author: "A. Kiselev, C. Chatterjee, C. Dilks"
+    Members:
+      - int32_t               radiator            // Radiator number
+      # Cherenkov angle estimation:
+      - float                 npe                 // Overall p.e. count associated with this estimate
+      - float                 theta               // Estimated Cherenkov theta angle
+      - float                 rindex              // Average refractive index for this collection of photons
+      - float                 wavelength          // Average wavelength for this collection of photons # @TODO: units - convenient [nm] or standard [mm]?
+    VectorMembers:
+      - edm4eic::CherenkovPdgHypothesis hypotheses      // Evaluated PDG hypotheses
+      - edm4hep::Vector2f               thetaPhiPhotons // estimated (theta,phi) for each photon
+    OneToManyRelations:
+      - edm4hep::MCParticle   photons             // MC photons
+    OneToOneRelations:
+      ## @TODO: link to a more useful charged particle object: track, reconstructed particle, ...?
+      - edm4eic::TrackSegment chargedParticle     // associated reconstructed particle
+
   edm4eic::RingImage:
-    ##@TODO: RICH reconstruction still needs an overhaul
+    ##@TODO: Juggler support; not used in EICrecon
     Description: "EIC Ring Image Cluster"
     Author: "S. Joosten, C. Peng"
     Members:
