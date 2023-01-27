@@ -297,8 +297,6 @@ datatypes:
     VectorMembers:
       - edm4eic::CherenkovPdgHypothesis hypotheses      // Evaluated PDG hypotheses
       - edm4hep::Vector2f               thetaPhiPhotons // estimated (theta,phi) for each photon
-    OneToManyRelations:
-      - edm4hep::MCParticle   photons             // MC photons
     OneToOneRelations:
       ## @TODO: link to a more useful charged particle object: track, reconstructed particle, ...?
       - edm4eic::TrackSegment chargedParticle     // associated reconstructed particle
