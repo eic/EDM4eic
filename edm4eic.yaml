@@ -267,8 +267,6 @@ datatypes:
       ## @TODO: same question as posed by RawCalorimeterHits, needs revisiting
       ##        when we increase realism
       - uint32_t          timeStamp         // PMT signal time [TDC]
-    OneToOneRelations:
-      - edm4hep::MCParticle photon          // truth photon
 
   edm4eic::PMTHit:
     Description: "EIC PMT hit"
