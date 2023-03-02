@@ -145,8 +145,8 @@ components:
   edm4eic::CherenkovPdgHypothesis:
     Members:
       - int32_t           pdg             // PDG code
-      - float             npe             // Overall p.e. count associated with this hypothesis for a given track
-      - float             weight          // The weight associated with this hypothesis (the higher the more probable)
+      - float             npe             // Overall photoelectron count
+      - float             weight          // Likelihood estimate
  
 datatypes:
 
@@ -286,18 +286,16 @@ datatypes:
     Description: "Cherenkov detector PID"
     Author: "A. Kiselev, C. Chatterjee, C. Dilks"
     Members:
-      - int32_t               radiator            // Radiator number
-      # Cherenkov angle estimation:
-      - float                 npe                 // Overall p.e. count associated with this estimate
-      - float                 theta               // Estimated Cherenkov theta angle
-      - float                 rindex              // Average refractive index for this collection of photons
-      - float                 wavelength          // Average wavelength for this collection of photons # @TODO: units - convenient [nm] or standard [mm]?
+      - int32_t           radiator          // Radiator number
+      - float             theta             // Estimated average Cherenkov cone angle
+      - float             npe               // Overall photoelectron count associated with this estimate
+      - float             rindex            // Average refractive index at the Cherenkov photons' vertices
+      - float             wavelength        // Average wavelength for these Cherenkov photons [nm]
     VectorMembers:
       - edm4eic::CherenkovPdgHypothesis hypotheses      // Evaluated PDG hypotheses
-      - edm4hep::Vector2f               thetaPhiPhotons // estimated (theta,phi) for each photon
+      - edm4hep::Vector2f               thetaPhiPhotons // estimated (theta,phi) for each Cherenkov photon
     OneToOneRelations:
-      ## @TODO: link to a more useful charged particle object: track, reconstructed particle, ...?
-      - edm4eic::TrackSegment chargedParticle     // associated reconstructed particle
+      - edm4eic::TrackSegment           chargedParticle // associated reconstructed charged particle
 
   edm4eic::RingImage:
     ##@TODO: Juggler support; not used in EICrecon
