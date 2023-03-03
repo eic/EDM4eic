@@ -286,7 +286,7 @@ datatypes:
     Description: "Cherenkov detector PID"
     Author: "A. Kiselev, C. Chatterjee, C. Dilks"
     Members:
-      - int32_t           radiator          // Radiator number
+      - uint32_t          radiator          // Radiator number
       - float             theta             // Estimated average Cherenkov cone angle
       - float             npe               // Overall photoelectron count associated with this estimate
       - float             refractiveIndex   // Average refractive index at the Cherenkov photons' vertices
