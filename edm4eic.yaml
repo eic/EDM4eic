@@ -142,7 +142,7 @@ components:
       - float             pathlengthError // Error on the pathlenght
 
   ## PID hypothesis from Cherenkov detectors
-  edm4eic::CherenkovPdgHypothesis:
+  edm4eic::CherenkovParticleIDHypothesis:
     Members:
       - int32_t           pdg             // PDG code
       - float             npe             // Overall photoelectron count
@@ -292,10 +292,10 @@ datatypes:
       - float             refractiveIndex   // Average refractive index at the Cherenkov photons' vertices
       - float             photonEnergy      // Average energy for these Cherenkov photons [GeV]
     VectorMembers:
-      - edm4eic::CherenkovPdgHypothesis hypotheses      // Evaluated PDG hypotheses
-      - edm4hep::Vector2f               thetaPhiPhotons // estimated (theta,phi) for each Cherenkov photon
+      - edm4eic::CherenkovParticleIDHypothesis hypotheses      // Evaluated PDG hypotheses
+      - edm4hep::Vector2f                      thetaPhiPhotons // estimated (theta,phi) for each Cherenkov photon
     OneToOneRelations:
-      - edm4eic::TrackSegment           chargedParticle // associated reconstructed charged particle
+      - edm4eic::TrackSegment chargedParticle // associated reconstructed charged particle
 
   edm4eic::RingImage:
     ##@TODO: Juggler support; not used in EICrecon
