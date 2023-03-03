@@ -290,7 +290,7 @@ datatypes:
       - float             theta             // Estimated average Cherenkov cone angle
       - float             npe               // Overall photoelectron count associated with this estimate
       - float             rindex            // Average refractive index at the Cherenkov photons' vertices
-      - float             wavelength        // Average wavelength for these Cherenkov photons [nm]
+      - float             photonEnergy      // Average energy for these Cherenkov photons [GeV]
     VectorMembers:
       - edm4eic::CherenkovPdgHypothesis hypotheses      // Evaluated PDG hypotheses
       - edm4hep::Vector2f               thetaPhiPhotons // estimated (theta,phi) for each Cherenkov photon
