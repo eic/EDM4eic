@@ -258,16 +258,6 @@ datatypes:
   ## RICH/Cherenkov and PID
   ## ==========================================================================
 
-  edm4eic::RawPMTHit:
-    Description: "EIC Raw PMT hit"
-    Author: "S. Joosten, C. Peng"
-    Members:
-      - uint64_t          cellID            // The detector specific (geometrical) cell id.
-      - uint32_t          integral          // PMT signal integral [ADC]
-      ## @TODO: same question as posed by RawCalorimeterHits, needs revisiting
-      ##        when we increase realism
-      - uint32_t          timeStamp         // PMT signal time [TDC]
-
   edm4eic::PMTHit:
     Description: "EIC PMT hit"
     Author: "S. Joosten, C. Peng"
