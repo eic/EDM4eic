@@ -2,6 +2,10 @@ name: linux-eic-shell
 
 on:
   push:
+    branches:
+      - main
+    tags:
+      - '*'
   pull_request:
   schedule:
     - cron: '41 4 * * 0'
@@ -79,6 +83,7 @@ jobs:
   trigger-juggler:
     runs-on: ubuntu-latest
     needs: build-test
+    if: github.event_name == 'pull_request'
     steps:
     - uses: eic/trigger-gitlab-ci@v2
       id: trigger
@@ -86,7 +91,7 @@ jobs:
         url: https://eicweb.phy.anl.gov
         project_id: 369
         token: ${{ secrets.EICWEB_JUGGLER_TRIGGER }}
-        ref_name: master
+        ref_name: main
         variables: |
           JUGGLER_EICD_REPOSITORYURL=${{ github.server_url }}/${{ github.repository }}
           JUGGLER_EICD_VERSION=${{ github.ref_name }}
