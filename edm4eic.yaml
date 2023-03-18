@@ -277,8 +277,7 @@ datatypes:
     Author: "A. Kiselev, C. Chatterjee, C. Dilks"
     Members:
       - uint32_t          radiator          // Radiator number
-      - float             theta             // Estimated average Cherenkov cone angle
-      - float             npe               // Overall photoelectron count associated with this estimate
+      - float             npe               // Overall photoelectron count
       - float             refractiveIndex   // Average refractive index at the Cherenkov photons' vertices
       - float             photonEnergy      // Average energy for these Cherenkov photons [GeV]
     VectorMembers:
