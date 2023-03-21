@@ -144,7 +144,7 @@ components:
   ## PID hypothesis from Cherenkov detectors
   edm4eic::CherenkovParticleIDHypothesis:
     Members:
-      - int32_t           pdg             // PDG code
+      - int32_t           PDG             // PDG code
       - float             npe             // Overall photoelectron count
       - float             weight          // Weight of this hypothesis, such as likelihood, moment, etc.
  
