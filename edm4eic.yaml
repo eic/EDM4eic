@@ -146,7 +146,7 @@ components:
     Members:
       - int32_t           pdg             // PDG code
       - float             npe             // Overall photoelectron count
-      - float             weight          // Likelihood estimate
+      - float             weight          // Weight of this hypothesis, such as likelihood, moment, etc.
  
 datatypes:
 
