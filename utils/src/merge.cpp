@@ -1,18 +1,24 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
-// Copyright (C) 2022 Wouter Deconinck
+// Copyright (C) 2022 Wouter Deconinck, Simon Gardner
 
 #include <regex>
 #include <tuple>
 #include <utility>
 
 #include <CLI/CLI.hpp>
+#include <typeinfo>
 
 #include "podio/EventStore.h"
 #include "podio/ROOTReader.h"
+#include "podio/ROOTFrameReader.h"
 #include "podio/ROOTWriter.h"
 
 #include "edm4hep/SimCalorimeterHitCollection.h"
 #include "edm4hep/SimTrackerHitCollection.h"
+#include <edm4hep/MCParticleCollection.h>
+#include <edm4hep/EventHeaderCollection.h>
+
+//std::map<std::string,podio::CollectionBase (*)()> collectionmap = {{"edm4hep::CaloHitContributionCollection",edm4hep::CaloHitContributionData}};
 
 int main(int argc, char **argv) {
   // setup CLI options
@@ -56,7 +62,7 @@ int main(int argc, char **argv) {
 
   // input reader
   auto reader_sig = podio::ROOTReader();
-  auto store_sig = podio::EventStore();
+  auto store_sig  = podio::EventStore();
   reader_sig.openFile(file_sig);
   store_sig.setReader(&reader_sig);
 
@@ -69,14 +75,28 @@ int main(int argc, char **argv) {
   }
 
   // output writer
-  auto store_out = podio::EventStore();
+  auto store_out  = podio::EventStore();
   auto writer_out = podio::ROOTWriter(file_out, &store_out);
 
-  // hit collections
+  typename A(podio::CollectionBase);
+
   auto coll_id_table_sig = store_sig.getCollectionIDTable();
-  std::vector<std::pair<size_t, std::string>> calorimeter_collection_names;
-  std::vector<std::pair<size_t, std::string>> tracker_collection_names;
+
+  std::vector<std::pair<std::string, std::string>> collection_names;
+  std::map<std::string,edm4hep::EventHeaderCollection*>       header_collections_out;
+  std::map<std::string,edm4hep::MCParticleCollection*>        mcparticle_collections_out;
+  std::map<std::string,edm4hep::SimTrackerHitCollection*>     tracker_collections_out;
+  std::map<std::string,edm4hep::SimCalorimeterHitCollection*> calorimeter_collections_out;
+
+  int i=0;
   for (const auto& name: coll_id_table_sig->names()) {
+    auto& hits_sig = store_sig.get<podio::CollectionBase>(name);
+    auto type = hits_sig.getTypeName();
+
+    if(debug)
+      std::cout << " source: " << name << " " << type << std::endl;
+
+
     // check for inclusion
     for (const auto& include_re: include_regex) {
       if (std::regex_match(name, std::regex(include_re))) {
@@ -85,77 +105,130 @@ int main(int argc, char **argv) {
         for (const auto& exclude_re: exclude_regex) {
           exclude = exclude || std::regex_match(name, std::regex(exclude_re));
         }
-        // check for type by getting FIXME does not work
-        auto& hits_sig = store_sig.get<edm4hep::SimTrackerHitCollection>(name);
-        if (! store_sig.isValid()) {
-          std::cout << "Collection " << name << " invalid as tracker collection" << std::endl;
-          exclude = false;
-        }
-        //
+	if(exclude){
+	  if(verbose ||debug)
+	    std::cout << " Not including " << name << std::endl;
+	  continue;
+	}
+
         if (exclude == false) {
-          std::cout << "Collection " << name << " included" << std::endl;
-          tracker_collection_names.push_back(std::make_pair(tracker_collection_names.size(), name));
+	  //          collection_names.push_back(std::make_pair(type, name));
+	  if(type == "edm4hep::EventHeaderCollection"){
+	    header_collections_out[name] = &store_out.create<edm4hep::EventHeaderCollection>(name);
+	  }
+	  else if(type == "edm4hep::MCParticleCollection"){
+	    mcparticle_collections_out[name] = &store_out.create<edm4hep::MCParticleCollection>(name);
+	  }
+	  else if(type == "edm4hep::SimTrackerHitCollection"){
+	    tracker_collections_out[name] = &store_out.create<edm4hep::SimTrackerHitCollection>(name);
+	  }
+	  else if(type == "edm4hep::SimCalorimeterHitCollection"){
+	    calorimeter_collections_out[name] = &store_out.create<edm4hep::SimCalorimeterHitCollection>(name);
+	  }
+	  else{
+	    if(verbose ||debug)
+	      std::cout << " Not including " << name << std::endl;
+	    continue;
+	  }
+	  
+	  if(verbose || debug)
+	    std::cout << " Including " << name << std::endl;
+	  
+          collection_names.push_back(std::make_pair(type, name));
+	  writer_out.registerForWrite(name);
+	  i++;
         }
       }
-    }
+   }
   }
 
-  // create output calorimeter collections
-  std::vector<edm4hep::SimCalorimeterHitCollection*> calorimeter_collections_out;
-  for (const auto& [i, calorimeter_collection_name]: calorimeter_collection_names) {
-    calorimeter_collections_out.push_back(&(store_out.create<edm4hep::SimCalorimeterHitCollection>(calorimeter_collection_name)));
-    writer_out.registerForWrite(calorimeter_collection_name);
-  }
-
-  // create output tracker collections
-  std::vector<edm4hep::SimTrackerHitCollection*> tracker_collections_out;
-  for (const auto& [i, tracker_collection_name]: tracker_collection_names) {
-    tracker_collections_out.push_back(&(store_out.create<edm4hep::SimTrackerHitCollection>(tracker_collection_name)));
-    writer_out.registerForWrite(tracker_collection_name);
-  }
+  auto coll_id_table_out = store_out.getCollectionIDTable();
 
   // loop over events
   unsigned n = std::min(numberOfEvents, reader_sig.getEntries());
-  for (unsigned i = 0; i < n; ++i) {
-    if (verbose) std::cout << "reading signal event " << i << "/" << n << std::endl;
+  for (unsigned j = 0; j < n; ++j) {
+    if (verbose) std::cout << "reading signal event " << j << "/" << n << std::endl;
 
-    // loop over signal collections
-    for (const auto& [i, tracker_collection_name]: tracker_collection_names) {
-      // clone signal hits
-      auto& hits_sig = store_sig.get<edm4hep::SimTrackerHitCollection>(tracker_collection_name);
-      if (debug) std::cout << " sig " << tracker_collection_name << ": " << hits_sig.size() << std::endl;
-      for (const auto& hit_sig: hits_sig) {
-        tracker_collections_out[i]->push_back(hit_sig.clone());
+    // Add Signal hits
+    for (const auto& [type,name]: collection_names) {
+      if(type=="edm4hep::EventHeaderCollection"){
+	auto& hits_sig = store_sig.get<edm4hep::EventHeaderCollection>(name);
+	if (debug) std::cout << " signal:"  << " " << name << ": " << hits_sig.size() << std::endl;
+	for (const auto& hit_sig: hits_sig) {
+	  header_collections_out[name]->push_back(hit_sig.clone());
+	}
+      }
+      if(type=="edm4hep::MCParticleCollection"){
+	auto& hits_sig = store_sig.get<edm4hep::MCParticleCollection>(name);
+	if (debug) std::cout << " signal:"  << " " << name << ": " << hits_sig.size() << std::endl;
+	for (const auto& hit_sig: hits_sig ) {
+	  mcparticle_collections_out[name]->push_back(hit_sig.clone());
+	}
+      }
+      if(type=="edm4hep::SimTrackerHitCollection"){
+	auto& hits_sig = store_sig.get<edm4hep::SimTrackerHitCollection>(name);
+	if (debug) std::cout << " signal:"  << " " << name << ": " << hits_sig.size() << std::endl;
+	for (const auto& hit_sig: hits_sig) {
+	  tracker_collections_out[name]->push_back(hit_sig.clone());
+	}
+      }
+      if(type=="edm4hep::SimCalorimeterHitCollection"){
+	auto& hits_sig = store_sig.get<edm4hep::SimCalorimeterHitCollection>(name);
+	if (debug) std::cout << " signal:"  " " << name << ": " << hits_sig.size() << std::endl;
+	for (const auto& hit_sig: hits_sig) {
+	  calorimeter_collections_out[name]->push_back(hit_sig.clone());
+	}
       }
     }
-
-    // loop over background collections
-    for (const auto& [reader_bkg, store_bkg, count_bkg]: readers_stores_counts_bkg) {
-      // repeat requested times
-      for (auto count = 0; count != count_bkg; ++count) {
-        // clone background hits (reader and store is pointer)
-        for (const auto& [i, tracker_collection_name]: tracker_collection_names) {
-          auto& hits_bkg = store_bkg->get<edm4hep::SimTrackerHitCollection>(tracker_collection_name);
-          if (debug) std::cout << " bkg" << i << " " << tracker_collection_name << ": " << hits_bkg.size() << std::endl;
-          for (const auto& hit_bkg: hits_bkg) {
-            tracker_collections_out[i]->push_back(hit_bkg.clone());
-          }
-        }
-        store_bkg->clear();
-        reader_bkg->endOfEvent();
-      }
-    }
-
-    for (const auto& [i, tracker_collection_name]: tracker_collection_names) {
-      if (debug) std::cout << " out " << tracker_collection_name << ": " << tracker_collections_out[i]->size() << std::endl;
-    }
-
-    // clear input stores
     store_sig.clear();
     reader_sig.endOfEvent();
 
+    int k=0;
+    // Add background hits
+    for (const auto& [reader_bkg, store_bkg, count_bkg]: readers_stores_counts_bkg) {
+      // repeat requested times
+      for (int count = 0; count < count_bkg; count++) {
+
+	// clone background hits (reader and store is pointer)
+	for (const auto& [type,name]: collection_names) {
+	  if(type=="edm4hep::MCParticleCollection"){
+	    auto& hits_bkg = store_bkg->get<edm4hep::MCParticleCollection>(name);
+	    if (debug) std::cout << " background source: " << k << " event no: " << count << " " << name << ": " << hits_bkg.size() << std::endl;
+	    for (const auto& hit_bkg: hits_bkg) {
+	      mcparticle_collections_out[name]->push_back(hit_bkg.clone());
+	    }
+	  }
+	  if(type=="edm4hep::SimTrackerHitCollection"){
+	    auto& hits_bkg = store_bkg->get<edm4hep::SimTrackerHitCollection>(name);
+	    if (debug) std::cout << " background source: " << k << " event no: " << count << " " << name << ": " << hits_bkg.size() << std::endl;
+	    for (const auto& hit_bkg: hits_bkg) {
+	      tracker_collections_out[name]->push_back(hit_bkg.clone());
+	    }
+	  }
+	  if(type=="edm4hep::SimCalorimeterHitCollection"){
+	    auto& hits_bkg = store_bkg->get<edm4hep::SimCalorimeterHitCollection>(name);
+	    if (debug) std::cout << " background source: " << k << " event no: " << count << " " << name << ": " << hits_bkg.size() << std::endl;
+	    for (const auto& hit_bkg: hits_bkg) {
+	      calorimeter_collections_out[name]->push_back(hit_bkg.clone());
+	    }
+	  }
+	}
+	store_bkg->clearCollections();
+	reader_bkg->endOfEvent();
+      }     
+      k++;
+    }
+
+    
+    if (debug){
+      for (const auto& [type, name]: collection_names) {
+	auto coll = &store_out.get<podio::CollectionBase>(name);
+	std::cout << " out event no: " << j <<  " " << name << ": " << coll->size() << std::endl;
+      }
+    }
+
     // write event
-    writer_out.writeEvent();
+    writer_out.writeEvent();      
     store_out.clearCollections();
   }
 
