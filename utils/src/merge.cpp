@@ -6,19 +6,15 @@
 #include <utility>
 
 #include <CLI/CLI.hpp>
-#include <typeinfo>
 
 #include "podio/EventStore.h"
 #include "podio/ROOTReader.h"
-#include "podio/ROOTFrameReader.h"
 #include "podio/ROOTWriter.h"
 
 #include "edm4hep/SimCalorimeterHitCollection.h"
 #include "edm4hep/SimTrackerHitCollection.h"
-#include <edm4hep/MCParticleCollection.h>
-#include <edm4hep/EventHeaderCollection.h>
-
-//std::map<std::string,podio::CollectionBase (*)()> collectionmap = {{"edm4hep::CaloHitContributionCollection",edm4hep::CaloHitContributionData}};
+#include "edm4hep/MCParticleCollection.h"
+#include "edm4hep/EventHeaderCollection.h"
 
 int main(int argc, char **argv) {
   // setup CLI options
@@ -78,8 +74,6 @@ int main(int argc, char **argv) {
   auto store_out  = podio::EventStore();
   auto writer_out = podio::ROOTWriter(file_out, &store_out);
 
-  typename A(podio::CollectionBase);
-
   auto coll_id_table_sig = store_sig.getCollectionIDTable();
 
   std::vector<std::pair<std::string, std::string>> collection_names;
@@ -91,7 +85,7 @@ int main(int argc, char **argv) {
   int i=0;
   for (const auto& name: coll_id_table_sig->names()) {
     auto& hits_sig = store_sig.get<podio::CollectionBase>(name);
-    auto type = hits_sig.getTypeName();
+    auto  type     = hits_sig.getTypeName();
 
     if(debug)
       std::cout << " source: " << name << " " << type << std::endl;
@@ -228,7 +222,7 @@ int main(int argc, char **argv) {
     }
 
     // write event
-    writer_out.writeEvent();      
+    writer_out.writeEvent();
     store_out.clearCollections();
   }
 
