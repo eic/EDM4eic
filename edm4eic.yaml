@@ -139,7 +139,7 @@ components:
       - float             phi             // azimuthal direction of the track at the surface [rad]
       - edm4eic::Cov2f    directionError  // Error on the polar and azimuthal angles
       - float             pathlength      // Pathlength from the origin to this point
-      - float             pathlengthError // Error on the pathlenght
+      - float             pathlengthError // Error on the pathlength
 
   ## PID hypothesis from Cherenkov detectors
   edm4eic::CherenkovParticleIDHypothesis:
@@ -165,7 +165,7 @@ datatypes:
       - float             charge            // charge of the reconstructed particle.
       - float             mass              // [GeV] mass of the reconstructed particle, set independently from four vector. Four momentum state is not kept consistent internally.
       - float             goodnessOfPID     // overall goodness of the PID on a scale of [0;1]
-      - edm4eic::Cov4f    covMatrix         // cvariance matrix of the reconstructed particle 4vector (10 parameters).
+      - edm4eic::Cov4f    covMatrix         // covariance matrix of the reconstructed particle 4vector (10 parameters).
       ##@TODO: deviation from EDM4hep: store explicit PDG ID here. Needs to be discussed how we
       ##       move forward as this could easiliy become unwieldy without this information here.
       ##       The only acceptable alternative would be to store reconstructed identified 
@@ -213,8 +213,8 @@ datatypes:
       - float             timeError         // Error on the time
       - edm4hep::Vector3f position          // The global position of the hit in world coordinates [mm].
       - edm4hep::Vector3f dimension         // The dimension information of the cell [mm].
-      - int32_t           sector            // Sector that this hit occured in
-      - int32_t           layer             // Layer that the hit occured in
+      - int32_t           sector            // Sector that this hit occurred in
+      - int32_t           layer             // Layer that the hit occurred in
       - edm4hep::Vector3f local             // The local coordinates of the hit in the detector segment [mm]. 
 
   ## ==========================================================================
@@ -234,7 +234,7 @@ datatypes:
     Author: "W. Armstrong, S. Joosten, C.Peng"
     Members:
       # main variables
-      - int32_t           type              // Flagword that defines the type of the cluster
+      - int32_t           type              // Flag-word that defines the type of the cluster
       - float             energy            // Reconstructed energy of the cluster [GeV].
       - float             energyError       // Error on the cluster energy [GeV]
       - float             time              // [ns]
@@ -269,7 +269,7 @@ datatypes:
       - float             timeError         // Error on the time [ns]
       - edm4hep::Vector3f position          // PMT hit position [mm]
       - edm4hep::Vector3f dimension         // The dimension information of the pixel [mm].
-      - int32_t           sector            // The sector this hit occured in
+      - int32_t           sector            // The sector this hit occurred in
       - edm4hep::Vector3f local             // The local position of the hit in detector coordinates (relative to the sector) [mm]
 
   edm4eic::CherenkovParticleID:
