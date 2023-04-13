@@ -140,6 +140,13 @@ components:
       - edm4eic::Cov2f    directionError  // Error on the polar and azimuthal angles
       - float             pathlength      // Pathlength from the origin to this point
       - float             pathlengthError // Error on the pathlength
+
+  ## PID hypothesis from Cherenkov detectors
+  edm4eic::CherenkovParticleIDHypothesis:
+    Members:
+      - int32_t           PDG             // PDG code
+      - float             npe             // Overall photoelectron count
+      - float             weight          // Weight of this hypothesis, such as likelihood, moment, etc.
  
 datatypes:
 
@@ -265,8 +272,24 @@ datatypes:
       - int32_t           sector            // The sector this hit occurred in
       - edm4hep::Vector3f local             // The local position of the hit in detector coordinates (relative to the sector) [mm]
 
+  edm4eic::CherenkovParticleID:
+    Description: "Cherenkov detector PID"
+    Author: "A. Kiselev, C. Chatterjee, C. Dilks"
+    Members:
+      - uint32_t          radiator          // Radiator number
+      - float             npe               // Overall photoelectron count
+      - float             refractiveIndex   // Average refractive index at the Cherenkov photons' vertices
+      - float             photonEnergy      // Average energy for these Cherenkov photons [GeV]
+    VectorMembers:
+      - edm4eic::CherenkovParticleIDHypothesis hypotheses         // Evaluated PDG hypotheses
+      - edm4hep::Vector2f                      thetaPhiPhotons    // estimated (theta,phi) for each Cherenkov photon
+    OneToOneRelations:
+      - edm4eic::TrackSegment                  chargedParticle    // reconstructed charged particle
+    OneToManyRelations:
+      - edm4eic::MCRecoTrackerHitAssociation   rawHitAssociations // raw sensor hits, associated with MC hits
+
   edm4eic::RingImage:
-    ##@TODO: RICH reconstruction still needs an overhaul
+    ##@TODO: Juggler support; not used in EICrecon
     Description: "EIC Ring Image Cluster"
     Author: "S. Joosten, C. Peng"
     Members:
