@@ -246,7 +246,7 @@ datatypes:
       - float             intrinsicPhi      // Intrinsic cluster propagation direction azimuthal angle [rad]
       - edm4eic::Cov2f    intrinsicDirectionError // Error on the intrinsic cluster propagation direction
     VectorMembers:
-      - float             shapeParameters   // radius, dispersion, 2 entries for theta-phi widths, 3 entries for x-y-z widths.  Should be set in metadata
+      - float             shapeParameters   // radius [rad], dispersion [mm], 2 entries for theta-phi widths [rad], 3 entries for x-y-z widths [mm].  Should be set in metadata
       - float             hitContributions  // Energy contributions of the hits. Runs parallel to ::hits()
       - float             subdetectorEnergies // Energies observed in each subdetector used for this cluster.
     OneToManyRelations:
