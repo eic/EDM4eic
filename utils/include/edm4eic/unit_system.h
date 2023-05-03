@@ -38,8 +38,8 @@ namespace edm4eic {
     // energy
     static constexpr GeV = 1.0; // giga electron volt
     static constexpr MeV = 1e-3 * GeV; // mega electron volt
-    static constexpr keV = 1e-6 * GeV; // mega electron volt
-    static constexpr eV = 1e-9 * GeV; // mega electron volt
+    static constexpr keV = 1e-6 * GeV; // kilo electron volt
+    static constexpr eV = 1e-9 * GeV; // electron volt
 
   }
 
