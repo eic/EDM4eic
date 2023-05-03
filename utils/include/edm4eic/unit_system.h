@@ -15,18 +15,18 @@ namespace edm4eic {
     // +------------+---------------------|-----------------+
     // | Geant      | TGeo                | EDM4hep/EDM4eic |
     // +------------+---------------------|-----------------+
-    // | milimeter  | centimeter          | centimeter      |
+    // | milimeter  | centimeter          | milimeter       |
     // | nanosecond | second              | nanosecond      |
     // | MeV        | GeV                 | GeV             |
     // +------------+---------------------|-----------------+
     //
 
     // distance
-    static constexpr double cm = 1.0; // centimeter
-    static constexpr double mm = 1e-1 * cm; // millimeter
-    static constexpr double micrometer = 1e-4 * cm; // micrometer
-    static constexpr double nm = 1e-7 * nm; // micrometer
-    static constexpr double m = 1e2 * cm; // meter
+    static constexpr double mm = 1.0; // millimeter
+    static constexpr double cm = 1e1 * mm; // centimeter
+    static constexpr double micrometer = 1e-3 * mm; // micrometer
+    static constexpr double nm = 1e-6 * mm; // micrometer
+    static constexpr double m = 1e3 * mm; // meter
 
     // time
     static constexpr ns = 1.0; // nano second
