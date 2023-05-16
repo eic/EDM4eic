@@ -29,17 +29,17 @@ namespace edm4eic {
     static constexpr double m = 1e3 * mm; // meter
 
     // time
-    static constexpr ns = 1.0; // nano second
-    static constexpr second = 1e9 * ns; // second
-    static constexpr milisecond = 1e6 * ns; // milisecond
-    static constexpr microsecond = 1e3 * ns; // milisecond
-    static constexpr ps = 1e-3 * ns; // pico second
+    static constexpr double ns = 1.0; // nano second
+    static constexpr double second = 1e9 * ns; // second
+    static constexpr double milisecond = 1e6 * ns; // milisecond
+    static constexpr double microsecond = 1e3 * ns; // milisecond
+    static constexpr double ps = 1e-3 * ns; // pico second
 
     // energy
-    static constexpr GeV = 1.0; // giga electron volt
-    static constexpr MeV = 1e-3 * GeV; // mega electron volt
-    static constexpr keV = 1e-6 * GeV; // kilo electron volt
-    static constexpr eV = 1e-9 * GeV; // electron volt
+    static constexpr double GeV = 1.0; // giga electron volt
+    static constexpr double MeV = 1e-3 * GeV; // mega electron volt
+    static constexpr double keV = 1e-6 * GeV; // kilo electron volt
+    static constexpr double eV = 1e-9 * GeV; // electron volt
 
   }
 
