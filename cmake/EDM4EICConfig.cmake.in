@@ -1,5 +1,5 @@
 @PACKAGE_INIT@
 
 include("@PACKAGE_TARGETS_INSTALL_PATH@")
-
+set_and_check(EDM4EIC_INCLUDE_DIR "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@")
 check_required_components(EDM4EIC)
