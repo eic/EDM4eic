@@ -276,7 +276,6 @@ datatypes:
     Description: "Cherenkov detector PID"
     Author: "A. Kiselev, C. Chatterjee, C. Dilks"
     Members:
-      - uint32_t          radiator          // Radiator number
       - float             npe               // Overall photoelectron count
       - float             refractiveIndex   // Average refractive index at the Cherenkov photons' vertices
       - float             photonEnergy      // Average energy for these Cherenkov photons [GeV]
