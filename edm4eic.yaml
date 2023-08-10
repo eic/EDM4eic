@@ -140,6 +140,7 @@ components:
       - edm4eic::Cov2f    directionError  // Error on the polar and azimuthal angles
       - float             pathlength      // Pathlength from the origin to this point
       - float             pathlengthError // Error on the pathlength
+      - int32_t           surface         // Surface on which the track point lies
 
   ## PID hypothesis from Cherenkov detectors
   edm4eic::CherenkovParticleIDHypothesis:
