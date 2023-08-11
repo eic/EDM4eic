@@ -98,6 +98,14 @@ else()
 endif()
 
 # -------------------------
+# add version files
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/EDM4EICVersion.h
+               ${CMAKE_CURRENT_BINARY_DIR}/EDM4EICVersion.h )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/EDM4EICVersion.h
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/edm4eic )
+
+# -------------------------
 # install library config
 include(CMakePackageConfigHelpers)
 
