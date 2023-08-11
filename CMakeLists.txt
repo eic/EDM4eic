@@ -2,9 +2,14 @@
 # Copyright (C) 2022 Whitney Armstrong, Sylvester Joosten, Wouter Deconinck
 
 cmake_minimum_required(VERSION 3.12)
+
 project(EDM4EIC
-  VERSION 1.1.0
   LANGUAGES CXX)
+
+SET( ${PROJECT_NAME}_VERSION_MAJOR 2 )
+SET( ${PROJECT_NAME}_VERSION_MINOR 0 )
+SET( ${PROJECT_NAME}_VERSION_PATCH 0 )
+SET( ${PROJECT_NAME}_VERSION  "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}" )
 
 # C++ standard
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "Set the C++ standard to be used")
