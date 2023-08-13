@@ -105,9 +105,9 @@ endif()
 # -------------------------
 # add version files
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/EDM4EICVersion.h
-               ${CMAKE_CURRENT_BINARY_DIR}/EDM4EICVersion.h )
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/EDM4EICVersion.h
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/EDM4eicVersion.h.in
+               ${CMAKE_CURRENT_BINARY_DIR}/EDM4eicVersion.h )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/EDM4eicVersion.h
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/edm4eic )
 
 # -------------------------
