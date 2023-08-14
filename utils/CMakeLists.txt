@@ -19,11 +19,11 @@ target_include_directories(edm4eic_utils
   )
 
 install(FILES
-  include/edm4eic/analysis_utils.h
-  include/edm4eic/unit_system.h
-  include/edm4eic/vector_utils.h
-  include/edm4eic/vector_utils_legacy.h
-  DESTINATION include/edm4eic
+  include/edm4eic/utils/analysis_utils.h
+  include/edm4eic/utils/unit_system.h
+  include/edm4eic/utils/vector_utils.h
+  include/edm4eic/utils/vector_utils_legacy.h
+  DESTINATION include/edm4eic/utils
   )
 
 install(TARGETS edm4eic_utils
