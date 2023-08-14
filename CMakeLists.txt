@@ -54,6 +54,7 @@ add_library(edm4eic::edm4eicDict ALIAS edm4eicDict )
 list(APPEND EDM4EIC_INSTALL_LIBS edm4eic edm4eicDict)
 
 add_subdirectory(utils)
+add_subdirectory(test)
 
 install(TARGETS ${EDM4EIC_INSTALL_LIBS}
   EXPORT ${PROJECT_NAME}Targets
