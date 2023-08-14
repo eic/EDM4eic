@@ -12,7 +12,7 @@
 // Some preprocessor constants and macros for the use cases where they might be
 // necessary
 
-/// Define a version to be used in EDM4EIC.
+/// Define a version to be used in edm4eic.
 #define EDM4EIC_VERSION(major, minor, patch) ((UINT64_C(major) << 32) | (UINT64_C(minor) << 16) | (UINT64_C(patch)))
 /// Get the major version from a preprocessor defined version
 #define EDM4EIC_MAJOR_VERSION(v) (((v) & (-1UL >> 16)) >> 32)
@@ -30,7 +30,7 @@
 /// The encoded version with which EDM4EIC has been built
 #define EDM4EIC_BUILD_VERSION EDM4EIC_VERSION(EDM4EIC_VERSION_MAJOR, EDM4EIC_VERSION_MINOR, EDM4EIC_VERSION_PATCH)
 
-namespace EDM4EIC::version {
+namespace edm4eic::version {
 
   /**
    * Version class consisting of 3 16 bit unsigned integers to hold the major,
