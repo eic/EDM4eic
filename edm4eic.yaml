@@ -340,9 +340,8 @@ datatypes:
     VectorMembers:
       - float             measurementChi2   // Chi2 for each of the measurements
       - float             outlierChi2       // Chi2 for each of the outliers
-    OneToOneRelations:
-      - edm4eic::TrackParameters trackParameters // Associated track parameters, if any
     OneToManyRelations:
+      - edm4eic::TrackParameters trackParameters // Associated track parameters, if any
       - edm4eic::TrackerHit  measurementHits // Measurement hits used in this trajectory
       - edm4eic::TrackerHit  outlierHits     // Outlier hits not used in this trajectory
   
@@ -375,8 +374,10 @@ datatypes:
       - float             time              // Track time at the vertex [ns]
       - float             timeError         // Error on the track vertex time
       - float             charge            // Particle charge
+    OneToOneRelations:
+      - edm4eic::Trajectory trajectory      // Trajectory of this track
+      - edm4eic::Vertex   vertex            // Track vertex of this track
     OneToManyRelations:
-      - edm4eic::TrackParameters parameters // Track fit parameters, the first entry (if present) is evaluated at the track head
       - edm4eic::TrackerHit trackerHits     // Hits that were used for this track
       - edm4eic::Track    tracks            // Tracks (segments) that have been combined to create this track
 
