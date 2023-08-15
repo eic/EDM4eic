@@ -2,9 +2,14 @@
 # Copyright (C) 2022 Whitney Armstrong, Sylvester Joosten, Wouter Deconinck
 
 cmake_minimum_required(VERSION 3.12)
+
 project(EDM4EIC
-  VERSION 1.1.0
   LANGUAGES CXX)
+
+SET( ${PROJECT_NAME}_VERSION_MAJOR 2 )
+SET( ${PROJECT_NAME}_VERSION_MINOR 1 )
+SET( ${PROJECT_NAME}_VERSION_PATCH 0 )
+SET( ${PROJECT_NAME}_VERSION  "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}" )
 
 # C++ standard
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "Set the C++ standard to be used")
@@ -98,6 +103,14 @@ else()
 endif()
 
 # -------------------------
+# add version files
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/EDM4eicVersion.h.in
+               ${CMAKE_CURRENT_BINARY_DIR}/EDM4eicVersion.h )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/EDM4eicVersion.h
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/edm4eic )
+
+# -------------------------
 # install library config
 include(CMakePackageConfigHelpers)
 
@@ -119,7 +132,7 @@ configure_package_config_file(
 
 write_basic_package_version_file(
   ${PROJECT_NAME}ConfigVersion.cmake
-  VERSION ${VERSION}
+  VERSION ${${PROJECT_NAME}_VERSION}
   COMPATIBILITY SameMajorVersion
   )
 
