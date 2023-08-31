@@ -140,8 +140,8 @@ components:
       - edm4eic::Cov2f    directionError  // Error on the polar and azimuthal angles
       - float             pathlength      // Pathlength from the origin to this point
       - float             pathlengthError // Error on the pathlength
-      - uint16_t          detectorID      // Detector to which the track point was propagated to
-      - uint16_t          surfaceID       // Surface on which the track point lies (for multiple surfaces per detector)
+      - uint64_t          surface         // Surface track was propagated to (possibly multiple per detector)
+      - uint16_t          system          // Detector system track was propagated to
 
   ## PID hypothesis from Cherenkov detectors
   edm4eic::CherenkovParticleIDHypothesis:
