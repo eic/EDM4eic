@@ -320,12 +320,16 @@ datatypes:
     Author: "W. Armstrong, S. Joosten"
     Members:
       - uint64_t          cellID            // The detector specific (geometrical) cell id.
-      - edm4hep::Vector3f position          // Hit (cell) position and time [mm, ns]
+      - edm4hep::Vector3f position          // Hit (cell) position and time [mm]
       - edm4eic::CovDiag3f positionError    // Covariance Matrix
-      - float             time              // Hit time
+      - edm4hep::Vector2f loc               // 2D location on surface
+      - edm4eic::Cov2f    locError          // Covariance on loc
+      - float             time              // Hit time [ns]
       - float             timeError         // Error on the time
       - float             edep              // Energy deposit in this hit [GeV]
       - float             edepError         // Error on the energy deposit [GeV]
+    OneToManyRelations:
+      - edm4eic::RawTrackerHit rawHits      // Raw hits clustered into point
 
   edm4eic::Trajectory:
     Description: "Raw trajectory from the tracking algorithm"
