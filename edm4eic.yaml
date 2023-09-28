@@ -327,6 +327,21 @@ datatypes:
       - float             edep              // Energy deposit in this hit [GeV]
       - float             edepError         // Error on the energy deposit [GeV]
 
+  edm4eic::Measurement2D:
+    Description: "2D measurement (on an arbitrary surface)"
+    Author: "W. Deconinck"
+    Members:
+      - uint64_t          surface           // Surface for bound coordinates (geometryID)
+      - edm4hep::Vector2f loc               // 2D location on surface
+      - edm4eic::Cov2f    locError          // Covariance on location
+      - float             time              // Measurement time
+      - float             timeError         // Error on the time
+      - edm4hep::Vector2f locTimeError      // Covariance on location and time
+    VectorMembers:
+      - float             weights           // Weight for each of the hits, mirrors hits array
+    OneToManyRelations:      
+      - edm4eic::TrackerHit hits            // Hits in this measurement (single or clustered)
+
   edm4eic::Trajectory:
     Description: "Raw trajectory from the tracking algorithm"
     Author: "S. Joosten, S. Li"
