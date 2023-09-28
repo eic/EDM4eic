@@ -2,6 +2,11 @@
 # Copyright (C) 2023 Sylvester Joosten, Whitney Armstrong, Wouter Deconinck, Christopher Dilks
 # Some datatypes based on EDM4hep. EDM4hep license applies to those sections.
 ---
+## Schema versioning
+## This is required to be an integer, and defined as 100*major+minor.
+## Patch level changes are required to be schema invariant.
+schema_version: 301
+
 options :
   # should getters / setters be prefixed with get / set?
   getSyntax: True
