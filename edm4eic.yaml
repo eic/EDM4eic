@@ -342,17 +342,16 @@ datatypes:
     Members:
       - uint64_t          surface           // Surface for bound coordinates (geometryID)
       - edm4hep::Vector2f loc               // 2D location on surface
-      - edm4eic::Cov2f    locError          // Covariance on location
       - float             time              // Measurement time
-      - float             timeError         // Error on the time
-      - edm4hep::Vector2f locTimeError      // Covariance on location and time
+      - edm4eic::Cov3f    covariance        // Covariance on location and time
     VectorMembers:
       - float             weights           // Weight for each of the hits, mirrors hits array
-    OneToManyRelations:      
+    OneToManyRelations:
       - edm4eic::TrackerHit hits            // Hits in this measurement (single or clustered)
 
+      
   edm4eic::Trajectory:
-    Description: "Raw trajectory from the tracking algorithm"
+    Description: "Raw trajectory from the tracking algorithm. What is called hit here is 2d measurement indeed."
     Author: "S. Joosten, S. Li"
     Members:
       - uint32_t          type              // 0 (does not have good track fit), 1 (has good track fit)
@@ -368,8 +367,8 @@ datatypes:
       - float             outlierChi2       // Chi2 for each of the outliers
     OneToManyRelations:
       - edm4eic::TrackParameters trackParameters // Associated track parameters, if any
-      - edm4eic::TrackerHit  measurementHits // Measurement hits used in this trajectory
-      - edm4eic::TrackerHit  outlierHits     // Outlier hits not used in this trajectory
+      - edm4eic::Measurement2D  measurementHits // Measurement hits used in this trajectory
+      - edm4eic::Measurement2D  outlierHits     // Outlier hits not used in this trajectory
   
   edm4eic::TrackParameters:
     Description: "ACTS Bound Track parameters"
