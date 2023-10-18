@@ -116,7 +116,6 @@ template <Vector3D V> double projection(const V& v, const V& v1) {
   return v * v1 / norm;
 }
 
-} // namespace edm4eic
 template <edm4eic::Vector2D V> V operator+(const V& v1, const V& v2) {
   return {edm4eic::vector_x(v1) + edm4eic::vector_x(v2),
           edm4eic::vector_y(v1) + edm4eic::vector_y(v2)};
@@ -153,5 +152,8 @@ template <edm4eic::VectorND V> V operator-(const V& v1, const V& v2) {
 template <edm4eic::VectorND V> V operator/(const V& v, const double d) {
   return (1. / d) * v;
 }
+
+} // namespace edm4eic
+
 #endif
 #endif
