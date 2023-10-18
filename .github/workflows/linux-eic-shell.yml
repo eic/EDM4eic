@@ -21,7 +21,7 @@ jobs:
         platform-release: "jug_xl:nightly"
         run: |
           PREFIX=${PWD}/install
-          cmake -B build -S . -DCMAKE_INSTALL_PREFIX=${PREFIX}
+          cmake -B build -S . -DCMAKE_INSTALL_PREFIX=${PREFIX} -DBUILD_TESTING=ON
           cmake --build build -- install
     - uses: actions/upload-artifact@v3
       with:

@@ -4,29 +4,30 @@
 find_package(ROOT REQUIRED COMPONENTS GenVector MathCore)
 find_package(CLI11 CONFIG)
 
-add_library(edm4eic_utils INTERFACE)
+add_library(utils INTERFACE)
+add_library(EDM4EIC::utils ALIAS utils)
 
-target_link_libraries(edm4eic_utils
+target_link_libraries(utils
   INTERFACE edm4eic
   INTERFACE EDM4HEP::edm4hep
   INTERFACE ROOT::GenVector ROOT::MathCore
   )
 
-target_include_directories(edm4eic_utils
+target_include_directories(utils
   INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   INTERFACE $<INSTALL_INTERFACE:include>
   )
 
 install(FILES
-  include/edm4eic/analysis_utils.h
-  include/edm4eic/unit_system.h
-  include/edm4eic/vector_utils.h
-  include/edm4eic/vector_utils_legacy.h
-  DESTINATION include/edm4eic
+  include/edm4eic/utils/analysis_utils.h
+  include/edm4eic/utils/unit_system.h
+  include/edm4eic/utils/vector_utils.h
+  include/edm4eic/utils/vector_utils_legacy.h
+  DESTINATION include/edm4eic/utils
   )
 
-install(TARGETS edm4eic_utils
+install(TARGETS utils
   EXPORT ${PROJECT_NAME}Targets
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
