@@ -141,7 +141,7 @@ components:
     ExtraCode:
       declaration: "
         Cov6f() : covariance{} {}\n
-        Cov6f(std::array<float> vcov) : covariance{vcov}{}\n
+        Cov6f(std::array<float, 21> vcov) : covariance{vcov}{}\n
 	float getCov(unsigned i, unsigned j) const {\n
 	  if(i > j) {\n
      	    std::swap(i, j);\n
