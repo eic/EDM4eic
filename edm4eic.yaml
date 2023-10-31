@@ -142,17 +142,11 @@ components:
       declaration: "
         Cov6f() : covariance{} {}\n
         Cov6f(std::array<float, 21> vcov) : covariance{vcov}{}\n
-	float getCov(unsigned i, unsigned j) const {\n
-	  if(i > j) {\n
-     	    std::swap(i, j);\n
-	  }\n
-	  return covariance[i + 1 + (j + 1) * (j) / 2 - 1];\n
-	}\n
-	void setCov(unsigned i, unsigned j, float val) {\n
+	float operator()(unsigned i, unsigned j) const {\n
 	  if(i > j) {\n
 	    std::swap(i, j);\n
-	  }\n
-	  covariance[i + 1 + (j + 1) * (j) / 2 - 1] = val;\n
+	    }\n
+	  return covariance[i + 1 + (j + 1) * (j) / 2 - 1];\n
 	}\n
       "
 
@@ -386,8 +380,6 @@ datatypes:
       - float             outlierChi2       // Chi2 for each of the outliers
     OneToManyRelations:
       - edm4eic::TrackParameters trackParameters // Associated track parameters, if any
-      - edm4eic::Measurement2D  measurementHits // Measurement hits used in this trajectory
-      - edm4eic::Measurement2D  outlierHits     // Outlier hits not used in this trajectory
   
   edm4eic::TrackParameters:
     Description: "ACTS Bound Track parameters"
@@ -400,10 +392,8 @@ datatypes:
       - float                phi               // Track azimuthal angle [rad]
       - float                qOverP            // [e/GeV]
       - float                time              // Track time [ns] 
+      - int32_t              pdg               // pdg pid for these parameters
       - edm4eic::Cov6f       covariance        // Full covariance in basis [l0,l1,theta,phi,q/p,t]
-  
-    OneToOneRelations:
-      - edm4eic::Trajectory trajectory      // Trajectory associated with these track parameters
 
 
   edm4eic::Track:
@@ -419,7 +409,7 @@ datatypes:
       - float              charge                         // Particle charge
       - float              chi2                           // Total chi2
       - uint32_t           ndf                            // Number of degrees of freedom
-      - uint32_t           pid                            // PDG particle ID hypothesis
+      - int32_t            pdg                            // PDG particle ID hypothesis
     OneToOneRelations:
       - edm4eic::Trajectory                     trajectory      // Trajectory of this track
     OneToManyRelations:
