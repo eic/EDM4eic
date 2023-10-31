@@ -142,7 +142,7 @@ components:
       declaration: "
         Cov6f() : covariance{} {}\n
         Cov6f(std::array<float, 21> vcov) : covariance{vcov}{}\n
-	float& operator()(unsigned i, unsigned j) const {\n
+	float& operator()(unsigned i, unsigned j) {\n
 	  if(i > j) {\n
 	    std::swap(i, j);\n
 	    }\n
@@ -413,7 +413,7 @@ datatypes:
     OneToOneRelations:
       - edm4eic::Trajectory                     trajectory      // Trajectory of this track
     OneToManyRelations:
-      - edm4eic::TrackerHit trackerHits       // Hits that were used for this track
+      - edm4eic::Measurement2D measurements      // Measurements that were used for this track
       - edm4eic::Track      tracks            // Tracks (segments) that have been combined to create this track
 
   edm4eic::TrackSegment:
