@@ -149,7 +149,20 @@ components:
 	  return covariance[i + 1 + (j + 1) * (j) / 2 - 1];\n
 	}\n
       "
-
+  edm4eic::Vector4f:
+    Members:
+      - float x
+      - float y
+      - float z
+      - float t
+    ExtraCode:
+      declaration: "
+      constexpr Vector4f() : x(0),y(0),z(0),t(0) {}\n
+      constexpr Vector4f(float xx, float yy, float zz, float tt) : x(xx),y(yy),z(zz),t(tt) {}\n
+      constexpr Vector4f(const float* v) : x(v[0]),y(v[1]),z(v[2]),t(v[3]) {}\n
+      constexpr bool operator==(const Vector4f& v) const { return (x==v.x&&y==v.y&&z==v.z&&t==v.t) ; }\n
+      constexpr float operator[](unsigned i) const { return *( &x + i ) ; }\n
+    "
   ## A point along a track
   edm4eic::TrackPoint:
     Members:
@@ -433,22 +446,16 @@ datatypes:
 
   edm4eic::Vertex:
     Description: "EIC vertex"
-    Author: "W. Armstrong, S. Joosten, based off EDM4hep"
+    Author: "J. Osborn"
     Members:
-      - int32_t             primary       // Boolean flag, if vertex is the primary vertex of the event
+      - int32_t             type       // Type flag, to identify what type of vertex it is (e.g. primary, secondary, generated, etc.)
       - float               chi2          // Chi-squared of the vertex fit
-      - float               probability   // Probability of the vertex fit
-      - edm4hep::Vector3f   position      // [mm] position of the vertex.
+      - int               ndf   // NDF of the vertex fit
+      - edm4eic::Vector4f   position      // [mm] position + time t0 of the vertex.
       ## this is named "covMatrix" in EDM4hep, renamed for consistency with the rest of edm4eic
-      - edm4eic::Cov3f      positionError // Covariance matrix of the position 
-      - int32_t             algorithmType // Type code for the algorithm that has been used to create the vertex - check/set the collection parameters AlgorithmName and AlgorithmType. 
-      ## Additional parameter not in EDM4hep: vertex time
-      - float               time          // Vertex time
-    VectorMembers:
-      - float               parameters    // Additional parameters related to this vertex - check/set the collection parameter "VertexParameterNames" for the parameters meaning. 
-    OneToOneRelations:
-      ## @TODO: why one and not multiple particles?
-      - edm4eic::ReconstructedParticle associatedParticle // reconstructed particle associated to this vertex.
+      - edm4eic::Cov4f      positionError // Covariance matrix of the position+time 
+    OneToManyRelations:
+      - edm4eic::ReconstructedParticle associatedParticles // particles associated to this vertex.
 
   ## ==========================================================================
   ## Kinematic reconstruction
