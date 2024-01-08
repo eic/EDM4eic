@@ -149,7 +149,6 @@ components:
 	  return covariance[i + 1 + (j + 1) * (j) / 2 - 1];\n
 	}\n
       "
- 
   ## A point along a track
   edm4eic::TrackPoint:
     Members:
