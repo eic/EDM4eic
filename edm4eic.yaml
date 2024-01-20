@@ -395,6 +395,17 @@ datatypes:
       - int32_t              pdg               // pdg pid for these parameters
       - edm4eic::Cov6f       covariance        // Full covariance in basis [l0,l1,theta,phi,q/p,t]
 
+  edm4eic::TrackSeed:
+    Description: "save seed info from the realistic seed finder"
+    Author: "S. Li"
+    Members:
+      - edm4hep::Vector3f  perigee   // line surface to create the perigee 
+    OneToManyRelations:
+      - edm4eic::TrackerHit triplets // three tracker hits used to form the seed 
+    oneToOneRelations:
+      - edm4eic::TrackParameters seedParams  // initial track parameters from fitting the triplet
+
+
 
   edm4eic::Track:
     Description: "Track information at the vertex"
@@ -523,5 +534,15 @@ datatypes:
       - float                 weight        // weight of this association
     OneToOneRelations:
      - edm4eic::RawTrackerHit rawHit        // reference to the digitized hit
+    OneToManyRelations:
+     - edm4hep::SimTrackerHit simHits       // reference to the simulated hits
+
+  edm4eic::MCRecoTrackerHitAssociation:
+    Description: "Association between a ReconstructedTrackerHit and a SimTrackerHit"
+    Author: "S. Li"
+    Members:
+      - uint32_t              nSimHits      // number of simulated hits the reconstructed to the same tracker hit after digitization
+    OneToOneRelations:
+     - edm4eic::TrackerHit    trackHit      // reference to the reconstructed hit
     OneToManyRelations:
      - edm4hep::SimTrackerHit simHits       // reference to the simulated hits
