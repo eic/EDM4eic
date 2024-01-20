@@ -142,12 +142,18 @@ components:
       declaration: "
         Cov6f() : covariance{} {}\n
         Cov6f(std::array<float, 21> vcov) : covariance{vcov}{}\n
-	float& operator()(unsigned i, unsigned j) const {\n
-	  if(i > j) {\n
-	    std::swap(i, j);\n
-	    }\n
-	  return covariance[i + 1 + (j + 1) * (j) / 2 - 1];\n
-	}\n
+        float operator()(unsigned i, unsigned j) const {\n
+          if(i > j) {\n
+            std::swap(i, j);\n
+            }\n
+          return covariance[i + 1 + (j + 1) * (j) / 2 - 1];\n
+        }\n
+        float& operator()(unsigned i, unsigned j) {\n
+          if(i > j) {\n
+            std::swap(i, j);\n
+            }\n
+          return covariance[i + 1 + (j + 1) * (j) / 2 - 1];\n
+        }\n
       "
 
   ## A point along a track
