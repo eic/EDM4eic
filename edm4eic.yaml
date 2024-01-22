@@ -351,7 +351,7 @@ datatypes:
       - float             edep              // Energy deposit in this hit [GeV]
       - float             edepError         // Error on the energy deposit [GeV]
     OneToOneRelations:
-      - edm4eic::RawTrackerHit rawHits      // reference to raw hits. should be one to one. 
+      - edm4eic::RawTrackerHit rawHit       // reference to raw hits. should be one to one. 
 
   edm4eic::Measurement2D:
     Description: "2D measurement (on an arbitrary surface)"
@@ -542,12 +542,15 @@ datatypes:
     OneToManyRelations:
       - edm4hep::SimTrackerHit simHits       // reference to the simulated hits
 
-  edm4eic::MCRecoTrackerHitAssociation:
-    Description: "Association between a ReconstructedTrackerHit and a SimTrackerHit"
-    Author: "S. Li"
-    Members:
-     - float                 weight        // weight of this association
+
+  edm4eic::MCParticleRecoHitAssociation:
+    Description: "Association between a TrackHit and MCParticles. One tracker hit can be linked to multiple raw hits hence multiple particles"
+    Author : "S. Li"
+    VectorMembers:
+      - uint32_t          simIDs             // Index of corresponding MCParticles (position in MCParticles array)
+      - float             weights            // weight of this association
     OneToOneRelations:
-     - edm4eic::TrackerHit    trackHit      // reference to the reconstructed hit
+      - edm4eic::TrackerHit trackHit        // reference to the hit
     OneToManyRelations:
-     - edm4hep::SimTrackerHit simHits       // reference to the simulated hits
+      - edm4hep::MCParticle mcParticles     // reference to the Monte-Carlo particle
+
