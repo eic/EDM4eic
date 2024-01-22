@@ -350,6 +350,8 @@ datatypes:
       - float             timeError         // Error on the time
       - float             edep              // Energy deposit in this hit [GeV]
       - float             edepError         // Error on the energy deposit [GeV]
+    OneToOneRelations:
+      - edm4eic::RawTrackerHit rawHits      // reference to raw hits. should be one to one. 
 
   edm4eic::Measurement2D:
     Description: "2D measurement (on an arbitrary surface)"
@@ -365,22 +367,8 @@ datatypes:
       - edm4eic::TrackerHit hits            // Hits in this measurement (single or clustered)
 
       
-  edm4eic::Trajectory:
-    Description: "Raw trajectory from the tracking algorithm. What is called hit here is 2d measurement indeed."
-    Author: "S. Joosten, S. Li"
-    Members:
-      - uint32_t          type              // 0 (does not have good track fit), 1 (has good track fit)
-      - uint32_t          nStates           // Number of tracking steps
-      - uint32_t          nMeasurements     // Number of hits used 
-      - uint32_t          nOutliers         // Number of hits not considered 
-      - uint32_t          nHoles            // Number of missing hits
-      - uint32_t          nSharedHits       // Number of shared hits with other trajectories
-    VectorMembers:
-      - float             measurementChi2   // Chi2 for each of the measurements
-      - float             outlierChi2       // Chi2 for each of the outliers
-    OneToManyRelations:
-      - edm4eic::TrackParameters trackParameters // Associated track parameters, if any
-  
+
+    
   edm4eic::TrackParameters:
     Description: "ACTS Bound Track parameters"
     Author: "W. Armstrong, S. Joosten, J. Osborn"
@@ -399,12 +387,29 @@ datatypes:
     Description: "save seed info from the realistic seed finder"
     Author: "S. Li"
     Members:
-      - edm4hep::Vector3f  perigee   // line surface to create the perigee 
+      - edm4hep::Vector3f  perigee   // vector to create the perigee (line surface)
     OneToManyRelations:
-      - edm4eic::TrackerHit triplets // three tracker hits used to form the seed 
+      - edm4eic::TrackerHit triplet  // three tracker hits used to form the seed 
     oneToOneRelations:
       - edm4eic::TrackParameters seedParams  // initial track parameters from fitting the triplet
 
+  edm4eic::Trajectory:
+    Description: "Raw trajectory from the tracking algorithm. What is called hit here is 2d measurement indeed."
+    Author: "S. Joosten, S. Li"
+    Members:
+      - uint32_t          type              // 0 (does not have good track fit), 1 (has good track fit)
+      - uint32_t          nStates           // Number of tracking steps
+      - uint32_t          nMeasurements     // Number of hits used 
+      - uint32_t          nOutliers         // Number of hits not considered 
+      - uint32_t          nHoles            // Number of missing hits
+      - uint32_t          nSharedHits       // Number of shared hits with other trajectories
+    VectorMembers:
+      - float             measurementChi2   // Chi2 for each of the measurements
+      - float             outlierChi2       // Chi2 for each of the outliers
+    OneToManyRelations:
+      - edm4eic::TrackParameters trackParameters // Associated track parameters, if any
+    OneToOneRelations:
+      - edm4eic::TrackSeed seed // Associated seed
 
 
   edm4eic::Track:
@@ -531,17 +536,17 @@ datatypes:
     Description: "Association between a RawTrackerHit and a SimTrackerHit"
     Author: "C. Dilks, W. Deconinck"
     Members:
-      - float                 weight        // weight of this association
+      - float                 weight         // weight of this association
     OneToOneRelations:
-     - edm4eic::RawTrackerHit rawHit        // reference to the digitized hit
+      - edm4eic::RawTrackerHit rawHit        // reference to the digitized hit
     OneToManyRelations:
-     - edm4hep::SimTrackerHit simHits       // reference to the simulated hits
+      - edm4hep::SimTrackerHit simHits       // reference to the simulated hits
 
   edm4eic::MCRecoTrackerHitAssociation:
     Description: "Association between a ReconstructedTrackerHit and a SimTrackerHit"
     Author: "S. Li"
     Members:
-      - uint32_t              nSimHits      // number of simulated hits the reconstructed to the same tracker hit after digitization
+     - float                 weight        // weight of this association
     OneToOneRelations:
      - edm4eic::TrackerHit    trackHit      // reference to the reconstructed hit
     OneToManyRelations:
