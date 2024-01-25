@@ -386,8 +386,8 @@ datatypes:
       - float             outlierChi2       // Chi2 for each of the outliers
     OneToManyRelations:
       - edm4eic::TrackParameters trackParameters            // Associated track parameters, if any
-      - edm4eic::Measurement2D measurements_depracated      // Measurements that were used for this track. Will move this to the edm4eic::Track
-      - edm4eic::Measurement2D outliers_depracated          // Measurements that were not used for this track. Will move this to the edm4eic::Track
+      - edm4eic::Measurement2D measurements_deprecated      // Measurements that were used for this track. Will move this to the edm4eic::Track
+      - edm4eic::Measurement2D outliers_deprecated          // Measurements that were not used for this track. Will move this to the edm4eic::Track
   
   edm4eic::TrackParameters:
     Description: "ACTS Bound Track parameters"
