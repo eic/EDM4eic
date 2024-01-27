@@ -370,6 +370,15 @@ datatypes:
     OneToManyRelations:
       - edm4eic::TrackerHit hits            // Hits in this measurement (single or clustered)
 
+  edm4eic::TrackSeed:
+    Description: "save seed info from the realistic seed finder"
+    Author: "S. Li, B. Schmookler, J. Osborn"
+    Members:
+      - edm4hep::Vector3f  perigee   // vector to create the perigee (line surface)
+    OneToManyRelations:
+      - edm4eic::TrackerHit triplet  // three tracker hits that are used to form the seed 
+    oneToOneRelations:
+      - edm4eic::TrackParameters params  // initial track parameters from fitting the triplet
       
   edm4eic::Trajectory:
     Description: "Raw trajectory from the tracking algorithm. What is called hit here is 2d measurement indeed."
@@ -388,7 +397,9 @@ datatypes:
       - edm4eic::TrackParameters trackParameters            // Associated track parameters, if any
       - edm4eic::Measurement2D measurements_deprecated      // Measurements that were used for this track. Will move this to the edm4eic::Track
       - edm4eic::Measurement2D outliers_deprecated          // Measurements that were not used for this track. Will move this to the edm4eic::Track
-  
+    OneToOneRelations:
+      - edm4eic::TrackSeed      seed      // seed used to create this track
+
   edm4eic::TrackParameters:
     Description: "ACTS Bound Track parameters"
     Author: "W. Armstrong, S. Joosten, J. Osborn"
