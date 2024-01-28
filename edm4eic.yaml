@@ -376,7 +376,7 @@ datatypes:
     Members:
       - edm4hep::Vector3f  perigee   // vector to create the perigee (line surface)
     OneToManyRelations:
-      - edm4eic::TrackerHit triplet  // three tracker hits that are used to form the seed 
+      - edm4eic::TrackerHit hits  // tracker hits that are used to form the seed 
     oneToOneRelations:
       - edm4eic::TrackParameters params  // initial track parameters from fitting the triplet
       
