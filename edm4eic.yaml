@@ -371,7 +371,7 @@ datatypes:
       - edm4eic::TrackerHit hits            // Hits in this measurement (single or clustered)
 
   edm4eic::TrackSeed:
-    Description: "seed info from the realistic seed finder"
+    Description: "Seed info from the realistic seed finder"
     Author: "S. Li, B. Schmookler, J. Osborn"
     Members:
       - edm4hep::Vector3f         perigee   // Vector for the perigee (line surface)
