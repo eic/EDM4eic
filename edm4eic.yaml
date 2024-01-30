@@ -398,7 +398,7 @@ datatypes:
       - edm4eic::Measurement2D measurements_deprecated      // Measurements that were used for this track. Will move this to the edm4eic::Track
       - edm4eic::Measurement2D outliers_deprecated          // Measurements that were not used for this track. Will move this to the edm4eic::Track
     OneToOneRelations:
-      - edm4eic::TrackSeed      seed      // Reference to the corresponding CKF seed
+      - edm4eic::TrackSeed      seed      // Corresponding track seed
 
   edm4eic::TrackParameters:
     Description: "ACTS Bound Track parameters"
