@@ -544,3 +544,15 @@ datatypes:
      - edm4eic::RawTrackerHit rawHit        // reference to the digitized hit
     OneToManyRelations:
      - edm4hep::SimTrackerHit simHits       // reference to the simulated hits
+
+
+  edm4eic::MCParticleRecoHitAssociation:
+    Description: "Association between a TrackerHit and MCParticles. One tracker hit can be linked to multiple simulation hits hence multiple particles"
+    Author : "S. Li"
+    VectorMembers:
+      - uint32_t            simIDs          // Index of corresponding MCParticles (position in MCParticles array)
+      - float               weights         // weight of this association
+    OneToOneRelations:
+      - edm4eic::TrackerHit trackHit        // reference to the hit
+    OneToManyRelations:
+      - edm4hep::MCParticle mcParticles     // reference to the Monte-Carlo particle
