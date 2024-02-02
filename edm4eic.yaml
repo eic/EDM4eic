@@ -438,7 +438,7 @@ datatypes:
       - int32_t             type          // Type flag, to identify what type of vertex it is (e.g. primary, secondary, generated, etc.)
       - float               chi2          // Chi-squared of the vertex fit
       - int                 ndf           // NDF of the vertex fit
-      - edm4hep::Vector4f   position      // [mm] position + time t0 of the vertex. Time is 4th component in vector
+      - edm4hep::Vector4f   position      // position [mm] + time t0 [ns] of the vertex. Time is 4th component in vector
       ## this is named "covMatrix" in EDM4hep, renamed for consistency with the rest of edm4eic
       - edm4eic::Cov4f      positionError // Covariance matrix of the position+time. Time is 4th component, similarly to 4vector 
     OneToManyRelations:
