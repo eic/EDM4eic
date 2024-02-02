@@ -452,22 +452,16 @@ datatypes:
 
   edm4eic::Vertex:
     Description: "EIC vertex"
-    Author: "W. Armstrong, S. Joosten, based off EDM4hep"
+    Author: "J. Osborn"
     Members:
-      - int32_t             primary       // Boolean flag, if vertex is the primary vertex of the event
+      - int32_t             type          // Type flag, to identify what type of vertex it is (e.g. primary, secondary, generated, etc.)
       - float               chi2          // Chi-squared of the vertex fit
-      - float               probability   // Probability of the vertex fit
-      - edm4hep::Vector3f   position      // [mm] position of the vertex.
+      - int                 ndf           // NDF of the vertex fit
+      - edm4hep::Vector4f   position      // position [mm] + time t0 [ns] of the vertex. Time is 4th component in vector
       ## this is named "covMatrix" in EDM4hep, renamed for consistency with the rest of edm4eic
-      - edm4eic::Cov3f      positionError // Covariance matrix of the position 
-      - int32_t             algorithmType // Type code for the algorithm that has been used to create the vertex - check/set the collection parameters AlgorithmName and AlgorithmType. 
-      ## Additional parameter not in EDM4hep: vertex time
-      - float               time          // Vertex time
-    VectorMembers:
-      - float               parameters    // Additional parameters related to this vertex - check/set the collection parameter "VertexParameterNames" for the parameters meaning. 
-    OneToOneRelations:
-      ## @TODO: why one and not multiple particles?
-      - edm4eic::ReconstructedParticle associatedParticle // reconstructed particle associated to this vertex.
+      - edm4eic::Cov4f      positionError // Covariance matrix of the position+time. Time is 4th component, similarly to 4vector 
+    OneToManyRelations:
+      - edm4eic::ReconstructedParticle associatedParticles // particles associated to this vertex.
 
   ## ==========================================================================
   ## Kinematic reconstruction
