@@ -538,3 +538,14 @@ datatypes:
      - edm4eic::RawTrackerHit rawHit        // reference to the digitized hit
     OneToManyRelations:
      - edm4hep::SimTrackerHit simHits       // reference to the simulated hits
+
+  edm4eic::TrackClusterMatch:
+    Description: "Association between a Cluster and a ReconstructedParticle"
+    Author : "D. Brandenburg"
+    Members:
+      - uint32_t          cluID             // Index of corresponding cluster (position in cluster array)
+      - uint32_t          plcID             // Index of corresponding ReconstructedParticle (position in reco particle array)
+      - float             weight            // weight of this association
+    OneToOneRelations:
+      - edm4eic::Cluster  clu               // reference to the cluster
+      - edm4eic::ReconstructedParticle plc             // reference to the Reco particle
