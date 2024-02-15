@@ -549,9 +549,8 @@ datatypes:
   edm4eic::MCParticleRecoHitAssociation:
     Description: "Association between a TrackerHit and MCParticles. One tracker hit can be linked to multiple simulation hits hence multiple particles"
     Author : "S. Li"
-    VectorMembers:
-      - float               weights         // weight of this association
+    Members:
+      - float               weight         // weight of this association
     OneToOneRelations:
       - edm4eic::TrackerHit trackHit        // reference to the hit
-    OneToManyRelations:
-      - edm4hep::MCParticle mcParticles     // reference to the Monte-Carlo particle
+      - edm4hep::MCParticle mcParticle     // reference to the Monte-Carlo particle
