@@ -481,6 +481,16 @@ datatypes:
       ## @TODO: Spin state?
       ## - phi_S?
 
+  edm4eic::HadronicFinalState:
+    Description: "Summed quantities of the hadronic final state"
+    Author: "T. Kutz"
+    Members:
+      - float             sigma             // Longitudinal energy-momentum balance (aka E - pz)
+      - float             pT                // Transverse momentum
+      - float             gamma             // Hadronic angle
+    OneToManyRelations:
+      - edm4eic::ReconstructedParticle hadrons // Reconstructed hadrons used in calculation
+
   ## ==========================================================================
   ## Data-Montecarlo relations
   ## ==========================================================================
