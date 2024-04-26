@@ -350,7 +350,7 @@ datatypes:
     Author: "W. Armstrong, S. Joosten"
     Members:
       - uint64_t          cellID            // The detector specific (geometrical) cell id.
-      - edm4hep::Vector3f position          // Hit (cell) position and time [mm, ns]
+      - edm4hep::Vector3f position          // Hit (cell) position [mm]
       - edm4eic::CovDiag3f positionError    // Covariance Matrix
       - float             time              // Hit time
       - float             timeError         // Error on the time
