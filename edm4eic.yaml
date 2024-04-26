@@ -352,7 +352,7 @@ datatypes:
       - uint64_t          cellID            // The detector specific (geometrical) cell id.
       - edm4hep::Vector3f position          // Hit (cell) position [mm]
       - edm4eic::CovDiag3f positionError    // Covariance Matrix
-      - float             time              // Hit time
+      - float             time              // Hit time [ns]
       - float             timeError         // Error on the time
       - float             edep              // Energy deposit in this hit [GeV]
       - float             edepError         // Error on the energy deposit [GeV]
