@@ -546,5 +546,4 @@ datatypes:
       - float                 weight        // weight of this association
     OneToOneRelations:
      - edm4eic::RawTrackerHit rawHit        // reference to the digitized hit
-    OneToManyRelations:
-     - edm4hep::SimTrackerHit simHits       // reference to the simulated hits
+     - edm4hep::SimTrackerHit simHit       // reference to the simulated hit
