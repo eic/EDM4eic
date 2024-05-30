@@ -187,7 +187,7 @@ components:
       - int boundsType                    // eCone = 0, eCylinder = 1, eDiamond = 2, eDisc = 3, eEllipse = 4, eLine = 5, eRectangle = 6, eTrapezoid = 7, eTriangle = 8, eDiscTrapezoid = 9, eConvexPolygon = 10, eAnnulus = 11, eBoundless = 12, eOther = 13
       - uint64_t geometryId               // bit pattern volume:8,boundary:8,layer:12,approach:8,sensitive:20,extra:8
       - uint64_t identifier               // identifier of associated detector element, if available
-      - std::array<double,10> boundValues // bound values, e.g. for RectangleBounds: BoundValues : eMinX = 0, eMinY = 1, eMaxX = 2, eMaxY = 3, eSize = 4
+      - std::array<double,10> boundValues // bound values, e.g. for RectangleBounds, BoundValues are eMinX = 0, eMinY = 1, eMaxX = 2, eMaxY = 3, eSize = 4
       - uint32_t boundValuesSize          // size of bound values
       - std::array<double,16> transform   // row-wise 4x4 affine transform [R T; 0 1] with 3x3 rotation matrix R and translation column 3-vector T
 
