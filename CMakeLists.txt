@@ -28,7 +28,10 @@ endif(APPLE)
 
 include(GNUInstallDirs)
 
-find_package(podio 0.15 REQUIRED)
+find_package(podio 0.15)
+if(NOT podio_FOUND)
+  find_package(podio 1.0 REQUIRED)
+endif()
 include_directories(${podio_INCLUDE_DIR})
 
 find_package(EDM4HEP 0.10.3 REQUIRED)
