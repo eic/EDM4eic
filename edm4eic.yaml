@@ -367,7 +367,6 @@ datatypes:
       - float             timeError         // Error on the time
       - float             edep              // Energy deposit in this hit [GeV]
       - float             edepError         // Error on the energy deposit [GeV]
-      - float             weight            // Weight of association with raw hit
     OneToOneRelations:
       - edm4eic::RawTrackerHit rawHit       // Associated raw hit
       
