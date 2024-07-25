@@ -259,6 +259,8 @@ datatypes:
       - int32_t           sector            // Sector that this hit occurred in
       - int32_t           layer             // Layer that the hit occurred in
       - edm4hep::Vector3f local             // The local coordinates of the hit in the detector segment [mm]. 
+    OneToOneRelations:
+      - edm4eic::RawTrackerHit rawCalorimeterHit       // Related raw calorimeter hit
 
   ## ==========================================================================
   ## Clustering
@@ -368,7 +370,7 @@ datatypes:
       - float             edep              // Energy deposit in this hit [GeV]
       - float             edepError         // Error on the energy deposit [GeV]
     OneToOneRelations:
-      - edm4eic::RawTrackerHit rawHit       // Associated raw hit
+      - edm4eic::RawTrackerHit rawHit       // Related raw hit
       
   edm4eic::Measurement2D:
     Description: "2D measurement (on an arbitrary surface)"
