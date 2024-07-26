@@ -260,7 +260,7 @@ datatypes:
       - int32_t           layer             // Layer that the hit occurred in
       - edm4hep::Vector3f local             // The local coordinates of the hit in the detector segment [mm]. 
     OneToOneRelations:
-      - edm4eic::RawCalorimeterHit rawHit   // Related raw calorimeter hit
+      - edm4hep::RawCalorimeterHit rawHit   // Related raw calorimeter hit
 
   ## ==========================================================================
   ## Clustering
@@ -569,5 +569,5 @@ datatypes:
     Members:
       - float                 weight        // weight of this association
     OneToOneRelations:
-     - edm4eic::RawCalorimeterHit rawHit    // reference to the digitized calorimeter hit
+     - edm4hep::RawCalorimeterHit rawHit    // reference to the digitized calorimeter hit
      - edm4hep::SimCalorimeterHit simHit    // reference to the simulated calorimeter hit
