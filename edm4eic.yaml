@@ -565,7 +565,7 @@ datatypes:
 
   edm4eic::MCRecoCalorimeterHitAssociation:
     Description: "Association between a RawCalorimeterHit and a SimCalorimeterHit"
-    Author: "C. Dilks, W. Deconinck"
+    Author: "S. Rahman"
     Members:
       - float                 weight        // weight of this association
     OneToOneRelations:
