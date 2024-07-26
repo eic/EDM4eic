@@ -234,17 +234,6 @@ datatypes:
   ## ==========================================================================
   ## Calorimetry
   ## ==========================================================================
-  edm4eic::RawCalorimeterHit:
-    Description: "Raw (digitized) calorimeter hit"
-    Author: "W. Armstrong, S. Joosten"
-    Members:
-      - uint64_t           cellID            // The detector specific (geometrical) cell id.
-      - uint64_t           amplitude         // The magnitude of the hit in ADC counts.
-        ## @TODO: should we also add integral and time-over-threshold (ToT) here? Or should
-        ##        those all be different raw sensor types? Amplitude is
-        ##        really not what most calorimetry sensors will give us AFAIK...
-      - uint64_t           timeStamp         // Timing in TDC
-
   edm4eic::CalorimeterHit:
     Description: "Calorimeter hit"
     Author: "W. Armstrong, S. Joosten"
