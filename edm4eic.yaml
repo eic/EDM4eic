@@ -260,7 +260,7 @@ datatypes:
       - int32_t           layer             // Layer that the hit occurred in
       - edm4hep::Vector3f local             // The local coordinates of the hit in the detector segment [mm]. 
     OneToOneRelations:
-      - edm4eic::RawTrackerHit rawCalorimeterHit       // Related raw calorimeter hit
+      - edm4eic::RawCalorimeterHit rawCalorimeterHit       // Related raw calorimeter hit
 
   ## ==========================================================================
   ## Clustering
@@ -370,7 +370,7 @@ datatypes:
       - float             edep              // Energy deposit in this hit [GeV]
       - float             edepError         // Error on the energy deposit [GeV]
     OneToOneRelations:
-      - edm4eic::RawTrackerHit rawHit       // Related raw hit
+      - edm4eic::RawTrackerHit rawTrackerHit       // Related raw tracker hit
       
   edm4eic::Measurement2D:
     Description: "2D measurement (on an arbitrary surface)"
@@ -562,3 +562,12 @@ datatypes:
     OneToOneRelations:
      - edm4eic::RawTrackerHit rawHit        // reference to the digitized hit
      - edm4hep::SimTrackerHit simHit       // reference to the simulated hit
+
+  edm4eic::MCRecoCalorimeterHitAssociation:
+    Description: "Association between a RawCalorimeterHit and a SimCalorimeterHit"
+    Author: "C. Dilks, W. Deconinck"
+    Members:
+      - float                 weight        // weight of this association
+    OneToOneRelations:
+     - edm4eic::RawCalorimeterHit rawCalorimeterHit        // reference to the digitized calorimeter hit
+     - edm4hep::SimCalorimeterHit simCalorimeterHit        // reference to the simulated calorimeter hit
