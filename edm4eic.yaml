@@ -9,7 +9,7 @@
 ## If there are schema version changes that can be evolved, see the podio documentation
 ## for an example: https://github.com/hegner/podio/blob/master/tests/schema_evolution.yaml
 ##
-schema_version: 700
+schema_version: 701
 
 options :
   # should getters / setters be prefixed with get / set?
@@ -480,6 +480,7 @@ datatypes:
       - float             W                 // Invariant mass of final state [GeV]
       - float             y                 // Inelasticity (P.q/P.k)
       - float             nu                // Energy transfer P.q/M [GeV]
+      - edm4hep::Vector4f q                 // Four-momentum transfer vector
     OneToOneRelations:
       - edm4eic::ReconstructedParticle scat // Associated scattered electron (if identified)
       ## @TODO: Spin state?
