@@ -6,9 +6,9 @@ cmake_minimum_required(VERSION 3.12)
 project(EDM4EIC
   LANGUAGES CXX)
 
-SET( ${PROJECT_NAME}_VERSION_MAJOR 3 )
+SET( ${PROJECT_NAME}_VERSION_MAJOR 7 )
 SET( ${PROJECT_NAME}_VERSION_MINOR 0 )
-SET( ${PROJECT_NAME}_VERSION_PATCH 1 )
+SET( ${PROJECT_NAME}_VERSION_PATCH 0 )
 SET( ${PROJECT_NAME}_VERSION  "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}" )
 
 # C++ standard
@@ -28,10 +28,13 @@ endif(APPLE)
 
 include(GNUInstallDirs)
 
-find_package(podio 0.15 REQUIRED)
+find_package(podio 0.15)
+if(NOT podio_FOUND)
+  find_package(podio 1.0 REQUIRED)
+endif()
 include_directories(${podio_INCLUDE_DIR})
 
-find_package(EDM4HEP 0.4.1 REQUIRED)
+find_package(EDM4HEP 0.10.3 REQUIRED)
 
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
