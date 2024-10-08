@@ -562,11 +562,9 @@ datatypes:
       - edm4hep::SimCalorimeterHit simHit   // reference to the simulated calorimeter hit
 
   edm4eic::TrackClusterMatch:
-    Description: "Association between a Cluster and a ReconstructedParticle"
+    Description: "Match between a Cluster and a ReconstructedParticle"
     Author : "D. Brandenburg"
-    Members:
-      - float             weight            // weight of this association
     OneToOneRelations:
-      - edm4eic::Cluster  cluster           // reference to the cluster
+      - edm4eic::Cluster  cluster            // reference to the cluster
       - edm4eic::ReconstructedParticle track // reference to the Reco particle
 
