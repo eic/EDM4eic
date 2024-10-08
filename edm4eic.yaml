@@ -9,7 +9,7 @@
 ## If there are schema version changes that can be evolved, see the podio documentation
 ## for an example: https://github.com/hegner/podio/blob/master/tests/schema_evolution.yaml
 ##
-schema_version: 700
+schema_version: 800
 
 options :
   # should getters / setters be prefixed with get / set?
@@ -567,4 +567,3 @@ datatypes:
     OneToOneRelations:
       - edm4eic::Cluster  cluster           // reference to the cluster
       - edm4eic::Track track                // reference to the track
-
