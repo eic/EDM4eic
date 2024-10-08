@@ -565,6 +565,6 @@ datatypes:
     Description: "Match between a Cluster and a ReconstructedParticle"
     Author : "D. Brandenburg"
     OneToOneRelations:
-      - edm4eic::Cluster  cluster            // reference to the cluster
-      - edm4eic::ReconstructedParticle track // reference to the Reco particle
+      - edm4eic::Cluster  cluster           // reference to the cluster
+      - edm4eic::Track track                // reference to the track
 
