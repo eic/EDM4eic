@@ -563,7 +563,9 @@ datatypes:
 
   edm4eic::TrackClusterMatch:
     Description: "Match between a Cluster and a Track"
-    Author : "D. Brandenburg"
+    Author: "D. Anderson, D. Brandenburg, D. Kalinkin, S. Joosten"
+    Members:
+      - float                 weight        // weight of this association
     OneToOneRelations:
       - edm4eic::Cluster  cluster           // reference to the cluster
       - edm4eic::Track track                // reference to the track
