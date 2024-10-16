@@ -9,7 +9,7 @@
 ## If there are schema version changes that can be evolved, see the podio documentation
 ## for an example: https://github.com/hegner/podio/blob/master/tests/schema_evolution.yaml
 ##
-schema_version: 700
+schema_version: 800
 
 options :
   # should getters / setters be prefixed with get / set?
@@ -560,3 +560,12 @@ datatypes:
     OneToOneRelations:
       - edm4hep::RawCalorimeterHit rawHit   // reference to the digitized calorimeter hit
       - edm4hep::SimCalorimeterHit simHit   // reference to the simulated calorimeter hit
+
+  edm4eic::TrackClusterMatch:
+    Description: "Match between a Cluster and a Track"
+    Author: "D. Anderson, D. Brandenburg, D. Kalinkin, S. Joosten"
+    Members:
+      - float                 weight        // weight of this association
+    OneToOneRelations:
+      - edm4eic::Cluster  cluster           // reference to the cluster
+      - edm4eic::Track track                // reference to the track
