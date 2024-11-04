@@ -193,6 +193,16 @@ components:
 
 datatypes:
 
+  edm4eic::Tensor:
+    Description: "Tensor type for use in training in inference of ML models"
+    Author: "D. Kalinkin"
+    Members:
+      - int32_t           elementType     // Data type in the same encoding as "ONNXTensorElementDataType", 1 - float, 7 - int64
+    VectorMembers:
+      - int64_t           shape           // Vector of tensor lengths along its axes
+      - float             floatData       // Iff elementType==1, values are stored here
+      - int64_t           int64Data       // Iff elementType==7, values are stored here
+
   ## ==========================================================================
   ## Particle info
   ## ==========================================================================
