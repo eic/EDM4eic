@@ -561,45 +561,81 @@ datatypes:
     Description: "Used to keep track of the correspondence between MC and reconstructed particles"
     Author: "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
-      - uint32_t          recID             // Index of corresponding ReconstructedParticle (position in ReconstructedParticles array)
       - float             weight            // weight of this association
     OneToOneRelations :
       - edm4eic::ReconstructedParticle rec  // reference to the reconstructed particle
       - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
+    ExtraCode:
+      includes: "
+      #include <edm4eic/ReconstructedParticle.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      "
+      declaration: "
+      [[deprecated(\"use getSim().getObjectID().index instead\")]]
+      int getSimID() const { return getSim().getObjectID().index; }\n
+      [[deprecated(\"use getRec().getObjectID().index instead\")]]
+      int getRecID() const { return getRec().getObjectID().index; }\n
+      "
 
   edm4eic::MCRecoClusterParticleAssociation:
     Description: "Association between a Cluster and a MCParticle"
     Author : "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
-      - uint32_t          recID             // Index of corresponding Cluster (position in Clusters array)
       - float             weight            // weight of this association
     OneToOneRelations:
       - edm4eic::Cluster  rec               // reference to the cluster
       - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
+    ExtraCode:
+      includes: "
+      #include <edm4eic/Cluster.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      "
+      declaration: "
+      [[deprecated(\"use getSim().getObjectID().index instead\")]]
+      int getSimID() const { return getSim().getObjectID().index; }\n
+      [[deprecated(\"use getRec().getObjectID().index instead\")]]
+      int getRecID() const { return getRec().getObjectID().index; }\n
+      "
 
   edm4eic::MCRecoTrackParticleAssociation:
     Description: "Association between a Track and a MCParticle"
     Author : "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
-      - uint32_t          recID             // Index of corresponding Track (position in Tracks array)
       - float             weight            // weight of this association
     OneToOneRelations:
       - edm4eic::Track    rec               // reference to the track
       - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
+    ExtraCode:
+      includes: "
+      #include <edm4eic/Track.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      "
+      declaration: "
+      [[deprecated(\"use getSim().getObjectID().index instead\")]]
+      int getSimID() const { return getSim().getObjectID().index; }\n
+      [[deprecated(\"use getRec().getObjectID().index instead\")]]
+      int getRecID() const { return getRec().getObjectID().index; }\n
+      "
 
   edm4eic::MCRecoVertexParticleAssociation:
     Description: "Association between a Vertex and a MCParticle"
     Author : "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
-      - uint32_t          recID             // Index of corresponding Vertex (position in Vertices array)
       - float             weight            // weight of this association
     OneToOneRelations:
       - edm4eic::Vertex     rec             // reference to the vertex
       - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
+    ExtraCode:
+      includes: "
+      #include <edm4eic/Vertex.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      "
+      declaration: "
+      [[deprecated(\"use getSim().getObjectID().index instead\")]]
+      int getSimID() const { return getSim().getObjectID().index; }\n
+      [[deprecated(\"use getRec().getObjectID().index instead\")]]
+      int getRecID() const { return getRec().getObjectID().index; }\n
+      "
 
   edm4eic::MCRecoTrackerHitAssociation:
     Description: "Association between a RawTrackerHit and a SimTrackerHit"
