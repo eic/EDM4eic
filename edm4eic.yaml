@@ -576,6 +576,17 @@ datatypes:
       [[deprecated(\"use getRec().getObjectID().index instead\")]]
       int getRecID() const { return getRec().getObjectID().index; }\n
       "
+    MutableExtraCode:
+      includes: "
+      #include <edm4eic/ReconstructedParticle.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      " 
+      declaration: "
+      [[deprecated(\"use setSim() instead; this function does nothing\")]]
+      void setSimID(int) { }\n
+      [[deprecated(\"use setRec() instead; this function does nothing\")]]
+      void setRecID(int) { }\n
+      "
 
   edm4eic::MCRecoClusterParticleAssociation:
     Description: "Association between a Cluster and a MCParticle"
@@ -595,6 +606,17 @@ datatypes:
       int getSimID() const { return getSim().getObjectID().index; }\n
       [[deprecated(\"use getRec().getObjectID().index instead\")]]
       int getRecID() const { return getRec().getObjectID().index; }\n
+      "
+    MutableExtraCode:
+      includes: "
+      #include <edm4eic/Cluster.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      "
+      declaration: "
+      [[deprecated(\"use setSim() instead; this function does nothing\")]]
+      void setSimID(int) { }\n
+      [[deprecated(\"use setRec() instead; this function does nothing\")]]
+      void setRecID(int) { }\n
       "
 
   edm4eic::MCRecoTrackParticleAssociation:
@@ -616,6 +638,17 @@ datatypes:
       [[deprecated(\"use getRec().getObjectID().index instead\")]]
       int getRecID() const { return getRec().getObjectID().index; }\n
       "
+    MutableExtraCode:
+      includes: "
+      #include <edm4eic/Track.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      "
+      declaration: "
+      [[deprecated(\"use setSim() instead; this function does nothing\")]]
+      void setSimID(int) { }\n
+      [[deprecated(\"use setRec() instead; this function does nothing\")]]
+      void setRecID(int) { }\n
+      "
 
   edm4eic::MCRecoVertexParticleAssociation:
     Description: "Association between a Vertex and a MCParticle"
@@ -635,6 +668,17 @@ datatypes:
       int getSimID() const { return getSim().getObjectID().index; }\n
       [[deprecated(\"use getRec().getObjectID().index instead\")]]
       int getRecID() const { return getRec().getObjectID().index; }\n
+      "
+    MutableExtraCode:
+      includes: "
+      #include <edm4eic/Vertex.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      "
+      declaration: "
+      [[deprecated(\"use setSim() instead; this function does nothing\")]]
+      void setSimID(int) { }\n
+      [[deprecated(\"use setRec() instead; this function does nothing\")]]
+      void setRecID(int) { }\n
       "
 
   edm4eic::MCRecoTrackerHitAssociation:
