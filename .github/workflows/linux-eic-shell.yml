@@ -90,7 +90,7 @@ jobs:
     - run: |
         apk add tar bash
         # FIXME bash not really required: see https://github.com/actions/upload-pages-artifact/pull/14
-    - uses: actions/upload-pages-artifact@v1
+    - uses: actions/upload-pages-artifact@v3
       if: github.ref == 'refs/heads/main'
       with:
         path: build/docs/html/
@@ -109,4 +109,4 @@ jobs:
     steps:
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v1
+      uses: actions/deploy-pages@v4
