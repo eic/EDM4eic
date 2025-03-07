@@ -330,6 +330,12 @@ datatypes:
       - edm4eic::TrackSegment                  chargedParticle    // reconstructed charged particle
     OneToManyRelations:
       - edm4eic::MCRecoTrackerHitAssociation   rawHitAssociations // raw sensor hits, associated with MC hits
+      
+  edm4eic::IrtDebugInfo:
+    Description: "IRT 2.0 debugging sandbox"
+    Author: "A. Kiselev"
+    Members:
+      - float             dummy             // Some dummy value
 
   edm4eic::RingImage:
     ##@TODO: Juggler support; not used in EICrecon
