@@ -207,6 +207,30 @@ datatypes:
   ## Particle info
   ## ==========================================================================
 
+  edm4eic::ChargedRecoParticleCandidate:
+    Description: "Candidate charged reconstructed particle"
+    Author: "Tyler Kutz, Derek Anderson, Shujie Li"
+    OneToOneRelations:
+      - edm4eic::Track      track        // reconstructed track... other relations are matched to this
+    OneToManyRelations:
+      - edm4hep::ParticleID particleIDs  // associated particle IDs
+      - edm4eic::Cluster    ecalClusters // ECAL clusters matched to this track
+      - edm4eic::Cluster    hcalClusters // HCAL clusters matched to this track
+    VectorMembers:
+      - float               ecalWeights  // weights of matched ecal clusters
+      - float               hcalWeights  // weights of matched hcal clusters
+
+  edm4eic::NeutralRecoParticleCandidate:
+    Description: "Candidate neutral reconstructed particle"
+    Author: Tyler Kutz, Derek Anderson, Shujie Li
+    OneToManyRelations:
+      - edm4hep::ParticleID particleIDs  // associated particle IDs
+      - edm4eic::Cluster    ecalClusters // associated ECAL clusters
+      - edm4eic::Cluster    hcalClusters // associated HCAL clusters
+    VectorMembers:
+      - float               ecalWeights  // weights of associated ecal clusters
+      - float               hcalWeights  // weights of associated hcal clusters
+
   edm4eic::ReconstructedParticle:
     Description: "EIC Reconstructed Particle"
     Author: "W. Armstrong, S. Joosten, F. Gaede"
