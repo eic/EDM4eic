@@ -336,6 +336,8 @@ datatypes:
     Author: "A. Kiselev"
     Members:
       - float             dummy             // Some dummy value
+      - float             p                 // Some dummy value
+      - float             pdiff             // Some dummy value
 
   edm4eic::RingImage:
     ##@TODO: Juggler support; not used in EICrecon
