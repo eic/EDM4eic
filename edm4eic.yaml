@@ -245,15 +245,16 @@ datatypes:
   ## Calorimetry
   ## ==========================================================================
 
-  edm4eic::RawHGCROCHit:
-    Description: "Raw hit from an HGCROC"
+  edm4eic::RawCALOROCHit:
+    Description: "Raw hit from a CALOROC or similar HGCROC chip"
     Author: "D. Anderson"
     Members:
       - uint64_t cellID            // Detector specific (geometrical) cell id
       - int32_t  timeOfArrival     // [adc counts]
-      - int32_t  timeOverThreshold // [adc counts]
       - int32_t  amplitude         // [adc counts]
       - int32_t  timeStamp         // [adc counts]
+    VectorMembers:
+      - int32_t  timeOverThreshold // [adc counts]
 
   edm4eic::CalorimeterHit:
     Description: "Calorimeter hit"
