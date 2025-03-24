@@ -369,7 +369,7 @@ datatypes:
       - float             edep              // Energy deposit in this hit [GeV]
       - float             edepError         // Error on the energy deposit [GeV]
     OneToManyRelations:
-      - edm4eic::RawTrackerHit rawHit       // Related raw tracker hit
+      - edm4eic::RawTrackerHit rawHits      // Related raw tracker hit
       
   edm4eic::Measurement2D:
     Description: "2D measurement (on an arbitrary surface)"
