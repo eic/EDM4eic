@@ -252,13 +252,13 @@ datatypes:
       - int32_t  type              // Chip type, 0 - type 1A, 1 - type 1B
       - uint64_t cellID            // Detector specific (geometrical) cell id
       - int32_t  samplePhase       // Phase of samples in [# samples], for synchronizing across chips
-      - int32_t  timeOfArrival     // [adc counts]
-      - int32_t  timeOverThreshold // Total time over threshold [adc counts]
-      - int32_t  timeStamp         // [adc counts]
+      - int32_t  timeStamp         // [ns]
     VectorMembers:
       - int32_t  amplitude         // Iff type == 0, amplitudes of waveforms are stored here [adc counts]
       - int32_t  lowGainAmplitude  // Iff type == 1, low gain amplitudes of waveforms are stored here [adc counts]
       - int32_t  highGainAmplitude // Iff type == 1, high gain amplitudes of waveforms are stored here [ac counts]]
+      - int32_t  timeOfArrival     // Calculated times of arrival [TDC values]
+      - int32_t  timeOfThreshold   // Calculated times over threshold [TDC values]
     ExtraCode:
       declaration: "
         bool isType1A() const {return getType() == 0;}\n
