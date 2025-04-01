@@ -255,10 +255,10 @@ datatypes:
       - float               interval        // Time interval between amplitude values [ns].
     VectorMembers:
       - float               amplitude       // Pulse amplitude in [GeV], sum of amplitude values equals total energy
-    OneToOneRelations:
-      - edm4hep::MCParticle MCParticle      // MCParticle that caused the pulse
     OneToManyRelations:
       - edm4hep::SimCalorimeterHit hits     // SimCalorimeterHits used to create this pulse
+      - edm4hep::SimCalorimeterPulse pulses // SimCalorimeterPulses used to create this pulse
+      - edm4hep::MCParticle MCParticle      // MCParticle that caused the pulse
 
   edm4eic::CalorimeterHit:
     Description: "Calorimeter hit"
