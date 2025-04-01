@@ -249,13 +249,21 @@ datatypes:
     Description: "Raw hit from a CALOROC/HGCROC chip"
     Author: "D. Anderson"
     Members:
+      - int32_t  type              // Chip type, 0 - type 1A, 1 - type 1B
       - uint64_t cellID            // Detector specific (geometrical) cell id
       - int32_t  samplePhase       // Phase of samples in [# samples], for synchronizing across chips
       - int32_t  timeOfArrival     // [adc counts]
       - int32_t  timeOverThreshold // Total time over threshold [adc counts]
       - int32_t  timeStamp         // [adc counts]
     VectorMembers:
-      - int32_t  amplitude         // Amplitude of waveform at specific samples in [adc counts]
+      - int32_t  amplitude         // Iff type == 0, amplitudes of waveforms are stored here [adc counts]
+      - int32_t  lowGainAmplitude  // Iff type == 1, low gain amplitudes of waveforms are stored here [adc counts]
+      - int32_t  highGainAmplitude // Iff type == 1, high gain amplitudes of waveforms are stored here [ac counts]]
+    ExtraCode:
+      declaration: "
+        bool isType1A() const {return getType() == 0;}\n
+        bool isType1B() const {return getType() == 1;}\n
+      "
 
   edm4eic::CalorimeterHit:
     Description: "Calorimeter hit"
