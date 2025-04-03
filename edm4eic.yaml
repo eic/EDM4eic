@@ -245,8 +245,8 @@ datatypes:
   ## Calorimetry
   ## ==========================================================================
   edm4eic::SimCalorimeterPulse:
-    Description: "Simulated calorimeter pulse for single-particle waveforms prior to digi."
-    Author: "S. Joosten"
+    Description: "Simulated calorimeter pulse prior to digitization."
+    Author: "D. Anderson, S. Joosten"
     Members:
       - uint64_t            cellID          // ID of the readout cell for this pulse.
       - float               energy          // Total energy for this pulse in [GeV].
