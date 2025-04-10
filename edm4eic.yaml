@@ -258,7 +258,7 @@ datatypes:
       - int32_t  lowGainAmplitude  // Iff type == 1, low gain amplitudes of waveforms are stored here [adc counts]
       - int32_t  highGainAmplitude // Iff type == 1, high gain amplitudes of waveforms are stored here [ac counts]]
       - int32_t  timeOfArrival     // Calculated times of arrival [TDC]
-      - int32_t  timeOfThreshold   // Calculated times over threshold [TDC]
+      - int32_t  timeOverThreshold   // Calculated times over threshold [TDC counts]
     ExtraCode:
       declaration: "
         bool isType1A() const {return getType() == 0;}\n
