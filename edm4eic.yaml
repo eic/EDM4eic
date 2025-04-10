@@ -7,9 +7,9 @@
 ## Patch level changes are required to be schema invariant.
 ##
 ## If there are schema version changes that can be evolved, see the podio documentation
-## for an example: https://github.com/hegner/podio/blob/master/tests/schema_evolution.yaml
+## for an example: https://github.com/AIDASoft/podio/tree/master/tests/schema_evolution
 ##
-schema_version: 800
+schema_version: 801
 
 options :
   # should getters / setters be prefixed with get / set?
@@ -245,12 +245,12 @@ datatypes:
   ## Calorimetry
   ## ==========================================================================
   edm4eic::SimCalorimeterPulse:
-    Description: "Simulated calorimeter pulse prior to digitization."
+    Description: "Simulated calorimeter pulse prior to digitization, implements SimPulse."
     Author: "D. Anderson, S. Joosten"
     Members:
       - uint64_t            cellID          // ID of the readout cell for this pulse.
-      - float               energy          // Total energy for this pulse in [GeV].
-      - float               position        // Position of the hit in world coordinates [mm].
+      - float               integral        // Total pulse integral in relevant units.
+      - edm4hep::Vector3f   position        // Position of the hit in world coordinates [mm].
       - float               time            // Start time for the pulse in [ns].
       - float               interval        // Time interval between amplitude values [ns].
     VectorMembers:
@@ -595,3 +595,18 @@ datatypes:
     OneToOneRelations:
       - edm4eic::Cluster  cluster           // reference to the cluster
       - edm4eic::Track track                // reference to the track
+
+interfaces:
+  edm4eic:SimHit:
+    Author: "D. Anderson, S. Joosten"
+    Description: "Generic Simulated Pulse Interface Class"
+      - uint64_t            cellID          // ID of the readout cell for this pulse.
+      - float               integral        // Total pulse integral in relevant units.
+      - edm4hep::Vector3f   position        // Position of the hit in world coordinates [mm].
+      - float               time            // Start time for the pulse in [ns].
+      - float               interval        // Time interval between amplitude values [ns].
+    VectorMembers:
+      - float               amplitude       // Pulse amplitude in in relevant units, sum of amplitude values equals integral
+    Types:
+      - edm4eic::SimCalorimeterPulse
+
