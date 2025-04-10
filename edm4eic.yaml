@@ -252,7 +252,7 @@ datatypes:
       - int32_t  type              // Chip type, 0 - type 1A, 1 - type 1B
       - uint64_t cellID            // Detector specific (geometrical) cell id
       - int32_t  samplePhase       // Phase of samples in [# samples], for synchronizing across chips
-      - int32_t  timeStamp         // [TDC]
+      - int32_t  timeStamp         // [TDC counts]
     VectorMembers:
       - int32_t  amplitude         // Iff type == 0, amplitudes of waveforms are stored here [adc counts]
       - int32_t  lowGainAmplitude  // Iff type == 1, low gain amplitudes of waveforms are stored here [adc counts]
