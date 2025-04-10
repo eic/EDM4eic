@@ -258,7 +258,7 @@ datatypes:
     OneToManyRelations:
       - edm4hep::SimCalorimeterHit hits     // SimCalorimeterHits used to create this pulse
       - edm4hep::SimCalorimeterPulse pulses // SimCalorimeterPulses used to create this pulse
-      - edm4hep::MCParticle MCParticle      // MCParticle that caused the pulse
+      - edm4hep::MCParticle particle        // MCParticle that caused the pulse
 
   edm4eic::CalorimeterHit:
     Description: "Calorimeter hit"
