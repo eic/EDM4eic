@@ -595,18 +595,3 @@ datatypes:
     OneToOneRelations:
       - edm4eic::Cluster  cluster           // reference to the cluster
       - edm4eic::Track track                // reference to the track
-
-interfaces:
-  edm4eic:SimHit:
-    Author: "D. Anderson, S. Joosten"
-    Description: "Generic Simulated Pulse Interface Class"
-      - uint64_t            cellID          // ID of the readout cell for this pulse.
-      - float               integral        // Total pulse integral in relevant units.
-      - edm4hep::Vector3f   position        // Position of the hit in world coordinates [mm].
-      - float               time            // Start time for the pulse in [ns].
-      - float               interval        // Time interval between amplitude values [ns].
-    VectorMembers:
-      - float               amplitude       // Pulse amplitude in in relevant units, sum of amplitude values equals integral
-    Types:
-      - edm4eic::SimCalorimeterPulse
-
