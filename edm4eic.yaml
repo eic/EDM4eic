@@ -213,7 +213,7 @@ datatypes:
     Members:
       - uint64_t            cellID          // ID of the readout cell for this pulse.
       - float               integral        // Total pulse integral in relevant units.
-      - edm4hep::Vector3f   position        // Position of the hit in world coordinates [mm].
+      + edm4hep::Vector3f   position        // Position the pulse is evaluated in world coordinates [mm].
       - float               time            // Start time for the pulse in [ns].
       - float               interval        // Time interval between amplitude values [ns].
     VectorMembers:
