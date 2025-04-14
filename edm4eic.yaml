@@ -203,6 +203,23 @@ datatypes:
       - float             floatData       // Iff elementType==1, values are stored here
       - int64_t           int64Data       // Iff elementType==7, values are stored here
 
+  edm4eic::SimPulse:
+    Description: "Simulated calorimeter pulse prior to digitization, implements SimPulse."
+    Author: "D. Anderson, S. Joosten"
+    Members:
+      - uint64_t            cellID          // ID of the readout cell for this pulse.
+      - float               integral        // Total pulse integral in relevant units.
+      - edm4hep::Vector3f   position        // Position of the hit in world coordinates [mm].
+      - float               time            // Start time for the pulse in [ns].
+      - float               interval        // Time interval between amplitude values [ns].
+    VectorMembers:
+      - float               amplitude       // Pulse amplitude in in relevant units, sum of amplitude values equals integral
+    OneToManyRelations:
+      - edm4hep::SimCalorimeterHit   calorimeterHits // SimCalorimeterHits used to create this pulse
+      - edm4hep::SimTrackerHit       trackerHits     // SimTrackerHits used to create this pulse
+      - edm4eic::SimCalorimeterPulse pulses          // SimCalorimeterPulses used to create this pulse
+      - edm4hep::MCParticle          particle        // MCParticle that caused the pulse
+
   ## ==========================================================================
   ## Particle info
   ## ==========================================================================
@@ -244,22 +261,6 @@ datatypes:
   ## ==========================================================================
   ## Calorimetry
   ## ==========================================================================
-  edm4eic::SimCalorimeterPulse:
-    Description: "Simulated calorimeter pulse prior to digitization, implements SimPulse."
-    Author: "D. Anderson, S. Joosten"
-    Members:
-      - uint64_t            cellID          // ID of the readout cell for this pulse.
-      - float               integral        // Total pulse integral in relevant units.
-      - edm4hep::Vector3f   position        // Position of the hit in world coordinates [mm].
-      - float               time            // Start time for the pulse in [ns].
-      - float               interval        // Time interval between amplitude values [ns].
-    VectorMembers:
-      - float               amplitude       // Pulse amplitude in in relevant units, sum of amplitude values equals integral
-    OneToManyRelations:
-      - edm4hep::SimCalorimeterHit hits     // SimCalorimeterHits used to create this pulse
-      - edm4eic::SimCalorimeterPulse pulses // SimCalorimeterPulses used to create this pulse
-      - edm4hep::MCParticle particle        // MCParticle that caused the pulse
-
   edm4eic::CalorimeterHit:
     Description: "Calorimeter hit"
     Author: "W. Armstrong, S. Joosten"
