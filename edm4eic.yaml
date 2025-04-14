@@ -7,9 +7,9 @@
 ## Patch level changes are required to be schema invariant.
 ##
 ## If there are schema version changes that can be evolved, see the podio documentation
-## for an example: https://github.com/hegner/podio/blob/master/tests/schema_evolution.yaml
+## for an example: https://github.com/AIDASoft/podio/tree/master/tests/schema_evolution
 ##
-schema_version: 800
+schema_version: 801
 
 options :
   # should getters / setters be prefixed with get / set?
@@ -202,6 +202,27 @@ datatypes:
       - int64_t           shape           // Vector of tensor lengths along its axes
       - float             floatData       // Iff elementType==1, values are stored here
       - int64_t           int64Data       // Iff elementType==7, values are stored here
+
+  ## ==========================================================================
+  ## Simulation info
+  ## ==========================================================================
+
+  edm4eic::SimPulse:
+    Description: "Simulated pulse prior to digitization."
+    Author: "D. Anderson, S. Gardner, S. Joosten., D. Kalinkin"
+    Members:
+      - uint64_t            cellID          // ID of the readout cell for this pulse.
+      - float               integral        // Total pulse integral in relevant units.
+      - edm4hep::Vector3f   position        // Position the pulse is evaluated in world coordinates [mm].
+      - float               time            // Start time for the pulse in [ns].
+      - float               interval        // Time interval between amplitude values [ns].
+    VectorMembers:
+      - float               amplitude       // Pulse amplitude in relevant units, sum of amplitude values equals integral
+    OneToManyRelations:
+      - edm4hep::SimCalorimeterHit calorimeterHits // SimCalorimeterHits used to create this pulse
+      - edm4hep::SimTrackerHit     trackerHits     // SimTrackerHits used to create this pulse
+      - edm4eic::SimPulse          pulses          // SimPulses used to create this pulse
+      - edm4hep::MCParticle        particles       // MCParticle that caused the pulse
 
   ## ==========================================================================
   ## Particle info
