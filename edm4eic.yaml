@@ -219,10 +219,10 @@ datatypes:
     VectorMembers:
       - float               amplitude       // Pulse amplitude in in relevant units, sum of amplitude values equals integral
     OneToManyRelations:
-      - edm4hep::SimCalorimeterHit   calorimeterHits // SimCalorimeterHits used to create this pulse
-      - edm4hep::SimTrackerHit       trackerHits     // SimTrackerHits used to create this pulse
-      - edm4eic::SimCalorimeterPulse pulses          // SimCalorimeterPulses used to create this pulse
-      - edm4hep::MCParticle          particles       // MCParticle that caused the pulse
+      - edm4hep::SimCalorimeterHit calorimeterHits // SimCalorimeterHits used to create this pulse
+      - edm4hep::SimTrackerHit     trackerHits     // SimTrackerHits used to create this pulse
+      - edm4eic::SimPulse          pulses          // SimPulses used to create this pulse
+      - edm4hep::MCParticle        particles       // MCParticle that caused the pulse
 
   ## ==========================================================================
   ## Particle info
