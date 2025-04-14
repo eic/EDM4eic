@@ -217,7 +217,7 @@ datatypes:
       - float               time            // Start time for the pulse in [ns].
       - float               interval        // Time interval between amplitude values [ns].
     VectorMembers:
-      - float               amplitude       // Pulse amplitude in in relevant units, sum of amplitude values equals integral
+      - float               amplitude       // Pulse amplitude in relevant units, sum of amplitude values equals integral
     OneToManyRelations:
       - edm4hep::SimCalorimeterHit calorimeterHits // SimCalorimeterHits used to create this pulse
       - edm4hep::SimTrackerHit     trackerHits     // SimTrackerHits used to create this pulse
