@@ -203,6 +203,18 @@ datatypes:
       - float             floatData       // Iff elementType==1, values are stored here
       - int64_t           int64Data       // Iff elementType==7, values are stored here
 
+  edm4eic::PodioMetadataPair:
+    Description: "Stores a key-value pair for values of type belonging to podio::SupportedGenericDataTypes"
+    Author: "D. Kalinkin"
+    Members:
+      - int32_t           valueType       // Type of the value
+      - int               intValue        // Iff valueType==0
+      - float             floatValue      // Iff valueType==1
+      - double            doubleValue     // Iff valueType==3
+    VectorMembers:
+      - char              key             // Key string
+      - char              stringValue     // Iff valueType==2
+
   ## ==========================================================================
   ## Simulation info
   ## ==========================================================================
