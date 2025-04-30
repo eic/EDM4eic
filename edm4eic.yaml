@@ -592,15 +592,6 @@ datatypes:
       - edm4hep::RawCalorimeterHit rawHit   // reference to the digitized calorimeter hit
       - edm4hep::SimCalorimeterHit simHit   // reference to the simulated calorimeter hit
 
-  edm4eic::TrackProtoClusterMatch:
-    Description: "Match between a Protocluster and a Track"
-    Author: "D. Kalinkin, D. Anderson"
-    Members:
-      - float                 weight        // weight of this association
-    OneToOneRelations:
-      - edm4eic::ProtoCluster protoCluster  // reference to the cluster
-      - edm4eic::Track        track         // reference to the track
-
   edm4eic::TrackClusterMatch:
     Description: "Match between a Cluster and a Track"
     Author: "D. Anderson, D. Brandenburg, D. Kalinkin, S. Joosten"
@@ -609,3 +600,10 @@ datatypes:
     OneToOneRelations:
       - edm4eic::Cluster  cluster           // reference to the cluster
       - edm4eic::Track track                // reference to the track
+
+links:
+  edm4eic::TrackProtoClusterLink:
+    Description: "Link between a ProtoCluster and a Track"
+    Author: "D. Anderson, D. Kalinkin"
+    From: edm4eic::ProtoCluster
+    To: edm4eic::Track
