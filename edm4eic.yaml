@@ -605,5 +605,5 @@ links:
   edm4eic::TrackProtoClusterLink:
     Description: "Link between a ProtoCluster and a Track"
     Author: "D. Anderson, D. Kalinkin"
-    From: edm4eic::ProtoCluster
-    To: edm4eic::Track
+    From: edm4eic::Track
+    To: edm4eic::ProtoCluster
