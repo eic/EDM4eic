@@ -9,7 +9,7 @@
 ## If there are schema version changes that can be evolved, see the podio documentation
 ## for an example: https://github.com/AIDASoft/podio/tree/master/tests/schema_evolution
 ##
-schema_version: 801
+schema_version: 820
 
 options :
   # should getters / setters be prefixed with get / set?
@@ -600,3 +600,10 @@ datatypes:
     OneToOneRelations:
       - edm4eic::Cluster  cluster           // reference to the cluster
       - edm4eic::Track track                // reference to the track
+
+links:
+  edm4eic::TrackProtoClusterLink:
+    Description: "Link between a ProtoCluster and a Track"
+    Author: "D. Anderson, D. Kalinkin"
+    From: edm4eic::Track
+    To: edm4eic::ProtoCluster
