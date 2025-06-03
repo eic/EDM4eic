@@ -4,7 +4,7 @@
 #define EDM4EIC_TEST_CALOROC_HITS_H
 
 // edm for caloroc hits
-#include "edm4eic/RawCALOROCHit.h"
+#include "edm4eic/RawCALOROCHitCollection.h"
 
 // podio-specific includes
 #include "podio/Frame.h"
