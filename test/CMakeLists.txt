@@ -29,6 +29,15 @@ add_test(NAME read_events COMMAND read_events)
     )
 set_test_env(read_events)
 
+add_executable(test_caloroc_hits test_caloroc_hits.cc)
+target_include_directories(test_caloroc_hits PUBLIC ${PROJECT_SOURCE_DIR}/edm4eic )
+target_link_libraries(test_caloroc_hits edm4eic podio::podioRootIO)
+add_test(NAME test_caloroc_hits COMMAND test_caloroc_hits)
+  set_property(TEST test_caloroc_hits PROPERTY
+    DEPENDS test_caloroc_hits
+    )
+set_test_env(test_caloroc_hits)
+
 IF(TARGET ROOT::ROOTDataFrame)
   add_executable(test_rdf test_rdf.cc)
   target_include_directories(test_rdf PUBLIC ${PROJECT_SOURCE_DIR}/edm4hep ${PROJECT_SOURCE_DIR}/dataframe )
