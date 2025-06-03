@@ -270,20 +270,28 @@ datatypes:
     Description: "Raw hit from a CALOROC/HGCROC chip"
     Author: "D. Anderson, S. Joosten, N. Novitzky"
     Members:
-      - uint32_t type                // Chip type, 0 - type 1A, 1 - type 1B
+      - uint32_t type                // Chip type, 0 - type 1A (readout in only 1 gain mode), 1 - type 1B (readout in low & high gain mode)
       - uint64_t cellID              // Detector specific (geometrical) cell id
       - int32_t  samplePhase         // Phase of samples in [# samples], for synchronizing across chips
       - int32_t  timeStamp           // [TDC counts]
     VectorMembers:
-      - uint32_t amplitude           // Iff type == 0, amplitudes of waveform are stored here [ADC counts]
-      - uint32_t lowGainAmplitude    // Iff type == 1, low gain amplitudes of waveform are stored here [ADC counts]
-      - uint32_t highGainAmplitude   // Iff type == 1, high gain amplitudes of waveform are stored here [ADC counts]
+      - uint32_t amplitude           // If type == 0 - waveform amplitudes stored here, if type == 1 - low/high gain amplitude stored in lower/upper 16 bits [ADC counts]
       - int32_t  timeOfArrival       // Calculated times of arrival, i.e. times when waveform crosses threshold upwards [TDC counts]
       - int32_t  timeOverThreshold   // Calculated times over threshold, i.e. time from upward-crossing to downward-crossing of threshold [TDC counts]
     ExtraCode:
       declaration: "
         bool isType1A() const {return getType() == 0;}\n
         bool isType1B() const {return getType() == 1;}\n
+        /// If type == 1, retrieve the low gain readout (lower 16 bits) at a particular sample number\n
+        uint16_t lowGainAmplitude(const size_t sample) const {\n
+          assert(sample < getAmplitude().size());\n
+          return getAmplitude(sample) & 0xFFF;\n
+        }\n
+        /// If type == 1, retrieve the high gain readout (upper 16 bits) at a particular sample number\n
+        uint16_t highGainAmplitude(const size_t sample) const {\n
+          assert(sample < getAmplitude().size());\n
+          return getAmplitude(sample) >> 16;\n
+        }\n
       "
 
   edm4eic::CalorimeterHit:
