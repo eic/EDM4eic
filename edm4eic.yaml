@@ -283,12 +283,12 @@ datatypes:
         bool isType1A() const {return getType() == 0;}\n
         bool isType1B() const {return getType() == 1;}\n
         /// If type == 1, retrieve the low gain readout (lower 16 bits) at a particular sample number\n
-        uint16_t lowGainAmplitude(const size_t sample) const {\n
+        uint16_t getLowGainAmplitude(const size_t sample) const {\n
           assert(sample < getAmplitude().size());\n
           return getAmplitude(sample) & 0xFFF;\n
         }\n
         /// If type == 1, retrieve the high gain readout (upper 16 bits) at a particular sample number\n
-        uint16_t highGainAmplitude(const size_t sample) const {\n
+        uint16_t getHighGainAmplitude(const size_t sample) const {\n
           assert(sample < getAmplitude().size());\n
           return getAmplitude(sample) >> 16;\n
         }\n
