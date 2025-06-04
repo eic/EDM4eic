@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
   std::cout << "Start raw CALOROC tests." << std::endl;
 
   // run tests
-  TestRaw<podio::ROOTWriter, podio::ROOTReader> test(1);
+  TestCALOROCHits<podio::ROOTWriter, podio::ROOTReader> test(1);
   test.WriteHits("edm4eic_rawcalorochits.root");
   test.ReadHits("edm4eic_rawcalorochits.root");
 

@@ -23,7 +23,7 @@
  *  type 1A (1 readout) and type 1B (low and high gain readouts)
  *  raw CALOROC hits.
  */
-template <class WriterT, ReaderT>
+template <class WriterT, class ReaderT>
 class TestCALOROCHits {
 
   private:
@@ -35,7 +35,7 @@ class TestCALOROCHits {
 
     /// this array defines amplitudes which mock-up a
     /// typical waveform produced by an HGC/CALOROC
-    static const std::array<uint32_t, 112> m_arrAdcCounts {
+    static const std::array<uint32_t, 112> m_arrAdcCounts = {
       0,   0,   1,   2,    11,  43,  143, 338, 542,
       729, 875, 963, 1000, 993, 956, 902, 840, 774,
       709, 647, 593, 544,  500, 461, 428, 400, 374,
@@ -79,7 +79,7 @@ class TestCALOROCHits {
       std::cout << "   - created type 1A hit"  << std::endl;
 
       // 2nd create a type 1B hit
-      auto bhit = bhits.Create();
+      auto bhit = bhits.create();
       bhit.setType(1);
 
       /* TODO SET 1B members here */
@@ -120,7 +120,7 @@ class TestCALOROCHits {
     TestCALOROCHits(const uint32_t threshold = 1) : m_threshold(threshold) {};
     ~TestCALOROCHits() {};
 
-}  // end TestCALOROCHits<WriterT, ReaderT>
+};  // end TestCALOROCHits<WriterT, ReaderT>
 
 
 #endif
