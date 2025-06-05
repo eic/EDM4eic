@@ -15,13 +15,47 @@
 
 #include <edm4eic/unit_system.h>
 #include <edm4eic/helix_utils.h>
+#include <Evaluator/DD4hepUnits.h>
 
 const double edm4eic::Helix::NoSolution = 3.e+33;
 
+// basic constructor
 edm4eic::Helix::Helix(double c, double d, double phase,
 		 const edm4hep::Vector3f& o, int h)
 {
     setParameters(c, d, phase, o, h);
+}
+
+// momentum in GeV, position in cm, B in Tesla
+edm4eic::Helix::Helix(const edm4hep::Vector3f& p, const edm4hep::Vector3f& o, const double B, const int q)
+{
+    setParameters(p, o, B, q);
+}
+
+// construct using TrackParameteters
+edm4eic::Helix::Helix(const edm4eic::TrackParameters& trk,
+                      const double b_field) {
+  const auto mom = edm4hep::utils::sphericalToVector(1.0 / std::abs(trk.getQOverP()), trk.getTheta(), trk.getPhi());
+  const auto charge = std::copysign(1., trk.getQOverP());
+  const auto phi = trk.getPhi();
+  const auto loc = trk.getLoc();
+  edm4hep::Vector3f pos( -1. * loc.a * sin(phi), loc.a * cos(phi), loc.b); // PCA point
+
+  setParameters(mom/edm4eic::unit::GeV*dd4hep::GeV, pos/edm4eic::unit::cm*dd4hep::centimeter, b_field, charge);
+}
+
+void edm4eic::Helix::setParameters(const edm4hep::Vector3f& p, const edm4hep::Vector3f& o, const double B, const int q)
+{
+    mH = (q*B <= 0) ? 1 : -1;
+    if(p.y == 0 && p.x == 0)
+	setPhase((M_PI/4)*(1-2.*mH));
+    else
+	setPhase(atan2(p.y,p.x)-mH*M_PI/2);
+    setDipAngle(atan2(p.z,edm4hep::utils::magnitudeTransverse(p)));
+    mOrigin = o;
+
+    setCurvature(fabs((dd4hep::c_light*dd4hep::nanosecond/dd4hep::meter*q*B/dd4hep::tesla)/
+		      (edm4hep::utils::magnitude(p)/dd4hep::GeV*mCosDipAngle)/dd4hep::meter));
 }
 
 void edm4eic::Helix::setParameters(double c, double dip, double phase,

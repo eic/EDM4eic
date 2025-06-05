@@ -23,24 +23,6 @@
 
 namespace edm4eic {
 
-/** Four momentum from track and mass.
- * Get a vector of 4-momenta from raw tracking info, using an externally
- * provided particle mass assumption.
- */
- /*
-inline auto
-helix_from_track(const edm4eic::TrackParameters& trk,
-                      const double b_field) {
-  const auto mom = edm4hep::utils::sphericalToVector(1.0 / std::abs(trk.getQOverP()), trk.getTheta(), trk.getPhi());
-  const auto charge = std::copysign(1., trk.getQOverP());
-  const auto phi = trk.getPhi();
-  const auto loc = trk.getLoc();
-  edm4hep::Vector3f pos( -1. * loc.a * sin(phi), loc.a * cos(phi), loc.b); // PCA point
-
-  return Helix(pos, mom, b_field, charge);
-}
-*/
-
 class Helix {
 protected:
     bool                   mSingularity;        // true for straight line case (B=0)
@@ -56,11 +38,14 @@ protected:
     double                 mSinPhase;
 
 public:
-    /// position, momentum, b_field, charge
-    Helix(const edm4hep::Vector3f& pos, const edm4hep::Vector3f mom, const double b_field, const int charge);
-
     /// curvature, dip angle, phase, origin, h
     Helix(const double c, const double dip, const double phase, const edm4hep::Vector3f& o, const int h=-1);
+
+    /// momentum, origin, b_field, charge
+    Helix(const edm4hep::Vector3f& p, const edm4hep::Vector3f& o, const double B, const int q);
+    
+    /// edm4eic::TrackParameters, b field
+    Helix(const edm4eic::TrackParameters& trk, const double b_field);
 
     ~Helix() = default;
     
@@ -74,6 +59,8 @@ public:
     const edm4hep::Vector3f& origin() const;	/// starting point
 
     void setParameters(double c, double dip, double phase, const edm4hep::Vector3f& o, int h);
+
+    void setParameters(const edm4hep::Vector3f& p, const edm4hep::Vector3f& o, const double B, const int q);
 
     /// coordinates of helix at point s
     double       x(double s)  const;
@@ -135,37 +122,6 @@ public:
 
 }; // end class Helix
 
-//
-//     Non-member functions
-//
-/*
-inline int operator== (const edm4eic::Helix&, const edm4eic::Helix&)
-{
-    //
-    // Checks for numerical identity only !
-    //
-    return (a.origin()    == b.origin()    &&
-            a.dipAngle()  == b.dipAngle()  &&
-            a.curvature() == b.curvature() &&
-            a.phase()     == b.phase()     &&
-            a.h()         == b.h());
-}
-
-inline int operator!= (const edm4eic::Helix&, const edm4eic::Helix&)
-{
-    return !(a == b);
-}
-
-inline std::ostream& operator<<(std::ostream&, const edm4eic::Helix&)
-{
-    return os << "("
-              << "curvature = "  << h.curvature() << ", " 
-              << "dip angle = "  << h.dipAngle()  << ", "
-              << "phase = "      << h.phase()     << ", "  
-              << "h = "          << h.h()         << ", "
-              << "origin = "     << h.origin().x << " " << h.origin().y << " " << h.origin().z << ")";
-}
-*/
 //
 //     Inline functions
 //
@@ -256,7 +212,6 @@ inline int Helix::bad(double WorldSize) const
 
     return 0;
 }
-
 
 } // namespace edm4eic
 
