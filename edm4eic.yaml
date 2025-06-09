@@ -191,6 +191,15 @@ components:
       - uint32_t boundValuesSize          // size of bound values
       - std::array<double,16> transform   // row-wise 4x4 affine transform [R T; 0 1] with 3x3 rotation matrix R and translation column 3-vector T
 
+  ## An individual sample output by a HGC/CALOROC chip
+  edm4eic::CALOROCSample:
+    Members:
+      - uint16_t ADC                // [ADC Counts], amplitude of signal during sample, valid IFF TOTInProgress is false
+      - uint16_t timeOfArrival      // Time of arrival (TOA) [TDC counts], nonzero IFF ADC crossed threshold upwards during sample
+      - uint16_t timeOverThreshold  // Time over threshold (TOT) [TDC counts], nonzero IFF ADC crossed threshold downwards during sample AND if TOA fired in a previous sample
+      - bool     TOTInProgress      // Flag which indicates if a TOT fired in a previous sample and calculation is ongoing, ADC value may be corrupted if this is true
+      - bool     TOTComplete        // Flag which indicates if a TOT calculation is complete and TOT value is valid
+
 datatypes:
 
   edm4eic::Tensor:
@@ -265,6 +274,17 @@ datatypes:
   ## ==========================================================================
   ## Calorimetry
   ## ==========================================================================
+
+  edm4eic::RawCALOROCHit:
+    Description: "Raw hit from a CALOROC/HGCROC chip"
+    Author: "D. Anderson, S. Joosten, T. Protzman, N. Novitzky"
+    Members:
+      - uint64_t cellID                // Detector specific (geometrical) cell id
+      - int32_t  samplePhase           // Phase of samples in [# samples], for synchronizing across chips
+      - int32_t  timeStamp             // [TDC counts]
+    VectorMembers:
+      - edm4eic::CALOROCSample sample  // ADC, Time of Arrival (TOA), and Time over Threshold (TOT) values for each sample read out
+
   edm4eic::CalorimeterHit:
     Description: "Calorimeter hit"
     Author: "W. Armstrong, S. Joosten"
