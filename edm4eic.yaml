@@ -277,7 +277,7 @@ datatypes:
 
   edm4eic::RawHGCROCHit:
     Description: "Raw hit from an HGCROC chip"
-    Author: "D. Anderson, S. Joosten, T. Protzman, N. Novitzky"
+    Author: "D. Anderson, S. Joosten, T. Protzman, N. Novitzky, D. Kalinkin"
     Members:
       - uint64_t cellID               // Detector specific (geometrical) cell id
       - int32_t  samplePhase          // Phase of samples in [# samples], for synchronizing across chips
