@@ -75,7 +75,7 @@ jobs:
       # FIXME hard-coded: see https://github.com/actions/upload-pages-artifact/pull/14
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v5
       with:
         name: build-eic-shell
         path: build/
