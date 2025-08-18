@@ -352,13 +352,11 @@ datatypes:
     OneToManyRelations:
       - edm4eic::MCRecoTrackerHitAssociation   rawHitAssociations // raw sensor hits, associated with MC hits
 
-  edm4eic::IrtDebugInfo:
-    Description: "IRT 2.0 debugging sandbox"
+  edm4eic::IrtOutput:
+    Description: "IRT 2.0 output"
     Author: "A. Kiselev"
     Members:
       - float             dummy             // Some dummy value
-      - float             p                 // Some dummy value
-      - float             pdiff             // Some dummy value
       
   edm4eic::RingImage:
     ##@TODO: Juggler support; not used in EICrecon
