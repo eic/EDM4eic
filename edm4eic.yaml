@@ -352,7 +352,7 @@ datatypes:
     OneToManyRelations:
       - edm4eic::MCRecoTrackerHitAssociation   rawHitAssociations // raw sensor hits, associated with MC hits
 
-  edm4eic::IrtRadiator:
+  edm4eic::IrtRadiatorInfo:
     Description: "IRT 2.1 output (radiator level)"
     Author: "A. Kiselev"
     Members:
@@ -370,7 +370,7 @@ datatypes:
     OneToOneRelations:
       - edm4eic::ReconstructedParticle         chargedParticle    // reconstructed charged particle
     OneToManyRelations:
-      - edm4eic::IrtRadiator                   radiators          // radiator-related information
+      - edm4eic::IrtRadiatorInfo                   radiators          // radiator-related information
             
   edm4eic::IrtEvent:
     Description: "IRT 2.1 output (event level for a particular detector)"
