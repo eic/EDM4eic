@@ -232,7 +232,6 @@ datatypes:
     Description: "EIC Reconstructed Particle"
     Author: "W. Armstrong, S. Joosten, F. Gaede"
     Members:
-      - int32_t           PDG               // PDG code for this particle
       - int32_t           type              // type of reconstructed particle. Check/set collection parameters ReconstructedParticleTypeNames and ReconstructedParticleTypeValues.
       - float             energy            // [GeV] energy of the reconstructed particle. Four momentum state is not kept consistent internally.
       - edm4hep::Vector3f momentum          // [GeV] particle momentum. Four momentum state is not kept consistent internally.
@@ -241,6 +240,7 @@ datatypes:
       - float             mass              // [GeV] mass of the reconstructed particle, set independently from four vector. Four momentum state is not kept consistent internally.
       - float             goodnessOfPID     // overall goodness of the PID on a scale of [0;1]
       - edm4eic::Cov4f    covMatrix         // covariance matrix of the reconstructed particle 4vector (10 parameters).
+      - int32_t           PDG               // PDG code for this particle
       ## @TODO: Do we need timing info? Or do we rely on the start vertex time?
     OneToOneRelations:
       - edm4eic::Vertex      startVertex    // Start vertex associated to this particle
