@@ -279,11 +279,11 @@ datatypes:
     Description: "Raw hit from an HGCROC chip"
     Author: "D. Anderson, S. Joosten, T. Protzman, N. Novitzky, D. Kalinkin"
     Members:
-      - uint64_t cellID               // Detector specific (geometrical) cell id
-      - int32_t  samplePhase          // Phase of samples in [# samples], for synchronizing across chips
-      - int32_t  timeStamp            // [TDC counts]
+      - uint64_t cellID                // Detector specific (geometrical) cell id
+      - int32_t  samplePhase           // Phase of samples in [# samples], for synchronizing across chips
+      - int32_t  timeStamp             // [TDC counts]
     VectorMembers:
-      - edm4eic::HGCROCSample sample  // ADC, Time of Arrival (TOA), and Time over Threshold (TOT) values for each sample read out
+      - edm4eic::HGCROCSample samples  // ADC, Time of Arrival (TOA), and Time over Threshold (TOT) values for each sample read out
 
   edm4eic::CalorimeterHit:
     Description: "Calorimeter hit"
