@@ -522,19 +522,19 @@ datatypes:
       - edm4eic::Cov4f      positionError // Covariance matrix of the position+time. Time is 4th component, similarly to 4vect
       - edm4hep::Vector3f   parentMomentum             // parent momentum
       - float               parentInvariantMass        // parent invariant mass         
-      - float               parentInvariantMassError   // parent invariant mass         
-      - float               parentDecayLength          // parent decay length L
-      - float               parentDecayLengthChi2      // parent L/L_error
+      - float               parentInvariantMassError   // parent invariant mass error         
+      - float               parentDecayLength          // parent decay length
+      - float               parentDecayLengthError     // parent decay length error
       - float               parentDca2PV               // parent dca to primary vertex
-      - float               parentDca2PVChi2           // parent dca/dca_error to primary vertex
+      - float               parentDca2PVError          // parent dca_error to primary vertex
     VectorMembers:
       - edm4hep::Vector3f   daughterMomentum           // daughter track momentum at the decay vertex
       - int                 daughterPDG                // daughter PDG
       - float               daughterDca2PV             // daughter dca to primary vertex
-      - float               daughterDca2PVChi2         // daughter dca/dca_error to primary vertex
-      - int                 daughterPairIndices        // pair track indices
-      - float               daughterPairDca            // dca between a pair of tracks
-      - float               daughterPairDcaChi2        // dca/dca_error between a pair of tracks
+      - float               daughterDca2PVError        // daughter dca_error to primary vertex
+      - int                 daughterPairIndices        // track indices for any pair
+      - float               daughterPairDca            // dca between any pair of tracks
+      - float               daughterPairDcaError       // dca_error between any pair of tracks
     OneToOneRelations:
       - edm4eic::Vertex     primaryVertex              // associated primary vertex
     OneToManyRelations:
