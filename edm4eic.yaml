@@ -540,7 +540,7 @@ datatypes:
       - edm4eic::ReconstructedParticle hadrons // Reconstructed hadrons used in calculation
 
   ## ==========================================================================
-  ## Data-Montecarlo relations
+  ## Data-Monte Carlo relations
   ## ==========================================================================
 
   edm4eic::MCRecoParticleAssociation:
@@ -622,6 +622,32 @@ datatypes:
     OneToOneRelations:
       - edm4eic::Track        from   // reference to the track
       - edm4eic::ProtoCluster to     // reference to the protocluster
+
+  ## ==========================================================================
+  ## Data-Monte Carlo comparisons
+  ## ==========================================================================
+
+  edm4eic::Truthiness:
+    Description: "Positive-definite convex norm of how confidently wrong the reconstruction is,
+                  with non-negative contributions from various aspects of the reconstruction,
+                  where a zero value indicates a perfect reconstruction."
+    Author: "W. Deconinck, S. Colbert"
+    Members:
+       - float event_truthiness                       // Overall truthiness of the entire event
+       - float event_pid_contribution                 // Contribution of PID matching to truthiness
+       - float event_energy_contribution              // Contribution of energy matching to truthiness
+       - float event_momentum_contribution            // Contribution of momentum matching to truthiness
+       - float unassociated_mc_particles_contribution // Contribution from unassociated MC particles
+       - float unassociated_rc_particles_contribution // Contribution from unassociated reconstructed particles
+    VectorMembers:
+       - float association_truthiness                 // Overall truthiness of each association
+       - float association_pid_contribution           // Contribution of PID matching to truthiness
+       - float association_energy_contribution        // Contribution of energy matching to truthiness
+       - float association_momentum_contribution      // Contribution of momentum matching to truthiness
+    OneToManyRelations:
+       - edm4eic::MCRecoParticleAssociation associations          // Reference to the associated reconstructed particles
+       - edm4hep::MCParticle unassociated_mc_particles            // Reference to the unassociated MC particles
+       - edm4eic::ReconstructedParticle unassociated_rc_particles // Reference to the unassociated reconstructed particles
 
 links:
   edm4eic::TrackProtoClusterLink:
