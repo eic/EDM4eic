@@ -618,10 +618,10 @@ datatypes:
     Description: "Match between a ProtoCluster and a Track"
     Author: "D. Anderson, D. Kalinkin"
     Members:
-      - float                 weight       // weight of this association
+      - float                 weight // weight of this association
     OneToOneRelations:
-      - edm4eic::ProtoCluster protoCluster // reference to the protocluster
-      - edm4eic::Track        track        // reference to the track
+      - edm4eic::Track        from   // reference to the track
+      - edm4eic::ProtoCluster to     // reference to the protocluster
 
 links:
   edm4eic::TrackProtoClusterLink:
