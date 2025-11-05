@@ -93,16 +93,20 @@ configure_file(
   ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
   @ONLY)
 
-find_package(Doxygen COMPONENTS dot)
-if(DOXYGEN_FOUND)
-  add_custom_target(docs ALL
-    DEPENDS edm4eic.yaml ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMENT "Generating API documentation with Doxygen"
+option(GENERATE_DOCS "Generate the doxygen base API reference" ON)
+
+if (GENERATE_DOCS)
+  find_package(Doxygen COMPONENTS dot)
+  if(DOXYGEN_FOUND)
+    add_custom_target(docs ALL
+      DEPENDS edm4eic.yaml ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+      COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+      COMMENT "Generating API documentation with Doxygen"
     VERBATIM)
-else()
-  message(STATUS "Doxygen not found; no documentation will be built.")
+  else()
+    message(STATUS "Doxygen not found; no documentation will be built.")
+  endif()
 endif()
 
 # -------------------------
