@@ -28,6 +28,8 @@ endif(APPLE)
 
 include(GNUInstallDirs)
 
+include(CTest)
+
 find_package(podio 0.15)
 if(NOT podio_FOUND)
   find_package(podio 1.0 REQUIRED)
