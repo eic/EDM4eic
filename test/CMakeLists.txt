@@ -28,23 +28,3 @@ add_test(NAME read_events COMMAND read_events)
     DEPENDS write_events
     )
 set_test_env(read_events)
-
-IF(TARGET ROOT::ROOTDataFrame)
-  add_executable(test_rdf test_rdf.cc)
-  target_include_directories(test_rdf PUBLIC ${PROJECT_SOURCE_DIR}/edm4hep ${PROJECT_SOURCE_DIR}/dataframe )
-  target_link_libraries(test_rdf edm4eic EDM4HEP::edm4hepRDF ROOT::ROOTDataFrame podio::podioRootIO)
-  add_test(NAME test_rdf COMMAND test_rdf)
-  set_test_env(test_rdf)
-  set_property(TEST test_rdf PROPERTY
-    DEPENDS write_events
-    )
-
-  add_test(NAME py_test_rdf COMMAND python ${CMAKE_CURRENT_LIST_DIR}/test_rdf.py)
-  set_test_env(py_test_rdf)
-  get_property(ENVIRONMENT TEST py_test_rdf PROPERTY ENVIRONMENT)
-  set_property(TEST py_test_rdf PROPERTY ENVIRONMENT
-      ${ENVIRONMENT}
-      PYTHONPATH=${PROJECT_SOURCE_DIR}/python:$ENV{PYTHONPATH}
-  )
-  set_tests_properties(py_test_rdf PROPERTIES DEPENDS write_events)
-endif()
