@@ -19,7 +19,11 @@
 void processEvent(const podio::Frame& event, bool verboser, unsigned eventNum) {
   auto& raw_hits = event.get<edm4eic::RawTrackerHitCollection>("RawTrackerHits");
 
+#if PODIO_BUILD_VERSION >= PODIO_VERSION(1, 6, 0)
+  if (raw_hits.hasID()) {
+#else
   if (raw_hits.isValid()) {
+#endif
 
     //-------- print particles for debugging:
 
