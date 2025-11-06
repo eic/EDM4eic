@@ -23,12 +23,12 @@ jobs:
           PREFIX=${PWD}/install
           cmake -B build -S . -DCMAKE_INSTALL_PREFIX=${PREFIX}
           cmake --build build -- install
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       with:
         name: build-eic-shell
         path: build/
         if-no-files-found: error
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       with:
         name: install-eic-shell
         path: install/
@@ -82,7 +82,7 @@ jobs:
     - run: |
         apk add doxygen graphviz
         doxygen build/Doxyfile
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       with:
         name: docs-eic-shell
         path: build/docs/html/
