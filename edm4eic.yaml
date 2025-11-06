@@ -200,6 +200,13 @@ components:
       - bool     TOTInProgress      // Flag which indicates if TOT calculation is ongoing, ADC value may be corrupted if this is true
       - bool     TOTComplete        // Flag which indicates if a TOT calculation is complete and TOT value is valid
 
+  ## Event-level truthiness information
+  edm4eic::TruthinessContribution:
+    Members:
+      - float pid                 // Contribution of PID matching to truthiness
+      - float energy              // Contribution of energy matching to truthiness
+      - float momentum            // Contribution of momentum matching to truthiness
+
 datatypes:
 
   edm4eic::Tensor:
@@ -633,21 +640,16 @@ datatypes:
                   where a zero value indicates a perfect reconstruction."
     Author: "W. Deconinck, S. Colbert"
     Members:
-       - float event_truthiness                       // Overall truthiness of the entire event
-       - float event_pid_contribution                 // Contribution of PID matching to truthiness
-       - float event_energy_contribution              // Contribution of energy matching to truthiness
-       - float event_momentum_contribution            // Contribution of momentum matching to truthiness
-       - float unassociated_mc_particles_contribution // Contribution from unassociated MC particles
-       - float unassociated_rc_particles_contribution // Contribution from unassociated reconstructed particles
+       - float truthiness                                         // Overall truthiness of the entire event
+       - edm4eic::TruthinessContribution associationContribution  // Contribution from all associated particles
+       - float unassociatedMCParticlesContribution                // Contribution from unassociated MC particles
+       - float unassociatedRecoParticlesContribution              // Contribution from unassociated reconstructed particles
     VectorMembers:
-       - float association_truthiness                 // Overall truthiness of each association
-       - float association_pid_contribution           // Contribution of PID matching to truthiness
-       - float association_energy_contribution        // Contribution of energy matching to truthiness
-       - float association_momentum_contribution      // Contribution of momentum matching to truthiness
+      - edm4eic::TruthinessContribution associationContributions  // Contribution from associated particles
     OneToManyRelations:
-       - edm4eic::MCRecoParticleAssociation associations          // Reference to the associated reconstructed particles
-       - edm4hep::MCParticle unassociated_mc_particles            // Reference to the unassociated MC particles
-       - edm4eic::ReconstructedParticle unassociated_rc_particles // Reference to the unassociated reconstructed particles
+       - edm4eic::MCRecoParticleAssociation associations          // Reference to the associated particles
+       - edm4hep::MCParticle unassociatedMCParticles              // Reference to the unassociated MC particles
+       - edm4eic::ReconstructedParticle unassociatedRecoParticles // Reference to the unassociated reconstructed particles
 
 links:
   edm4eic::TrackProtoClusterLink:
