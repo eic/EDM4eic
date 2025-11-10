@@ -1,9 +1,18 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "write_events.h"
-#include "podio/ROOTFrameWriter.h"
 
-int main(int argc, char* argv[]) {
+#include <podio/podioVersion.h>
+#if PODIO_BUILD_VERSION >= PODIO_VERSION(0, 99, 0)
+#include <podio/ROOTWriter.h>
+#else
+#include <podio/ROOTFrameWriter.h>
+namespace podio {
+using ROOTWriter = podio::ROOTFrameWriter;
+}
+#endif
 
-  write<podio::ROOTFrameWriter>("edm4eic_events.root");
+int main(int argc, char *argv[]) {
+
+  write<podio::ROOTWriter>("edm4eic_events.root");
 }
