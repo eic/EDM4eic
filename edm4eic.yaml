@@ -9,7 +9,7 @@
 ## If there are schema version changes that can be evolved, see the podio documentation
 ## for an example: https://github.com/AIDASoft/podio/tree/master/tests/schema_evolution
 ##
-schema_version: 840
+schema_version: 850
 
 options :
   # should getters / setters be prefixed with get / set?
@@ -508,6 +508,35 @@ datatypes:
       - edm4hep::Vector4f   position      // position [mm] + time t0 [ns] of the vertex. Time is 4th component in vector
       ## this is named "covMatrix" in EDM4hep, renamed for consistency with the rest of edm4eic
       - edm4eic::Cov4f      positionError // Covariance matrix of the position+time. Time is 4th component, similarly to 4vector 
+    OneToManyRelations:
+      - edm4eic::ReconstructedParticle associatedParticles // particles associated to this vertex.
+
+  edm4eic::SecondaryVertex:
+    Description: "EIC secondary vertex"
+    Author: "X. Dong"
+    Members:
+      - int32_t             type          // Type flag, to identify what type of vertex it is (e.g. primary, secondary, genera
+      - float               chi2          // Chi-squared of the vertex fit
+      - int                 ndf           // NDF of the vertex fit
+      - edm4hep::Vector4f   position      // position [mm] + time t0 [ns] of the vertex. Time is 4th component in vector
+      - edm4eic::Cov4f      positionError // Covariance matrix of the position+time. Time is 4th component, similarly to 4vect
+      - edm4hep::Vector3f   parentMomentum             // parent momentum
+      - float               parentInvariantMass        // parent invariant mass         
+      - float               parentInvariantMassError   // parent invariant mass error         
+      - float               parentDecayLength          // parent decay length
+      - float               parentDecayLengthError     // parent decay length error
+      - float               parentDca2PV               // parent dca to primary vertex
+      - float               parentDca2PVError          // parent dca_error to primary vertex
+    VectorMembers:
+      - edm4hep::Vector3f   daughterMomentum           // daughter track momentum at the decay vertex
+      - int                 daughterPDG                // daughter PDG
+      - float               daughterDca2PV             // daughter dca to primary vertex
+      - float               daughterDca2PVError        // daughter dca_error to primary vertex
+      - int                 daughterPairIndices        // track indices for any pair
+      - float               daughterPairDca            // dca between any pair of tracks
+      - float               daughterPairDcaError       // dca_error between any pair of tracks
+    OneToOneRelations:
+      - edm4eic::Vertex     primaryVertex              // associated primary vertex
     OneToManyRelations:
       - edm4eic::ReconstructedParticle associatedParticles // particles associated to this vertex.
 
