@@ -8,6 +8,7 @@
 
 // podio specific includes
 #include "podio/Frame.h"
+#include "podio/podioVersion.h"
 
 // STL
 #include <cassert>
@@ -18,7 +19,11 @@
 void processEvent(const podio::Frame& event, bool verboser, unsigned eventNum) {
   auto& raw_hits = event.get<edm4eic::RawTrackerHitCollection>("RawTrackerHits");
 
+#if PODIO_BUILD_VERSION >= PODIO_VERSION(1, 6, 0)
+  if (raw_hits.hasID()) {
+#else
   if (raw_hits.isValid()) {
+#endif
 
     //-------- print particles for debugging:
 
@@ -40,7 +45,11 @@ void processEvent(const podio::Frame& event, bool verboser, unsigned eventNum) {
   //===============================================================================
 
   const auto& evtType = event.getParameter<std::string>("EventType");
-  std::cout << "Event Type: " << evtType << std::endl;
+#if PODIO_BUILD_VERSION >= PODIO_VERSION(1, 0, 0)
+  std::cout << "Event Type: " << evtType.value_or("EventType does not exist in Frame as parameter") << std::endl;
+#else
+  std::cout << "Event Type: " << evtType.value() << std::endl;
+#endif
 }
 
 template <typename ReaderT>
