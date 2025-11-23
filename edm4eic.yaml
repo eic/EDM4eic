@@ -200,6 +200,13 @@ components:
       - bool     TOTInProgress      // Flag which indicates if TOT calculation is ongoing, ADC value may be corrupted if this is true
       - bool     TOTComplete        // Flag which indicates if a TOT calculation is complete and TOT value is valid
 
+  ## An individual sample output by a CALOROC1B chip
+  edm4eic::CALOROC1BSample:
+    Members:
+      - uint16_t lowGainADC         // [ADC Counts], amplitude of signal during sample in the low gain mode
+      - uint16_t highGainADC        // [ADC Counts], amplitude of signal during sample in the high gain mode
+      - uint16_t timeOfArrival      // Time of arrival (TOA) [TDC counts]
+
 datatypes:
 
   edm4eic::Tensor:
@@ -277,6 +284,16 @@ datatypes:
       - int32_t  timeStamp             // [TDC counts]
     VectorMembers:
       - edm4eic::HGCROCSample samples  // ADC, Time of Arrival (TOA), and Time over Threshold (TOT) values for each sample read out
+
+  edm4eic::RawCALOROC1BHit:
+    Description: "Raw hit from an CALOROC1B chip"
+    Author: "D. Anderson, S. Joosten, T. Protzman, N. Novitzky, D. Kalinkin, M. H. Kim"
+    Members:
+      - uint64_t cellID                   // Detector specific (geometrical) cell id
+      - int32_t  samplePhase              // Phase of samples in [# samples], for synchronizing across chips
+      - int32_t  timeStamp                // [TDC counts]
+    VectorMembers:
+      - edm4eic::CALOROC1BSample samples  // Low- and high-gain ADC and Time of Arrival (TOA) values for each sample read out
 
   edm4eic::CalorimeterHit:
     Description: "Calorimeter hit"
