@@ -30,9 +30,13 @@ include(GNUInstallDirs)
 
 include(CTest)
 
-find_package(podio 0.15)
+set(podio_min_version 0.17)
+find_package(podio ${podio_min_version})
 if(NOT podio_FOUND)
   find_package(podio 1.0 REQUIRED)
+endif()
+if(podio_VERSION VERSION_LESS ${podio_min_version} AND podio_VERSION VERSION_LESS "1.0")
+  message(FATAL_ERROR "podio version ${podio_VERSION} is too old. Please use podio >= 0.17")
 endif()
 include_directories(${podio_INCLUDE_DIR})
 
