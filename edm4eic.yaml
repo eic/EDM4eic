@@ -540,6 +540,23 @@ datatypes:
       - edm4eic::ReconstructedParticle hadrons // Reconstructed hadrons used in calculation
 
   ## ==========================================================================
+  ## Jets
+  ## ==========================================================================
+
+  edm4eic::Jet:
+    Description:  "A reconstructed jet, inspired by the FastJet PseudoJet"
+    Author: "D. Anderson"
+    Members:
+      - uint32_t          type             // type of jet (0 - kt, 1 - C/A, 2 - anti-kt, ...)
+      - float             area             // jet area
+      - float             energy           // jet energy [GeV]
+      - float             backgroundEnergy // background energy density * area [GeV]
+      - edm4hep::Vector3f momentum         // jet 3-momentum [GeV]
+    OneToManyRelations:
+      - edm4eic::Jet                   jets         // jets that have been combined to form this jet
+      - edm4eic::ReconstructedParticle constituents // constituents of this jet
+
+  ## ==========================================================================
   ## Data-Montecarlo relations
   ## ==========================================================================
 
