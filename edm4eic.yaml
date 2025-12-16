@@ -9,7 +9,7 @@
 ## If there are schema version changes that can be evolved, see the podio documentation
 ## for an example: https://github.com/AIDASoft/podio/tree/master/tests/schema_evolution
 ##
-schema_version: 830
+schema_version: 850
 
 options :
   # should getters / setters be prefixed with get / set?
@@ -199,6 +199,13 @@ components:
       - uint16_t timeOverThreshold  // Time over threshold (TOT) [TDC counts], nonzero IFF ADC crossed threshold downwards during sample AND if TOA fired in a previous sample
       - bool     TOTInProgress      // Flag which indicates if TOT calculation is ongoing, ADC value may be corrupted if this is true
       - bool     TOTComplete        // Flag which indicates if a TOT calculation is complete and TOT value is valid
+
+  ## Event-level truthiness information
+  edm4eic::TruthinessContribution:
+    Members:
+      - float pid                 // Contribution of PID matching to truthiness
+      - float energy              // Contribution of energy matching to truthiness
+      - float momentum            // Contribution of momentum matching to truthiness
 
 datatypes:
 
@@ -568,7 +575,7 @@ datatypes:
       - edm4eic::ReconstructedParticle hadrons // Reconstructed hadrons used in calculation
 
   ## ==========================================================================
-  ## Data-Montecarlo relations
+  ## Data-Monte Carlo relations
   ## ==========================================================================
 
   edm4eic::MCRecoParticleAssociation:
@@ -641,6 +648,36 @@ datatypes:
     OneToOneRelations:
       - edm4eic::Cluster  cluster           // reference to the cluster
       - edm4eic::Track track                // reference to the track
+
+  edm4eic::TrackProtoClusterMatch:
+    Description: "Match between a ProtoCluster and a Track"
+    Author: "D. Anderson, D. Kalinkin"
+    Members:
+      - float                 weight // weight of this association
+    OneToOneRelations:
+      - edm4eic::Track        from   // reference to the track
+      - edm4eic::ProtoCluster to     // reference to the protocluster
+
+  ## ==========================================================================
+  ## Data-Monte Carlo comparisons
+  ## ==========================================================================
+
+  edm4eic::Truthiness:
+    Description: "Positive-definite convex norm of how confidently wrong the reconstruction is,
+                  with non-negative contributions from various aspects of the reconstruction,
+                  where a zero value indicates a perfect reconstruction."
+    Author: "W. Deconinck, S. Colbert"
+    Members:
+       - float truthiness                                         // Overall truthiness of the entire event
+       - edm4eic::TruthinessContribution associationContribution  // Contribution from all associated particles
+       - float unassociatedMCParticlesContribution                // Contribution from unassociated MC particles
+       - float unassociatedRecoParticlesContribution              // Contribution from unassociated reconstructed particles
+    VectorMembers:
+      - edm4eic::TruthinessContribution associationContributions  // Contribution from associated particles
+    OneToManyRelations:
+       - edm4eic::MCRecoParticleAssociation associations          // Reference to the associated particles
+       - edm4hep::MCParticle unassociatedMCParticles              // Reference to the unassociated MC particles
+       - edm4eic::ReconstructedParticle unassociatedRecoParticles // Reference to the unassociated reconstructed particles
 
 links:
   edm4eic::TrackProtoClusterLink:
