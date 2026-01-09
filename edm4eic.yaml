@@ -430,6 +430,7 @@ datatypes:
     Author: "S. Li, B. Schmookler, J. Osborn"
     Members:
       - edm4hep::Vector3f         perigee   // Vector for the perigee (line surface)
+      - float                     quality   // Seed quality reported by finder
     OneToManyRelations:
       - edm4eic::TrackerHit       hits      // Tracker hits triplet for seeding
     OneToOneRelations:
