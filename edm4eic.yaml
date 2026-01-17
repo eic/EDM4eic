@@ -39,12 +39,11 @@ components:
       - float yy
       - float zz
     ExtraCode:
-      declaration: "
-        CovDiag3f() : xx{0}, yy{0}, zz{0} {}\n
-        CovDiag3f(double x, double y, double z)\n
-          : xx{static_cast<float>(x)}, yy{static_cast<float>(y)}, zz{static_cast<float>(z)} {}\n
-        float operator()(unsigned i, unsigned j) const {return (i == j) ? *(&xx + i) : 0.;}\n
-        "
+      declaration: |
+        CovDiag3f() : xx{0}, yy{0}, zz{0} {}
+        CovDiag3f(double x, double y, double z)
+          : xx{static_cast<float>(x)}, yy{static_cast<float>(y)}, zz{static_cast<float>(z)} {}
+        float operator()(unsigned i, unsigned j) const {return (i == j) ? *(&xx + i) : 0.;}
 
   edm4eic::Cov2f:
     Members:
@@ -52,21 +51,20 @@ components:
       - float yy
       - float xy
     ExtraCode:
-      declaration: "
-        Cov2f() : xx{0}, yy{0}, xy{0} {}\n
-        Cov2f(double vx, double vy, double vxy = 0)\n
-          : xx{static_cast<float>(vx)}, yy{static_cast<float>(vy)}, xy{static_cast<float>(vxy)} {}\n
-        float operator()(unsigned i, unsigned j) const {\n
-          // diagonal\n
-          if (i == j) {\n
-            return *(&xx + i);\n
-          }\n
-          // off-diagonal\n
-          // we have as options (0, 1), and (1, 0)\n
-          // note that, starting from xy, we find the correct element at (i+j+1)/2)\n
-          return *(&xy + (i + j + 1) / 2);\n
-        }\n
-      "
+      declaration: |
+        Cov2f() : xx{0}, yy{0}, xy{0} {}
+        Cov2f(double vx, double vy, double vxy = 0)
+          : xx{static_cast<float>(vx)}, yy{static_cast<float>(vy)}, xy{static_cast<float>(vxy)} {}
+        float operator()(unsigned i, unsigned j) const {
+          // diagonal
+          if (i == j) {
+            return *(&xx + i);
+          }
+          // off-diagonal
+          // we have as options (0, 1), and (1, 0)
+          // note that, starting from xy, we find the correct element at (i+j+1)/2)
+          return *(&xy + (i + j + 1) / 2);
+        }
 
   edm4eic::Cov3f:
     Members:
@@ -77,26 +75,25 @@ components:
       - float xz
       - float yz
     ExtraCode:
-      declaration: "
-        Cov3f() : xx{0}, yy{0}, zz{0}, xy{0}, xz{0}, yz{0} {}\n
-        Cov3f(double vx, double vy, double vz, double vxy = 0, double vxz = 0, double vyz = 0)\n
-          : xx{static_cast<float>(vx)}, yy{static_cast<float>(vy)}, zz{static_cast<float>(vz)},\n
-            xy{static_cast<float>(vxy)}, xz{static_cast<float>(vxz)}, yz{static_cast<float>(vyz)} {}\n
-        float operator()(unsigned i, unsigned j) const {\n
-          // diagonal\n
-          if (i == j) {\n
-            return *(&xx + i);\n
-          }\n
-          // off-diagonal\n
-          // we have as options (0, 1), (0, 2) and (1, 2) (and mirrored)\n
-          // note that, starting from xy, we find the correct element at (i+j-1)\n
-          return *(&xy + i + j - 1);\n
-        }\n
-      "
+      declaration: |
+        Cov3f() : xx{0}, yy{0}, zz{0}, xy{0}, xz{0}, yz{0} {}
+        Cov3f(double vx, double vy, double vz, double vxy = 0, double vxz = 0, double vyz = 0)
+          : xx{static_cast<float>(vx)}, yy{static_cast<float>(vy)}, zz{static_cast<float>(vz)},
+            xy{static_cast<float>(vxy)}, xz{static_cast<float>(vxz)}, yz{static_cast<float>(vyz)} {}
+        float operator()(unsigned i, unsigned j) const {
+          // diagonal
+          if (i == j) {
+            return *(&xx + i);
+          }
+          // off-diagonal
+          // we have as options (0, 1), (0, 2) and (1, 2) (and mirrored)
+          // note that, starting from xy, we find the correct element at (i+j-1)
+          return *(&xy + i + j - 1);
+        }
 
   edm4eic::Cov4f:
     Members:
-      - float xx 
+      - float xx
       - float yy
       - float zz
       - float tt
@@ -107,102 +104,113 @@ components:
       - float yt
       - float zt
     ExtraCode:
-      declaration: "
-        Cov4f() : xx{0}, yy{0}, zz{0}, tt{0}, xy{0}, xz{0}, xt{0}, yz{0}, yt{0}, zt{0} {}\n
-        Cov4f(double vx, double vy, double vz, double vt,\n
-              double vxy = 0, double vxz = 0, double vxt = 0,\n
-              double vyz = 0, double vyt = 0, double vzt = 0)\n
-          : xx{static_cast<float>(vx)}, yy{static_cast<float>(vy)}, zz{static_cast<float>(vz)}, tt{static_cast<float>(vt)},\n
-            xy{static_cast<float>(vxy)}, xz{static_cast<float>(vxz)}, xt{static_cast<float>(vxt)},\n
-            yz{static_cast<float>(vyz)}, yt{static_cast<float>(vyt)}, zt{static_cast<float>(vzt)} {}\n
-        float operator()(unsigned i, unsigned j) const {\n
-          // diagonal\n
-          if (i == j) {\n
-            return *(&xx + i);\n
-          // off-diagonal, can probably be done with less if statements \n
-          } else {\n
-            if (i > j) { \n
-              std::swap(i,j); \n
-            } \n
-            if (i == 0) { \n
-              return *(&xy + j - 1); \n
-            } else if (i == 1) { \n
-              return *(&yz + j - 2); \n
-            } else { \n
-              return zt; \n
-            } \n
-          } \n
-        }\n
-      "
+      declaration: |
+        Cov4f() : xx{0}, yy{0}, zz{0}, tt{0}, xy{0}, xz{0}, xt{0}, yz{0}, yt{0}, zt{0} {}
+        Cov4f(double vx, double vy, double vz, double vt,
+              double vxy = 0, double vxz = 0, double vxt = 0,
+              double vyz = 0, double vyt = 0, double vzt = 0)
+          : xx{static_cast<float>(vx)}, yy{static_cast<float>(vy)}, zz{static_cast<float>(vz)}, tt{static_cast<float>(vt)},
+            xy{static_cast<float>(vxy)}, xz{static_cast<float>(vxz)}, xt{static_cast<float>(vxt)},
+            yz{static_cast<float>(vyz)}, yt{static_cast<float>(vyt)}, zt{static_cast<float>(vzt)} {}
+        float operator()(unsigned i, unsigned j) const {
+          // diagonal
+          if (i == j) {
+            return *(&xx + i);
+          // off-diagonal, can probably be done with less if statements
+          } else {
+            if (i > j) {
+              std::swap(i,j);
+            }
+            if (i == 0) {
+              return *(&xy + j - 1);
+            } else if (i == 1) {
+              return *(&yz + j - 2);
+            } else {
+              return zt;
+            }
+          }
+        }
 
   edm4eic::Cov6f:
     Members:
       - std::array<float, 21> covariance  // 6d triangular packed covariance matrix
     ExtraCode:
-      declaration: "
-        Cov6f() : covariance{} {}\n
-        Cov6f(std::array<float, 21> vcov) : covariance{vcov}{}\n
-        float operator()(unsigned i, unsigned j) const {\n
-          if(i > j) {\n
-            std::swap(i, j);\n
-            }\n
-          return covariance[i + 1 + (j + 1) * (j) / 2 - 1];\n
-        }\n
-        float& operator()(unsigned i, unsigned j) {\n
-          if(i > j) {\n
-            std::swap(i, j);\n
-            }\n
-          return covariance[i + 1 + (j + 1) * (j) / 2 - 1];\n
-        }\n
-      "
+      declaration: |
+        Cov6f() : covariance{} {}
+        Cov6f(std::array<float, 21> vcov) : covariance{vcov}{}
+        float operator()(unsigned i, unsigned j) const {
+          if(i > j) {
+            std::swap(i, j);
+            }
+          return covariance[i + 1 + (j + 1) * (j) / 2 - 1];
+        }
+        float& operator()(unsigned i, unsigned j) {
+          if(i > j) {
+            std::swap(i, j);
+            }
+          return covariance[i + 1 + (j + 1) * (j) / 2 - 1];
+        }
 
   ## A point along a track
   edm4eic::TrackPoint:
     Members:
-      - uint64_t          surface         // Surface track was propagated to (possibly multiple per detector)
-      - uint32_t          system          // Detector system track was propagated to
-      - edm4hep::Vector3f position        // Position of the trajectory point [mm]
-      - edm4eic::Cov3f    positionError   // Error on the position
-      - edm4hep::Vector3f momentum        // 3-momentum at the point [GeV]
-      - edm4eic::Cov3f    momentumError   // Error on the 3-momentum
-      - float             time            // Time at this point [ns]
-      - float             timeError       // Error on the time at this point
-      - float             theta           // polar direction of the track at the surface [rad]
-      - float             phi             // azimuthal direction of the track at the surface [rad]
-      - edm4eic::Cov2f    directionError  // Error on the polar and azimuthal angles
-      - float             pathlength      // Pathlength from the origin to this point
-      - float             pathlengthError // Error on the pathlength
+      - uint64_t          surface                // Surface track was propagated to (possibly multiple per detector)
+      - uint32_t          system                 // Detector system track was propagated to
+      - edm4hep::Vector3f position [mm]          // Position of the trajectory point
+      - edm4eic::Cov3f    positionError [mm]     // Error on the position
+      - edm4hep::Vector3f momentum [GeV]         // 3-momentum at the point
+      - edm4eic::Cov3f    momentumError [GeV]    // Error on the 3-momentum
+      - float             time [ns]              // Time at this point
+      - float             timeError [ns]         // Error on the time at this point
+      - float             theta [rad]            // polar direction of the track at the surface
+      - float             phi [rad]              // azimuthal direction of the track at the surface
+      - edm4eic::Cov2f    directionError [rad^2] // Error on the polar and azimuthal angles
+      - float             pathlength [mm]        // Pathlength from the origin to this point
+      - float             pathlengthError [mm]   // Error on the pathlength
 
   ## PID hypothesis from Cherenkov detectors
   edm4eic::CherenkovParticleIDHypothesis:
     Members:
-      - int32_t           PDG             // PDG code
-      - float             npe             // Overall photoelectron count
-      - float             weight          // Weight of this hypothesis, such as likelihood, moment, etc.
+      - int32_t PDG     // PDG code
+      - float   npe     // Overall photoelectron count
+      - float   weight  // Weight of this hypothesis, such as likelihood, moment, etc.
 
   ## Representation of surfaces, including dynamic perigee surfaces (identical to ActsPodioEdm::Surface)
   edm4eic::Surface:
     Members: 
-      - int surfaceType                   // Cone = 0, Cylinder = 1, Disc = 2, Perigee = 3, Plane = 4, Straw = 5, Curvilinear = 6, Other = 7
-      - int boundsType                    // eCone = 0, eCylinder = 1, eDiamond = 2, eDisc = 3, eEllipse = 4, eLine = 5, eRectangle = 6, eTrapezoid = 7, eTriangle = 8, eDiscTrapezoid = 9, eConvexPolygon = 10, eAnnulus = 11, eBoundless = 12, eOther = 13
-      - uint64_t geometryId               // bit pattern volume:8,boundary:8,layer:12,approach:8,sensitive:20,extra:8
-      - uint64_t identifier               // identifier of associated detector element, if available
-      - std::array<double,10> boundValues // bound values, e.g. for RectangleBounds, BoundValues are eMinX = 0, eMinY = 1, eMaxX = 2, eMaxY = 3, eSize = 4
-      - uint32_t boundValuesSize          // size of bound values
-      - std::array<double,16> transform   // row-wise 4x4 affine transform [R T; 0 1] with 3x3 rotation matrix R and translation column 3-vector T
+      - int                   surfaceType      // Cone = 0, Cylinder = 1, Disc = 2, Perigee = 3, Plane = 4,
+                                           // Straw = 5, Curvilinear = 6, Other = 7
+      - int                   boundsType       // eCone = 0, eCylinder = 1, eDiamond = 2, eDisc = 3, eEllipse = 4,
+                                           // eLine = 5, eRectangle = 6, eTrapezoid = 7, eTriangle = 8,
+                                           // eDiscTrapezoid = 9, eConvexPolygon = 10, eAnnulus = 11,
+                                           // eBoundless = 12, eOther = 13
+      - uint64_t              geometryId       // bit pattern volume:8,boundary:8,layer:12,approach:8,
+                                           // sensitive:20,extra:8
+      - uint64_t              identifier       // identifier of associated detector element, if available
+      - std::array<double,10> boundValues      // bound values, e.g. for RectangleBounds, BoundValues are
+                                           // eMinX = 0, eMinY = 1, eMaxX = 2, eMaxY = 3, eSize = 4
+      - uint32_t              boundValuesSize  // size of bound values
+      - std::array<double,16> transform        // row-wise 4x4 affine transform [R T; 0 1] with 3x3 rotation
+                                           // matrix R and translation column 3-vector T
 
   ## An individual sample output by a CALOROC1A chip
   edm4eic::CALOROC1ASample:
     Members:
-      - uint16_t ADC                // [ADC Counts], amplitude of signal during sample, valid IFF TOTInProgress is false
-      - uint16_t timeOfArrival      // Time of arrival (TOA) [TDC counts], nonzero IFF ADC crossed threshold upwards during sample
-      - uint16_t timeOverThreshold  // Time over threshold (TOT) [TDC counts], nonzero IFF ADC crossed threshold downwards during sample AND if TOA fired in a previous sample
+      - uint16_t ADC                // [ADC Counts], amplitude of signal during sample,
+                                    // valid IFF TOTInProgress is false
+      - uint16_t timeOfArrival      // Time of arrival (TOA) [TDC counts], nonzero IFF ADC
+                                    // crossed threshold upwards during sample
+      - uint16_t timeOverThreshold  // Time over threshold (TOT) [TDC counts], nonzero IFF ADC
+                                    // crossed threshold downwards during sample AND if TOA
+                                    // fired in a previous sample
 
   ## An individual sample output by a CALOROC1B chip
   edm4eic::CALOROC1BSample:
     Members:
-      - uint16_t lowGainADC         // [ADC Counts], amplitude of signal during sample in the low gain mode
-      - uint16_t highGainADC        // [ADC Counts], amplitude of signal during sample in the high gain mode
+      - uint16_t lowGainADC         // [ADC Counts], amplitude of signal during sample in the
+                                    // low gain mode
+      - uint16_t highGainADC        // [ADC Counts], amplitude of signal during sample in the
+                                    // high gain mode
       - uint16_t timeOfArrival      // Time of arrival (TOA) [TDC counts]
 
   ## Event-level truthiness information
@@ -218,11 +226,11 @@ datatypes:
     Description: "Tensor type for use in training in inference of ML models"
     Author: "D. Kalinkin"
     Members:
-      - int32_t           elementType     // Data type in the same encoding as "ONNXTensorElementDataType", 1 - float, 7 - int64
+      - int32_t elementType  // Data type in the same encoding as "ONNXTensorElementDataType", 1 - float, 7 - int64
     VectorMembers:
-      - int64_t           shape           // Vector of tensor lengths along its axes
-      - float             floatData       // Iff elementType==1, values are stored here
-      - int64_t           int64Data       // Iff elementType==7, values are stored here
+      - int64_t shape      // Vector of tensor lengths along its axes
+      - float   floatData  // Iff elementType==1, values are stored here
+      - int64_t int64Data  // Iff elementType==7, values are stored here
 
   ## ==========================================================================
   ## Simulation info
@@ -232,13 +240,13 @@ datatypes:
     Description: "Simulated pulse prior to digitization."
     Author: "D. Anderson, S. Gardner, S. Joosten., D. Kalinkin"
     Members:
-      - uint64_t            cellID          // ID of the readout cell for this pulse.
-      - float               integral        // Total pulse integral in relevant units.
-      - edm4hep::Vector3f   position        // Position the pulse is evaluated in world coordinates [mm].
-      - float               time            // Start time for the pulse in [ns].
-      - float               interval        // Time interval between amplitude values [ns].
+      - uint64_t          cellID         // ID of the readout cell for this pulse.
+      - float             integral       // Total pulse integral in relevant units.
+      - edm4hep::Vector3f position [mm]  // Position the pulse is evaluated in world coordinates
+      - float             time [ns]      // Start time for the pulse in
+      - float             interval [ns]  // Time interval between amplitude values
     VectorMembers:
-      - float               amplitude       // Pulse amplitude in relevant units, sum of amplitude values equals integral
+      - float amplitude  // Pulse amplitude in relevant units, sum of amplitude values equals integral
     OneToManyRelations:
       - edm4hep::SimCalorimeterHit calorimeterHits // SimCalorimeterHits used to create this pulse
       - edm4hep::SimTrackerHit     trackerHits     // SimTrackerHits used to create this pulse
@@ -253,16 +261,21 @@ datatypes:
     Description: "EIC Reconstructed Particle"
     Author: "W. Armstrong, S. Joosten, F. Gaede"
     Members:
-      - int32_t           type              // type of reconstructed particle. Check/set collection parameters ReconstructedParticleTypeNames and ReconstructedParticleTypeValues.
-      - float             energy            // [GeV] energy of the reconstructed particle. Four momentum state is not kept consistent internally.
-      - edm4hep::Vector3f momentum          // [GeV] particle momentum. Four momentum state is not kept consistent internally.
-      - edm4hep::Vector3f referencePoint    // [mm] reference, i.e. where the particle has been measured
-      - float             charge            // charge of the reconstructed particle.
-      - float             mass              // [GeV] mass of the reconstructed particle, set independently from four vector. Four momentum state is not kept consistent internally.
-      - float             goodnessOfPID     // overall goodness of the PID on a scale of [0;1]
-      - edm4eic::Cov4f    covMatrix         // covariance matrix of the reconstructed particle 4vector (10 parameters).
-      - int32_t           PDG               // PDG code for this particle
-      ## @TODO: Do we need timing info? Or do we rely on the start vertex time?
+      - int32_t           type                 // type of reconstructed particle. Check/set collection
+                                               // parameters ReconstructedParticleTypeNames and
+                                               // ReconstructedParticleTypeValues.
+      - float             energy [GeV]         // energy of the reconstructed particle. Four momentum
+                                               // state is not kept consistent internally
+      - edm4hep::Vector3f momentum [GeV]       // particle momentum. Four momentum state is not kept
+                                               // consistent internally
+      - edm4hep::Vector3f referencePoint [mm]  // reference, i.e. where the particle has been measured
+      - float             charge               // charge of the reconstructed particle.
+      - float             mass [GeV]           // mass of the reconstructed particle, set independently
+                                               // from four vector. Four momentum state is not kept
+                                               // consistent internally
+      - float             goodnessOfPID        // overall goodness of the PID on a scale of [0;1]
+      - edm4eic::Cov4f    covMatrix            // covariance matrix of the reconstructed particle 4vector (10 parameters).
+      - int32_t           PDG                  // PDG code for this particle
     OneToOneRelations:
       - edm4eic::Vertex      startVertex    // Start vertex associated to this particle
       - edm4hep::ParticleID  particleIDUsed // particle ID used for the kinematics of this particle
@@ -272,9 +285,8 @@ datatypes:
       - edm4eic::ReconstructedParticle particles // Reconstructed particles that have been combined to this particle
       - edm4hep::ParticleID  particleIDs    // All associated particle IDs for this particle (not sorted by likelihood)
     ExtraCode:
-      declaration: "
-        bool isCompound() const {return particles_size() > 0;}\n
-        "
+      declaration: |
+        bool isCompound() const {return particles_size() > 0;}
 
   ## ==========================================================================
   ## Calorimetry
@@ -295,16 +307,16 @@ datatypes:
     Description: "Calorimeter hit"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - uint64_t          cellID            // The detector specific (geometrical) cell id.
-      - float             energy            // The energy for this hit in [GeV].
-      - float             energyError       // Error on energy [GeV].
-      - float             time              // The time of the hit in [ns].
-      - float             timeError         // Error on the time
-      - edm4hep::Vector3f position          // The global position of the hit in world coordinates [mm].
-      - edm4hep::Vector3f dimension         // The dimension information of the cell [mm].
-      - int32_t           sector            // Sector that this hit occurred in
-      - int32_t           layer             // Layer that the hit occurred in
-      - edm4hep::Vector3f local             // The local coordinates of the hit in the detector segment [mm]. 
+      - uint64_t          cellID             // The detector specific (geometrical) cell id.
+      - float             energy [GeV]       // The energy for this hit in
+      - float             energyError [GeV]  // Error on energy
+      - float             time [ns]          // The time of the hit in
+      - float             timeError [ns]     // Error on the time
+      - edm4hep::Vector3f position [mm]      // The global position of the hit in world coordinates
+      - edm4hep::Vector3f dimension [mm]     // The dimension information of the cell
+      - int32_t           sector             // Sector that this hit occurred in
+      - int32_t           layer              // Layer that the hit occurred in
+      - edm4hep::Vector3f local [mm]         // The local coordinates of the hit in the detector segment
     OneToOneRelations:
       - edm4hep::RawCalorimeterHit rawHit   // Related raw calorimeter hit
 
@@ -318,28 +330,29 @@ datatypes:
     OneToManyRelations:
       - edm4eic::CalorimeterHit hits        // Hits associated with this cluster
     VectorMembers:
-      - float             weights           // Weight for each of the hits, mirrors hits array
+      - float weights  // Weight for each of the hits, mirrors hits array
 
   edm4eic::Cluster:
     Description: "EIC hit cluster, reworked to more closely resemble EDM4hep"
     Author: "W. Armstrong, S. Joosten, C.Peng"
     Members:
-      # main variables
-      - int32_t           type              // Flag-word that defines the type of the cluster
-      - float             energy            // Reconstructed energy of the cluster [GeV].
-      - float             energyError       // Error on the cluster energy [GeV]
-      - float             time              // [ns]
-      - float             timeError         // Error on the cluster time
-      - uint32_t          nhits             // Number of hits in the cluster.
-      - edm4hep::Vector3f position          // Global position of the cluster [mm].
-      - edm4eic::Cov3f    positionError     // Covariance matrix of the position (6 Parameters).
-      - float             intrinsicTheta    // Intrinsic cluster propagation direction polar angle [rad]
-      - float             intrinsicPhi      // Intrinsic cluster propagation direction azimuthal angle [rad]
-      - edm4eic::Cov2f    intrinsicDirectionError // Error on the intrinsic cluster propagation direction
+      - int32_t           type                            // Flag-word that defines the type of the cluster
+      - float             energy [GeV]                    // Reconstructed energy of the cluster
+      - float             energyError [GeV]               // Error on the cluster energy
+      - float             time [ns]                       // Time of the cluster
+      - float             timeError [ns]                  // Error on the cluster time
+      - uint32_t          nhits                           // Number of hits in the cluster.
+      - edm4hep::Vector3f position [mm]                   // Global position of the cluster
+      - edm4eic::Cov3f    positionError [mm^2]            // Covariance matrix of the position (6 Parameters).
+      - float             intrinsicTheta [rad]            // Intrinsic cluster propagation direction polar angle
+      - float             intrinsicPhi [rad]              // Intrinsic cluster propagation direction azimuthal angle
+      - edm4eic::Cov2f    intrinsicDirectionError [rad^2] // Error on the intrinsic cluster propagation direction
     VectorMembers:
-      - float             shapeParameters   // Should be set in metadata, for now it's a list of -- radius [mm], dispersion [mm], 2 entries for theta-phi widths [rad], 3 entries for x-y-z widths [mm].
-      - float             hitContributions  // Energy contributions of the hits. Runs parallel to ::hits()
-      - float             subdetectorEnergies // Energies observed in each subdetector used for this cluster.
+      - float shapeParameters      // Should be set in metadata, for now it's a list of --
+                                           // radius [mm], dispersion [mm], 2 entries for
+                                           // theta-phi widths [rad], 3 entries for x-y-z widths [mm]
+      - float hitContributions     // Energy contributions of the hits. Runs parallel to ::hits()
+      - float subdetectorEnergies  // Energies observed in each subdetector used for this cluster.
     OneToManyRelations:
       - edm4eic::Cluster        clusters    // Clusters that have been combined to form this cluster
       - edm4eic::CalorimeterHit hits        // Hits that have been combined to form this cluster
@@ -353,26 +366,25 @@ datatypes:
     Description: "EIC PMT hit"
     Author: "S. Joosten, C. Peng"
     Members:
-      - uint64_t          cellID            // The detector specific (geometrical) cell id.
-      - float             npe               // Estimated number of photo-electrons [#]
-      # @TODO do we need an uncertainty on NPE?
-      - float             time              // Time [ns]
-      - float             timeError         // Error on the time [ns]
-      - edm4hep::Vector3f position          // PMT hit position [mm]
-      - edm4hep::Vector3f dimension         // The dimension information of the pixel [mm].
-      - int32_t           sector            // The sector this hit occurred in
-      - edm4hep::Vector3f local             // The local position of the hit in detector coordinates (relative to the sector) [mm]
+      - uint64_t          cellID          // The detector specific (geometrical) cell id.
+      - float             npe             // Estimated number of photo-electrons
+      - float             time [ns]       // Time
+      - float             timeError [ns]  // Error on the time
+      - edm4hep::Vector3f position [mm]   // PMT hit position
+      - edm4hep::Vector3f dimension [mm]  // The dimension information of the pixel
+      - int32_t           sector          // The sector this hit occurred in
+      - edm4hep::Vector3f local [mm]      // The local position of the hit in detector coordinates (relative to the sector)
 
   edm4eic::CherenkovParticleID:
     Description: "Cherenkov detector PID"
     Author: "A. Kiselev, C. Chatterjee, C. Dilks"
     Members:
-      - float             npe               // Overall photoelectron count
-      - float             refractiveIndex   // Average refractive index at the Cherenkov photons' vertices
-      - float             photonEnergy      // Average energy for these Cherenkov photons [GeV]
+      - float npe                 // Overall photoelectron count
+      - float refractiveIndex     // Average refractive index at the Cherenkov photons' vertices
+      - float photonEnergy [GeV]  // Average energy for these Cherenkov photons
     VectorMembers:
-      - edm4eic::CherenkovParticleIDHypothesis hypotheses         // Evaluated PDG hypotheses
-      - edm4hep::Vector2f                      thetaPhiPhotons    // estimated (theta,phi) for each Cherenkov photon
+      - edm4eic::CherenkovParticleIDHypothesis hypotheses       // Evaluated PDG hypotheses
+      - edm4hep::Vector2f                      thetaPhiPhotons  // estimated (theta,phi) for each Cherenkov photon
     OneToOneRelations:
       - edm4eic::TrackSegment                  chargedParticle    // reconstructed charged particle
     OneToManyRelations:
@@ -383,13 +395,13 @@ datatypes:
     Description: "EIC Ring Image Cluster"
     Author: "S. Joosten, C. Peng"
     Members:
-      - float             npe               // Number of photo-electrons [#]
-      - edm4hep::Vector3f position          // Global position of the cluster [mm]
-      - edm4hep::Vector3f positionError     // Error on the position
-      - float             theta             // Opening angle of the ring [rad, 0->pi]
-      - float             thetaError        // Error on the opening angle
-      - float             radius            // Radius of the best fit ring [mm]
-      - float             radiusError       // Estimated error from the fit [mm]
+      - float             npe                 // Number of photo-electrons
+      - edm4hep::Vector3f position [mm]       // Global position of the cluster
+      - edm4hep::Vector3f positionError [mm]  // Error on the position
+      - float             theta [rad]         // Opening angle of the ring, 0->pi
+      - float             thetaError [rad]    // Error on the opening angle
+      - float             radius [mm]         // Radius of the best fit ring
+      - float             radiusError [mm]    // Estimated error from the fit
 
   ## ==========================================================================
   ## Tracking
@@ -399,35 +411,34 @@ datatypes:
     Description: "Raw (digitized) tracker hit"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - uint64_t          cellID            // The detector specific (geometrical) cell id.
-      - int32_t           charge            // ADC value
-      ## @TODO: is charge appropriate here? Needs revisiting.
-      - int32_t           timeStamp         // TDC value.
+      - uint64_t cellID     // The detector specific (geometrical) cell id.
+      - int32_t  charge     // ADC value
+      - int32_t  timeStamp  // TDC value.
 
   edm4eic::TrackerHit:
     Description: "Tracker hit (reconstructed from Raw)"
     Author: "W. Armstrong, S. Joosten"
     Members:
-      - uint64_t          cellID            // The detector specific (geometrical) cell id.
-      - edm4hep::Vector3f position          // Hit (cell) position [mm]
-      - edm4eic::CovDiag3f positionError    // Covariance Matrix
-      - float             time              // Hit time [ns]
-      - float             timeError         // Error on the time
-      - float             edep              // Energy deposit in this hit [GeV]
-      - float             edepError         // Error on the energy deposit [GeV]
+      - uint64_t           cellID               // The detector specific (geometrical) cell id.
+      - edm4hep::Vector3f  position [mm]        // Hit (cell) position
+      - edm4eic::CovDiag3f positionError [mm^2] // Covariance Matrix
+      - float              time [ns]            // Hit time
+      - float              timeError [ns]       // Error on the time
+      - float              edep [GeV]           // Energy deposit in this hit
+      - float              edepError [GeV]      // Error on the energy deposit
     OneToOneRelations:
-      - edm4eic::RawTrackerHit rawHit       // Related raw tracker hit
+      - edm4eic::RawTrackerHit rawHit           // Related raw tracker hit
       
   edm4eic::Measurement2D:
     Description: "2D measurement (on an arbitrary surface)"
     Author: "W. Deconinck"
     Members:
-      - uint64_t          surface           // Surface for bound coordinates (geometryID)
-      - edm4hep::Vector2f loc               // 2D location on surface
-      - float             time              // Measurement time
-      - edm4eic::Cov3f    covariance        // Covariance on location and time
+      - uint64_t          surface     // Surface for bound coordinates (geometryID)
+      - edm4hep::Vector2f loc [mm]    // 2D location on surface
+      - float             time [ns]   // Measurement time
+      - edm4eic::Cov3f    covariance  // Covariance on location and time
     VectorMembers:
-      - float             weights           // Weight for each of the hits, mirrors hits array
+      - float weights  // Weight for each of the hits, mirrors hits array
     OneToManyRelations:
       - edm4eic::TrackerHit hits            // Hits in this measurement (single or clustered)
 
@@ -446,19 +457,21 @@ datatypes:
     Description: "Raw trajectory from the tracking algorithm. What is called hit here is 2d measurement indeed."
     Author: "S. Joosten, S. Li"
     Members:
-      - uint32_t          type              // 0 (does not have good track fit), 1 (has good track fit)
-      - uint32_t          nStates           // Number of tracking steps
-      - uint32_t          nMeasurements     // Number of hits used 
-      - uint32_t          nOutliers         // Number of hits not considered 
-      - uint32_t          nHoles            // Number of missing hits
-      - uint32_t          nSharedHits       // Number of shared hits with other trajectories
+      - uint32_t type           // 0 (does not have good track fit), 1 (has good track fit)
+      - uint32_t nStates        // Number of tracking steps
+      - uint32_t nMeasurements  // Number of hits used 
+      - uint32_t nOutliers      // Number of hits not considered 
+      - uint32_t nHoles         // Number of missing hits
+      - uint32_t nSharedHits    // Number of shared hits with other trajectories
     VectorMembers:
-      - float             measurementChi2   // Chi2 for each of the measurements
-      - float             outlierChi2       // Chi2 for each of the outliers
+      - float measurementChi2  // Chi2 for each of the measurements
+      - float outlierChi2      // Chi2 for each of the outliers
     OneToManyRelations:
       - edm4eic::TrackParameters trackParameters            // Associated track parameters, if any
-      - edm4eic::Measurement2D measurements_deprecated      // Measurements that were used for this track. Will move this to the edm4eic::Track
-      - edm4eic::Measurement2D outliers_deprecated          // Measurements that were not used for this track. Will move this to the edm4eic::Track
+      - edm4eic::Measurement2D measurements_deprecated      // Measurements that were used for this track.
+                                                         // Will move this to the edm4eic::Track
+      - edm4eic::Measurement2D outliers_deprecated          // Measurements that were not used for this track.
+                                                         // Will move this to the edm4eic::Track
     OneToOneRelations:
       - edm4eic::TrackSeed      seed      // Corresponding track seed
 
@@ -466,47 +479,47 @@ datatypes:
     Description: "ACTS Bound Track parameters"
     Author: "W. Armstrong, S. Joosten, J. Osborn"
     Members:
-      - int32_t              type              // Type of track parameters (-1/seed, 0/head, ...)
-      - uint64_t             surface           // Surface for bound parameters (geometryID)
-      - edm4hep::Vector2f    loc               // 2D location on surface
-      - float                theta             // Track polar angle [rad]
-      - float                phi               // Track azimuthal angle [rad]
-      - float                qOverP            // [e/GeV]
-      - float                time              // Track time [ns] 
-      - int32_t              pdg               // pdg pid for these parameters
-      - edm4eic::Cov6f       covariance        // Full covariance in basis [l0,l1,theta,phi,q/p,t]
+      - int32_t           type            // Type of track parameters (-1/seed, 0/head, ...)
+      - uint64_t          surface         // Surface for bound parameters (geometryID)
+      - edm4hep::Vector2f loc [mm]        // 2D location on surface
+      - float             theta [rad]     // Track polar angle
+      - float             phi [rad]       // Track azimuthal angle
+      - float             qOverP [e/GeV]  // Charge divided by momentum
+      - float             time [ns]       // Track time
+      - int32_t           pdg             // pdg pid for these parameters
+      - edm4eic::Cov6f    covariance      // Full covariance in basis [l0,l1,theta,phi,q/p,t]
 
 
   edm4eic::Track:
     Description: "Track information at the vertex"
     Author: "S. Joosten, J. Osborn"
     Members:
-      - int32_t            type                           // Flag that defines the type of track
-      - edm4hep::Vector3f  position                       // Track 3-position at the vertex 
-      - edm4hep::Vector3f  momentum                       // Track 3-momentum at the vertex [GeV]
-      - edm4eic::Cov6f     positionMomentumCovariance     // Covariance matrix in basis [x,y,z,px,py,pz]
-      - float              time                           // Track time at the vertex [ns]
-      - float              timeError                      // Error on the track vertex time
-      - float              charge                         // Particle charge
-      - float              chi2                           // Total chi2
-      - uint32_t           ndf                            // Number of degrees of freedom
-      - int32_t            pdg                            // PDG particle ID hypothesis
+      - int32_t           type                        // Flag that defines the type of track
+      - edm4hep::Vector3f position [mm]               // Track 3-position at the vertex
+      - edm4hep::Vector3f momentum [GeV]              // Track 3-momentum at the vertex
+      - edm4eic::Cov6f    positionMomentumCovariance  // Covariance matrix in basis [x,y,z,px,py,pz]
+      - float             time [ns]                   // Track time at the vertex
+      - float             timeError [ns]              // Error on the track vertex time
+      - float             charge                      // Particle charge
+      - float             chi2                        // Total chi2
+      - uint32_t          ndf                         // Number of degrees of freedom
+      - int32_t           pdg                         // PDG particle ID hypothesis
     OneToOneRelations:
-      - edm4eic::Trajectory                     trajectory      // Trajectory of this track
+      - edm4eic::Trajectory    trajectory             // Trajectory of this track
     OneToManyRelations:
-      - edm4eic::Measurement2D measurements      // Measurements that were used for this track
-      - edm4eic::Track      tracks            // Tracks (segments) that have been combined to create this track
+      - edm4eic::Measurement2D measurements           // Measurements that were used for this track
+      - edm4eic::Track         tracks                 // Tracks (segments) that have been combined to create this track
 
   edm4eic::TrackSegment:
     Description: "A track segment defined by one or more points along a track."
     Author: "S. Joosten"
     Members:
-      - float             length            // Pathlength from the first to the last point
-      - float             lengthError       // Error on the segment length
+      - float length [mm]          // Pathlength from the first to the last point
+      - float lengthError [mm]     // Error on the segment length
     OneToOneRelations:
-      - edm4eic::Track    track             // Track used for this projection
+      - edm4eic::Track      track  // Track used for this projection
     VectorMembers:
-      - edm4eic::TrackPoint points          // Points where the track parameters were evaluated
+      - edm4eic::TrackPoint points // Points where the track parameters were evaluated
 
   ## ==========================================================================
   ## Vertexing
@@ -516,12 +529,13 @@ datatypes:
     Description: "EIC vertex"
     Author: "J. Osborn"
     Members:
-      - int32_t             type          // Type flag, to identify what type of vertex it is (e.g. primary, secondary, generated, etc.)
-      - float               chi2          // Chi-squared of the vertex fit
-      - int                 ndf           // NDF of the vertex fit
-      - edm4hep::Vector4f   position      // position [mm] + time t0 [ns] of the vertex. Time is 4th component in vector
-      ## this is named "covMatrix" in EDM4hep, renamed for consistency with the rest of edm4eic
-      - edm4eic::Cov4f      positionError // Covariance matrix of the position+time. Time is 4th component, similarly to 4vector 
+      - int32_t           type           // Type flag, to identify what type of vertex it is (e.g. primary, secondary, generated, etc.)
+      - float             chi2           // Chi-squared of the vertex fit
+      - int               ndf            // NDF of the vertex fit
+      - edm4hep::Vector4f position [mm]  // position + time t0 [ns] of the vertex.
+                                         // Time is 4th component in vector
+      - edm4eic::Cov4f    positionError  // Covariance matrix of the position+time.
+                                         // Time is 4th component, similarly to 4vector 
     OneToManyRelations:
       - edm4eic::ReconstructedParticle associatedParticles // particles associated to this vertex.
 
@@ -533,11 +547,11 @@ datatypes:
     Description: "Kinematic variables for DIS events"
     Author: "S. Joosten, W. Deconinck"
     Members:
-      - float             x                 // Bjorken x (Q2/2P.q)
-      - float             Q2                // Four-momentum transfer squared [GeV^2]
-      - float             W                 // Invariant mass of final state [GeV]
-      - float             y                 // Inelasticity (P.q/P.k)
-      - float             nu                // Energy transfer P.q/M [GeV]
+      - float x           // Bjorken x (Q2/2P.q)
+      - float Q2 [GeV^2]  // Four-momentum transfer squared
+      - float W [GeV]     // Invariant mass of final state
+      - float y           // Inelasticity (P.q/P.k)
+      - float nu [GeV]    // Energy transfer P.q/M
     OneToOneRelations:
       - edm4eic::ReconstructedParticle scat // Associated scattered electron (if identified)
       ## @TODO: Spin state?
@@ -547,9 +561,9 @@ datatypes:
     Description: "Summed quantities of the hadronic final state"
     Author: "T. Kutz"
     Members:
-      - float             sigma             // Longitudinal energy-momentum balance (aka E - pz)
-      - float             pT                // Transverse momentum
-      - float             gamma             // Hadronic angle
+      - float sigma [GeV]  // Longitudinal energy-momentum balance (aka E - pz)
+      - float pT [GeV]     // Transverse momentum
+      - float gamma [rad]  // Hadronic angle
     OneToManyRelations:
       - edm4eic::ReconstructedParticle hadrons // Reconstructed hadrons used in calculation
 
@@ -561,9 +575,9 @@ datatypes:
     Description: "Used to keep track of the correspondence between MC and reconstructed particles"
     Author: "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
-      - uint32_t          recID             // Index of corresponding ReconstructedParticle (position in ReconstructedParticles array)
-      - float             weight            // weight of this association
+      - uint32_t simID   // Index of corresponding MCParticle (position in MCParticles array)
+      - uint32_t recID   // Index of corresponding ReconstructedParticle (position in ReconstructedParticles array)
+      - float    weight  // weight of this association
     OneToOneRelations :
       - edm4eic::ReconstructedParticle rec  // reference to the reconstructed particle
       - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
@@ -572,31 +586,31 @@ datatypes:
     Description: "Association between a Cluster and a MCParticle"
     Author : "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
-      - uint32_t          recID             // Index of corresponding Cluster (position in Clusters array)
-      - float             weight            // weight of this association
+      - uint32_t simID   // Index of corresponding MCParticle (position in MCParticles array)
+      - uint32_t recID   // Index of corresponding Cluster (position in Clusters array)
+      - float    weight  // weight of this association
     OneToOneRelations:
-      - edm4eic::Cluster  rec               // reference to the cluster
+      - edm4eic::Cluster    rec             // reference to the cluster
       - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
 
   edm4eic::MCRecoTrackParticleAssociation:
     Description: "Association between a Track and a MCParticle"
     Author : "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
-      - uint32_t          recID             // Index of corresponding Track (position in Tracks array)
-      - float             weight            // weight of this association
+      - uint32_t simID   // Index of corresponding MCParticle (position in MCParticles array)
+      - uint32_t recID   // Index of corresponding Track (position in Tracks array)
+      - float    weight  // weight of this association
     OneToOneRelations:
-      - edm4eic::Track    rec               // reference to the track
+      - edm4eic::Track      rec             // reference to the track
       - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
 
   edm4eic::MCRecoVertexParticleAssociation:
     Description: "Association between a Vertex and a MCParticle"
     Author : "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
-      - uint32_t          recID             // Index of corresponding Vertex (position in Vertices array)
-      - float             weight            // weight of this association
+      - uint32_t simID   // Index of corresponding MCParticle (position in MCParticles array)
+      - uint32_t recID   // Index of corresponding Vertex (position in Vertices array)
+      - float    weight  // weight of this association
     OneToOneRelations:
       - edm4eic::Vertex     rec             // reference to the vertex
       - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
@@ -605,7 +619,7 @@ datatypes:
     Description: "Association between a RawTrackerHit and a SimTrackerHit"
     Author: "C. Dilks, W. Deconinck"
     Members:
-      - float                 weight        // weight of this association
+      - float                  weight       // weight of this association
     OneToOneRelations:
       - edm4eic::RawTrackerHit rawHit       // reference to the digitized hit
       - edm4hep::SimTrackerHit simHit       // reference to the simulated hit
@@ -614,7 +628,7 @@ datatypes:
     Description: "Association between a RawCalorimeterHit and a SimCalorimeterHit"
     Author: "S. Rahman"
     Members:
-      - float                 weight        // weight of this association
+      - float                      weight   // weight of this association
     OneToOneRelations:
       - edm4hep::RawCalorimeterHit rawHit   // reference to the digitized calorimeter hit
       - edm4hep::SimCalorimeterHit simHit   // reference to the simulated calorimeter hit
@@ -623,10 +637,10 @@ datatypes:
     Description: "Match between a Cluster and a Track"
     Author: "D. Anderson, D. Brandenburg, D. Kalinkin, S. Joosten"
     Members:
-      - float                 weight        // weight of this association
+      - float             weight  // weight of this association
     OneToOneRelations:
-      - edm4eic::Cluster  cluster           // reference to the cluster
-      - edm4eic::Track track                // reference to the track
+      - edm4eic::Cluster  cluster // reference to the cluster
+      - edm4eic::Track    track   // reference to the track
 
   edm4eic::TrackProtoClusterMatch:
     Description: "Match between a ProtoCluster and a Track"
