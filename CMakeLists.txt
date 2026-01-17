@@ -19,7 +19,7 @@ if(SCHEMA_VERSION_MATCH)
   set(SCHEMA_VERSION ${CMAKE_MATCH_1})
   math(EXPR EXPECTED_SCHEMA_VERSION "${${PROJECT_NAME}_VERSION_MAJOR} * 100 + ${${PROJECT_NAME}_VERSION_MINOR}")
   if(NOT SCHEMA_VERSION EQUAL EXPECTED_SCHEMA_VERSION)
-    message(FATAL_ERROR 
+    message(FATAL_ERROR
       "Schema version mismatch: edm4eic.yaml has schema_version=${SCHEMA_VERSION}, "
       "but CMakeLists.txt version ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH} "
       "requires schema_version=${EXPECTED_SCHEMA_VERSION}. "
