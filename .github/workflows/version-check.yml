@@ -15,10 +15,22 @@ jobs:
     - name: Check schema version matches project version
       run: |
         # Extract versions from files
-        MAJOR=$(grep "SET.*VERSION_MAJOR" CMakeLists.txt | grep -oP '\d+')
-        MINOR=$(grep "SET.*VERSION_MINOR" CMakeLists.txt | grep -oP '\d+')
-        PATCH=$(grep "SET.*VERSION_PATCH" CMakeLists.txt | grep -oP '\d+')
-        SCHEMA_VERSION=$(grep "schema_version:" edm4eic.yaml | grep -oP '\d+')
+        MAJOR=$(grep "SET.*VERSION_MAJOR" CMakeLists.txt | grep -oP '\d+' || echo "")
+        MINOR=$(grep "SET.*VERSION_MINOR" CMakeLists.txt | grep -oP '\d+' || echo "")
+        PATCH=$(grep "SET.*VERSION_PATCH" CMakeLists.txt | grep -oP '\d+' || echo "")
+        SCHEMA_VERSION=$(grep "schema_version:" edm4eic.yaml | grep -oP '\d+' || echo "")
+        
+        # Verify all values were extracted
+        if [ -z "$MAJOR" ] || [ -z "$MINOR" ] || [ -z "$PATCH" ]; then
+          echo "ERROR: Failed to extract version from CMakeLists.txt"
+          echo "  MAJOR='${MAJOR}' MINOR='${MINOR}' PATCH='${PATCH}'"
+          exit 1
+        fi
+        
+        if [ -z "$SCHEMA_VERSION" ]; then
+          echo "ERROR: Failed to extract schema_version from edm4eic.yaml"
+          exit 1
+        fi
         
         # Calculate expected schema version (100*major + minor)
         EXPECTED_SCHEMA_VERSION=$((MAJOR * 100 + MINOR))
