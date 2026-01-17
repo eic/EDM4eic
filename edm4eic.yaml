@@ -3,13 +3,13 @@
 # Some datatypes based on EDM4hep. EDM4hep license applies to those sections.
 ---
 ## Schema versioning
-## This is required to be an integer, and defined as 100*major+minor.
+## This is required to be an integer, and defined as 100*major+10*minor+patch.
 ## Patch level changes are required to be schema invariant.
 ##
 ## If there are schema version changes that can be evolved, see the podio documentation
 ## for an example: https://github.com/AIDASoft/podio/tree/master/tests/schema_evolution
 ##
-schema_version: 806
+schema_version: 860
 
 options :
   # should getters / setters be prefixed with get / set?

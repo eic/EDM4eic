@@ -12,12 +12,12 @@ SET( ${PROJECT_NAME}_VERSION_PATCH 0 )
 SET( ${PROJECT_NAME}_VERSION  "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}" )
 
 # Verify that schema version in edm4eic.yaml matches project version
-# Schema version is defined as 100*major + minor (patch is schema-invariant)
+# Schema version is defined as 100*major + 10*minor + patch
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/edm4eic.yaml" EDM4EIC_YAML_CONTENT)
 string(REGEX MATCH "schema_version:[ \t]*([0-9]+)" SCHEMA_VERSION_MATCH "${EDM4EIC_YAML_CONTENT}")
 if(SCHEMA_VERSION_MATCH)
   set(SCHEMA_VERSION ${CMAKE_MATCH_1})
-  math(EXPR EXPECTED_SCHEMA_VERSION "${${PROJECT_NAME}_VERSION_MAJOR} * 100 + ${${PROJECT_NAME}_VERSION_MINOR}")
+  math(EXPR EXPECTED_SCHEMA_VERSION "${${PROJECT_NAME}_VERSION_MAJOR} * 100 + ${${PROJECT_NAME}_VERSION_MINOR} * 10 + ${${PROJECT_NAME}_VERSION_PATCH}")
   if(NOT SCHEMA_VERSION EQUAL EXPECTED_SCHEMA_VERSION)
     message(FATAL_ERROR
       "Schema version mismatch: edm4eic.yaml has schema_version=${SCHEMA_VERSION}, "
