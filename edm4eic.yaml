@@ -9,7 +9,7 @@
 ## If there are schema version changes that can be evolved, see the podio documentation
 ## for an example: https://github.com/AIDASoft/podio/tree/master/tests/schema_evolution
 ##
-schema_version: 850
+schema_version: 806
 
 options :
   # should getters / setters be prefixed with get / set?
