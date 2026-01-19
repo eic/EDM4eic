@@ -538,7 +538,7 @@ datatypes:
       - float             W                 // Invariant mass of final state [GeV]
       - float             y                 // Inelasticity (P.q/P.k)
       - float             nu                // Energy transfer P.q/M [GeV]
-      - edm4hep::Vector4f q                 // Four-momentum transfer vector
+      - edm4hep::Vector4f q                 // Four-momentum transfer vector (E, px, py, pz) [GeV]
     OneToOneRelations:
       - edm4eic::ReconstructedParticle scat // Associated scattered electron (if identified)
       ## @TODO: Spin state?
