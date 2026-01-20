@@ -52,9 +52,11 @@ include(GNUInstallDirs)
 
 include(CTest)
 
-find_package(podio 0.15)
+# podio has SameMajorVersoin compatibility so we try to find 1.0 first and
+# fall back to the minimum version in cas we cannot find that
+find_package(podio 1.0)
 if(NOT podio_FOUND)
-  find_package(podio 1.0 REQUIRED)
+  find_package(podio 0.15 REQUIRED)
 endif()
 include_directories(${podio_INCLUDE_DIR})
 
