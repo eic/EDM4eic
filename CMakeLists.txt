@@ -52,13 +52,20 @@ include(GNUInstallDirs)
 
 include(CTest)
 
-find_package(podio 0.15)
+# podio has SameMajorVersoin compatibility so we try to find 1.0 first and
+# fall back to the minimum version in cas we cannot find that
+find_package(podio 1.0)
 if(NOT podio_FOUND)
-  find_package(podio 1.0 REQUIRED)
+  find_package(podio 0.15 REQUIRED)
 endif()
 include_directories(${podio_INCLUDE_DIR})
 
-find_package(EDM4HEP 0.10.3 REQUIRED)
+# EDM4hep has SameMajorVersion compatibility so we try to find 1.0 first and
+# fall back to the minimum version in case we canot find that
+find_package(EDM4HEP 1.0)
+if (NOT EDM4HEP_FOUND)
+  find_package(EDM4HEP 0.10.3 REQUIRED)
+endif()
 
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
