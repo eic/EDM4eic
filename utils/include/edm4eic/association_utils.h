@@ -160,12 +160,12 @@ public:
   /**
    * @brief Get the total number of associations indexed
    */
-  size_t size() const { return m_total_associations; }
+  size_t size() const { return m_from_to_map.size(); }
 
   /**
    * @brief Check if the lookup is empty
    */
-  bool empty() const { return m_total_associations == 0; }
+  bool empty() const { return m_from_to_map.empty(); }
 
   // Iterator support for range-based for loops over from->to map
   auto begin() const { return m_from_to_map.begin(); }
