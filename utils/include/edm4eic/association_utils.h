@@ -25,6 +25,9 @@ namespace edm4eic {
  * When 'from' and 'to' types are different, provides operator[] for natural lookup syntax.
  * Named methods are always available regardless of type differences.
  *
+ * Following standard container conventions, operator[] and lookup methods return const
+ * references. For non-existent keys, a reference to an empty static vector is returned.
+ *
  * @tparam AssociationCollection Type of the association collection (e.g., MCRecoCalorimeterHitAssociationCollection)
  * @tparam GetFromObjectFunc Function type to extract the 'from' object from an association
  * @tparam GetToObjectFunc Function type to extract the 'to' object from an association
@@ -38,15 +41,15 @@ namespace edm4eic {
  *     [](const auto& assoc) { return assoc.getSimHit(); }   // to: sim
  *   );
  *
- *   // Natural operator[] syntax when types are different
- *   auto sim_hits = lookup[raw_hit];  // O(1) lookup
+ *   // Natural operator[] syntax when types are different (returns const reference)
+ *   const auto& sim_hits = lookup[raw_hit];  // O(1) lookup
  *   for (const auto& sim_hit : sim_hits) {
  *     // Process sim_hit
  *   }
  *
- *   // Named methods always available
- *   auto sim_hits_alt = lookup.lookup_from_to(raw_hit);
- *   auto raw_hits = lookup.lookup_to_from(sim_hit);
+ *   // Named methods always available (also return const references)
+ *   const auto& sim_hits_alt = lookup.lookup_from_to(raw_hit);
+ *   const auto& raw_hits = lookup.lookup_to_from(sim_hit);
  *
  *   // Can also iterate over all from->to mappings
  *   for (const auto& [from_id, to_objs] : lookup.from_to_view()) {
@@ -90,10 +93,13 @@ public:
   /**
    * @brief Lookup 'to' objects using operator[] (only when types differ)
    *
+   * Returns a const reference following standard container conventions.
+   * For non-existent keys, returns a reference to an empty static vector.
+   *
    * @param from_obj The 'from' object
-   * @return Vector of associated 'to' objects (empty if none found)
+   * @return Const reference to vector of associated 'to' objects (empty if none found)
    */
-  std::vector<to_object_t> operator[](const from_object_t& from_obj) const 
+  const std::vector<to_object_t>& operator[](const from_object_t& from_obj) const 
     requires different_types
   {
     return lookup_from_to(from_obj);
@@ -102,29 +108,37 @@ public:
   /**
    * @brief Lookup 'to' objects associated with a 'from' object
    *
+   * Returns a const reference following standard container conventions.
+   * For non-existent keys, returns a reference to an empty static vector.
+   *
    * @param from_obj The 'from' object
-   * @return Vector of associated 'to' objects (empty if none found)
+   * @return Const reference to vector of associated 'to' objects (empty if none found)
    */
-  std::vector<to_object_t> lookup_from_to(const from_object_t& from_obj) const {
+  const std::vector<to_object_t>& lookup_from_to(const from_object_t& from_obj) const {
     auto it = m_from_to_map.find(from_obj.getObjectID());
     if (it != m_from_to_map.end()) {
       return it->second;
     }
-    return {};
+    static const std::vector<to_object_t> empty;
+    return empty;
   }
 
   /**
    * @brief Lookup 'from' objects associated with a 'to' object
    *
+   * Returns a const reference following standard container conventions.
+   * For non-existent keys, returns a reference to an empty static vector.
+   *
    * @param to_obj The 'to' object
-   * @return Vector of associated 'from' objects (empty if none found)
+   * @return Const reference to vector of associated 'from' objects (empty if none found)
    */
-  std::vector<from_object_t> lookup_to_from(const to_object_t& to_obj) const {
+  const std::vector<from_object_t>& lookup_to_from(const to_object_t& to_obj) const {
     auto it = m_to_from_map.find(to_obj.getObjectID());
     if (it != m_to_from_map.end()) {
       return it->second;
     }
-    return {};
+    static const std::vector<from_object_t> empty;
+    return empty;
   }
 
   /**
