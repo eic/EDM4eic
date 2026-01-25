@@ -69,7 +69,7 @@ public:
   using from_to_map_t = std::unordered_map<podio::ObjectID, std::vector<to_object_t>>;
   using to_from_map_t = std::unordered_map<podio::ObjectID, std::vector<from_object_t>>;
 
-  // Concept to check if from and to types are different
+  // Compile-time check if 'from' and 'to' types are different
   static constexpr bool different_types = !std::is_same_v<from_object_t, to_object_t>;
 
   /**
