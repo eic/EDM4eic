@@ -30,8 +30,8 @@ else()
 endif()
 
 # C++ standard
-set(CMAKE_CXX_STANDARD_MIN 17)
-set(CMAKE_CXX_STANDARD 17 CACHE STRING "Set the C++ standard to be used")
+set(CMAKE_CXX_STANDARD_MIN 20)
+set(CMAKE_CXX_STANDARD 20 CACHE STRING "Set the C++ standard to be used")
 if(CMAKE_CXX_STANDARD LESS CMAKE_CXX_STANDARD_MIN)
   message(
     FATAL_ERROR
