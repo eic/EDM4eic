@@ -20,13 +20,17 @@ namespace edm4eic {
  * relationships, and satisfies C++20 range concepts for compatibility with
  * standard algorithms.
  *
+ * The lookup maps store const pointers to avoid copying objects. The lifetime
+ * of the association collection must exceed the lifetime of this lookup object.
+ *
  * Satisfies: std::ranges::forward_range, std::ranges::sized_range
  *
  * When 'from' and 'to' types are different, provides operator[] for natural lookup syntax.
  * Named methods are always available regardless of type differences.
  *
  * Following standard container conventions, operator[] and lookup methods return const
- * references. For non-existent keys, a reference to an empty static vector is returned.
+ * references to vectors of const pointers. For non-existent keys, a reference to an 
+ * empty static vector is returned.
  *
  * @tparam AssociationCollection Type of the association collection (e.g., MCRecoCalorimeterHitAssociationCollection)
  * @tparam GetFromObjectFunc Function type to extract the 'from' object from an association
@@ -41,19 +45,19 @@ namespace edm4eic {
  *     [](const auto& assoc) { return assoc.getSimHit(); }   // to: sim
  *   );
  *
- *   // Natural operator[] syntax when types are different (returns const reference)
- *   const auto& sim_hits = lookup[raw_hit];  // O(1) lookup
- *   for (const auto& sim_hit : sim_hits) {
- *     // Process sim_hit
+ *   // Natural operator[] syntax when types are different (returns const reference to vector of pointers)
+ *   const auto& sim_hits = lookup[raw_hit];  // O(1) lookup, returns vector of const pointers
+ *   for (const auto* sim_hit : sim_hits) {
+ *     // Process *sim_hit
  *   }
  *
- *   // Named methods always available (also return const references)
+ *   // Named methods always available (also return const references to vector of pointers)
  *   const auto& sim_hits_alt = lookup.lookup_from_to(raw_hit);
  *   const auto& raw_hits = lookup.lookup_to_from(sim_hit);
  *
  *   // Can also iterate over all from->to mappings
  *   for (const auto& [from_id, to_objs] : lookup.from_to_view()) {
- *     // Process mapping
+ *     // Process mapping, to_objs is a vector of const pointers
  *   }
  *
  *   // Works with C++20 ranges
@@ -69,8 +73,8 @@ public:
   using to_object_t = std::decay_t<decltype(std::declval<GetToObjectFunc>()(
       *std::declval<const AssociationCollection*>()->begin()))>;
   
-  using from_to_map_t = std::unordered_map<podio::ObjectID, std::vector<to_object_t>>;
-  using to_from_map_t = std::unordered_map<podio::ObjectID, std::vector<from_object_t>>;
+  using from_to_map_t = std::unordered_map<podio::ObjectID, std::vector<const to_object_t*>>;
+  using to_from_map_t = std::unordered_map<podio::ObjectID, std::vector<const from_object_t*>>;
 
   // Compile-time check if 'from' and 'to' types are different
   static constexpr bool different_types = !std::is_same_v<from_object_t, to_object_t>;
@@ -97,9 +101,9 @@ public:
    * For non-existent keys, returns a reference to an empty static vector.
    *
    * @param from_obj The 'from' object
-   * @return Const reference to vector of associated 'to' objects (empty if none found)
+   * @return Const reference to vector of pointers to associated 'to' objects (empty if none found)
    */
-  const std::vector<to_object_t>& operator[](const from_object_t& from_obj) const 
+  const std::vector<const to_object_t*>& operator[](const from_object_t& from_obj) const 
     requires different_types
   {
     return lookup_from_to(from_obj);
@@ -112,14 +116,14 @@ public:
    * For non-existent keys, returns a reference to an empty static vector.
    *
    * @param from_obj The 'from' object
-   * @return Const reference to vector of associated 'to' objects (empty if none found)
+   * @return Const reference to vector of pointers to associated 'to' objects (empty if none found)
    */
-  const std::vector<to_object_t>& lookup_from_to(const from_object_t& from_obj) const {
+  const std::vector<const to_object_t*>& lookup_from_to(const from_object_t& from_obj) const {
     auto it = m_from_to_map.find(from_obj.getObjectID());
     if (it != m_from_to_map.end()) {
       return it->second;
     }
-    static const std::vector<to_object_t> empty;
+    static const std::vector<const to_object_t*> empty;
     return empty;
   }
 
@@ -130,14 +134,14 @@ public:
    * For non-existent keys, returns a reference to an empty static vector.
    *
    * @param to_obj The 'to' object
-   * @return Const reference to vector of associated 'from' objects (empty if none found)
+   * @return Const reference to vector of pointers to associated 'from' objects (empty if none found)
    */
-  const std::vector<from_object_t>& lookup_to_from(const to_object_t& to_obj) const {
+  const std::vector<const from_object_t*>& lookup_to_from(const to_object_t& to_obj) const {
     auto it = m_to_from_map.find(to_obj.getObjectID());
     if (it != m_to_from_map.end()) {
       return it->second;
     }
-    static const std::vector<from_object_t> empty;
+    static const std::vector<const from_object_t*> empty;
     return empty;
   }
 
@@ -193,8 +197,8 @@ private:
       auto from_obj = m_get_from_object(assoc);
       auto to_obj = m_get_to_object(assoc);
 
-      m_from_to_map[from_obj.getObjectID()].push_back(to_obj);
-      m_to_from_map[to_obj.getObjectID()].push_back(from_obj);
+      m_from_to_map[from_obj.getObjectID()].push_back(&to_obj);
+      m_to_from_map[to_obj.getObjectID()].push_back(&from_obj);
       ++m_total_associations;
     }
   }
