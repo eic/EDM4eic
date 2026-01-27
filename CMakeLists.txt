@@ -52,12 +52,8 @@ include(GNUInstallDirs)
 
 include(CTest)
 
-# podio has SameMajorVersoin compatibility so we try to find 1.0 first and
-# fall back to the minimum version in cas we cannot find that
-find_package(podio 1.0)
-if(NOT podio_FOUND)
-  find_package(podio 0.15 REQUIRED)
-endif()
+# podio has SameMajorVersion compatibility
+find_package(podio 1.2 REQUIRED)
 include_directories(${podio_INCLUDE_DIR})
 
 # EDM4hep has SameMajorVersion compatibility so we try to find 1.0 first and
