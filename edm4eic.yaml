@@ -739,6 +739,49 @@ datatypes:
        - edm4eic::ReconstructedParticle unassociatedRecoParticles // Reference to the unassociated reconstructed particles
 
 links:
+
+  edm4eic::MCRecoParticleLink:
+    Description: "Used to keep track of the correspondence between MC and reconstructed particles"
+    Author: "S. Joosten"
+    From: edm4eic::ReconstructedParticle
+    To: edm4hep::MCParticle
+
+  edm4eic::MCRecoClusterParticleLink:
+    Description: "Association between a Cluster and a MCParticle"
+    Author : "S. Joosten"
+    From: edm4eic::Cluster
+    To: edm4hep::MCParticle
+
+  edm4eic::MCRecoTrackParticleLink:
+    Description: "Association between a Track and a MCParticle"
+    Author : "S. Joosten"
+    From: edm4eic::Track
+    To: edm4hep::MCParticle
+
+  edm4eic::MCRecoVertexParticleLink:
+    Description: "Association between a Vertex and a MCParticle"
+    Author : "S. Joosten"
+    From: edm4eic::Vertex
+    To: edm4hep::MCParticle
+
+  edm4eic::MCRecoTrackerHitLink:
+    Description: "Association between a RawTrackerHit and a SimTrackerHit"
+    Author: "C. Dilks, W. Deconinck"
+    From: edm4eic::RawTrackerHit
+    To: edm4hep::SimTrackerHit
+
+  edm4eic::MCRecoCalorimeterHitLink:
+    Description: "Association between a RawCalorimeterHit and a SimCalorimeterHit"
+    Author: "S. Rahman"
+    From: edm4hep::RawCalorimeterHit
+    To: edm4hep::SimCalorimeterHit
+
+  edm4eic::TrackClusterLink:
+    Description: "Match between a Cluster and a Track"
+    Author: "D. Anderson, D. Brandenburg, D. Kalinkin, S. Joosten"
+    From: edm4eic::Cluster
+    To: edm4eic::Track
+
   edm4eic::TrackProtoClusterLink:
     Description: "Link between a ProtoCluster and a Track"
     Author: "D. Anderson, D. Kalinkin"
