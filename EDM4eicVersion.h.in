@@ -5,7 +5,6 @@
 #define EDM4EIC_VERSION_H
 
 #include <cstdint>
-#include <tuple>
 #include <ostream>
 #include <compare>
 
