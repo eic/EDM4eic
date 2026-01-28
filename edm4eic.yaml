@@ -373,6 +373,7 @@ datatypes:
     VectorMembers:
       - edm4eic::CherenkovParticleIDHypothesis hypotheses         // Evaluated PDG hypotheses
       - edm4hep::Vector2f                      thetaPhiPhotons    // estimated (theta,phi) for each Cherenkov photon
+      - float                                  incidentAngle      // incident MC-truth photon angle wrt sensor normal
     OneToOneRelations:
       - edm4eic::TrackSegment                  chargedParticle    // reconstructed charged particle
     OneToManyRelations:
