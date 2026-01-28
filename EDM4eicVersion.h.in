@@ -42,6 +42,7 @@ namespace edm4eic::version {
     uint16_t minor{0};
     uint16_t patch{0};
 
+    bool operator==(const Version&) const = default;
     auto operator<=>(const Version&) const = default;
 
     friend std::ostream& operator<<(std::ostream&, const Version& v);
