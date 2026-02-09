@@ -553,10 +553,6 @@ datatypes:
     OneToManyRelations:
       - edm4eic::ReconstructedParticle hadrons // Reconstructed hadrons used in calculation
 
-  ## ==========================================================================
-  ## Jets
-  ## ==========================================================================
-
   edm4eic::Jet:
     Description:  "A reconstructed jet, inspired by the FastJet PseudoJet"
     Author: "D. Anderson"
