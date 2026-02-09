@@ -561,17 +561,17 @@ datatypes:
     Description:  "A reconstructed jet, inspired by the FastJet PseudoJet"
     Author: "D. Anderson"
     Members:
-      - uint32_t          type                    // jet type as enumerated in fastjet::JetAlgorithm
-      - float             area                    // jet area
-      - float             energy                  // jet energy [GeV]
-      - float             backgroundEnergyDensity // background energy density [GeV/area]
-      - edm4hep::Vector3f momentum                // jet 3-momentum [GeV]
+      - uint32_t          type                    // Jet type as enumerated in fastjet::JetAlgorithm
+      - float             area                    // Jet area
+      - float             energy                  // Jet energy [GeV]
+      - float             backgroundEnergyDensity // Background energy density [GeV/area]
+      - edm4hep::Vector3f momentum                // Jet 3-momentum [GeV]
     OneToManyRelations:
-      - edm4eic::Jet                   jets         // jets that have been combined to form this jet
-      - edm4eic::ReconstructedParticle constituents // constituents of this jet
+      - edm4eic::Jet                   jets         // Jets that have been combined to form this jet
+      - edm4eic::ReconstructedParticle constituents // Constituents of this jet
     ExtraCode:
       declaration: "
-      /// compute the background energy in [GeV]\n
+      /// Compute the background energy in [GeV]\n
       float getBackgroundEnergy() const { return getArea() * getBackgroundEnergyDensity(); }\n
       "
 
