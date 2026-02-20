@@ -563,14 +563,12 @@ datatypes:
       - float             backgroundEnergyDensity // Background energy density [GeV/area]
       - edm4hep::Vector3f momentum                // Jet 3-momentum [GeV]
     OneToManyRelations:
-      - edm4eic::Jet                   jets         // Jets that have been combined to form this jet
       - edm4eic::ReconstructedParticle constituents // Constituents of this jet
     ExtraCode:
       declaration: "
       /// Compute the background energy in [GeV]\n
       float getBackgroundEnergy() const { return getArea() * getBackgroundEnergyDensity(); }\n
       "
-
 
   ## ==========================================================================
   ## Data-Monte Carlo relations
