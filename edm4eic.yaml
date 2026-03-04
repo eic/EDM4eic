@@ -401,8 +401,6 @@ datatypes:
   edm4eic::IrtEvent:
     Description: "IRT 2.1 output (event level for a particular detector)"
     Author: "A. Kiselev"
-    Members:
-      - float             dummy               // dummy
     OneToManyRelations:
       - edm4eic::IrtParticle                   irtParticles       // charged particles with associated Cherenkov PID info
       
