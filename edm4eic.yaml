@@ -538,8 +538,12 @@ datatypes:
       - float             W                 // Invariant mass of final state [GeV]
       - float             y                 // Inelasticity (P.q/P.k)
       - float             nu                // Energy transfer P.q/M [GeV]
+      - edm4hep::Vector4f q                 // Four-momentum transfer vector (E, px, py, pz) [GeV]
+      ## @TODO
+      ##- edm4eic::Cov4f    qError            // Covariance matrix of the Four-momentum transfer vector (10 parameters).
     OneToOneRelations:
-      - edm4eic::ReconstructedParticle scat // Associated scattered electron (if identified)
+      - edm4eic::ReconstructedParticle scat          // Associated scattered electron (if identified)
+      - edm4eic::HadronicFinalState    hadronicState // Associated hadonic final state (if used in calculation)
       ## @TODO: Spin state?
       ## - phi_S?
 
