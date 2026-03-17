@@ -398,6 +398,44 @@ datatypes:
     OneToManyRelations:
       - edm4eic::IrtRadiatorInfo               radiators  // radiator-related information
 
+
+  edm4eic::PIDSubsystemHitToTrackAssociation:
+    Description: "A PID subsystem hit coupling to a PIDSubsystemTrack under a given PDG hypothesis (assumes Gaussian errors)"
+    Author: "Joe PID Writer"
+    Members:
+      - float                                      path1      // particle trajectory length before emitting a photon (time scales with velocity) 
+      - float                                      path2      // Cherenkov photon trajectory length (if any; normalized to media <n>'s) 
+      - float                                      dr         // spatial component of a hit distance to a PDF contour
+      - float                                      dt         // hit timing difference to a PDF contour
+      - edm4eic::Cov2f                             covariance // [dr,dt] covariance matrix (diagonal, except for perhaps hpDIRC)
+    OneToOneRelations:
+      - edm4eic::PMTHit                            hit        // relationship to some standard digitized hit structure
+
+  edm4eic::PIDSubsystemTrackPDGHypothesis:
+    Description: "A PDG hypothesis info for a PIDSubsystemTrack"
+    Author: "Joe PID Writer"
+    Members:
+      - int32_t                                    PDG        // PDG code hypothesis
+      - float                                      norm       // some normalization reflecting <Npe> (?)
+    OneToManyRelations:
+      - edm4eic::PIDSubsystemHitToTrackAssociation hits       // hits associated with this PDG hypothesis 
+
+  edm4eic::PIDSubsystemTrack:
+    Description: "A PIDSubsystemTrackGroup member track"
+    Author: "Joe PID Writer"
+    OneToManyRelations:
+      - edm4eic::PIDSubsystemTrackPDGHypothesis    PDGs       // PDG hypothesis information
+
+  edm4eic::PIDSubsystemTrackGroup:
+    Description: "A group of tracks with shared hits in a PID subsystem"
+    Author: "Joe PID Writer"
+    Members:
+      - float                                      nsigma     // n-sigma cut applied to hit-to-track associations
+    OneToManyRelations:
+      - edm4eic::PIDSubsystemTrack                 tracks     // charged particle tracks with their hit associations
+      
+
+
   edm4eic::RingImage:
     ##@TODO: Juggler support; not used in EICrecon
     Description: "EIC Ring Image Cluster"
