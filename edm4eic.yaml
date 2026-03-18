@@ -423,6 +423,8 @@ datatypes:
   edm4eic::PIDSubsystemTrack:
     Description: "A PIDSubsystemTrackGroup member track"
     Author: "Joe PID Writer"
+    OneToOneRelations:
+      - edm4eic::Track                             track      // charged particle track
     OneToManyRelations:
       - edm4eic::PIDSubsystemTrackPDGHypothesis    PDGs       // PDG hypothesis information
 
@@ -434,6 +436,22 @@ datatypes:
     OneToManyRelations:
       - edm4eic::PIDSubsystemTrack                 tracks     // charged particle tracks with their hit associations
       
+
+  edm4eic::PIDOutput:
+    Description: "An event-level PID output for a single charged particle track"
+    Author: "Joe PID Writer"
+    Members:
+      - int32_t                                    PDG        // reconstructed (most likely) PDG code
+      - float                                      electron   // electron LL
+      - float                                      muon       // muon LL
+      - float                                      pion       // pion LL
+      - float                                      kaon       // kaon LL
+      - float                                      proton     // proton LL
+    VectorMembers:
+      - uint16_t                                   tracks     // bitmask of tracks used
+      - uint16_t                                   subsystems // bitmask of detector subsystems used
+    OneToOneRelations:
+      - edm4eic::Track                             track      // charged particle track
 
 
   edm4eic::RingImage:
