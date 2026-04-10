@@ -528,6 +528,18 @@ datatypes:
     VectorMembers:
       - edm4eic::TrackPoint points          // Points where the track parameters were evaluated
 
+  edm4eic::AlignmentDerivativeSet:
+    Description: "Per-surface alignment derivative data for one track, used as input to Millepede-II"
+    Author: "W. Deconinck"
+    Members:
+      - uint64_t  surface              // Acts::GeometryIdentifier of the measurement surface
+      - float     residual             // Measurement residual [mm]
+      - float     residualUncertainty  // Uncertainty on the residual [mm]
+    VectorMembers:
+      - float     localDerivatives   // d(residual)/d(local track params), length = nLocal
+      - int32_t   globalLabels       // Millepede global parameter labels (positive integers)
+      - float     globalDerivatives  // d(residual)/d(alignment DOFs), length = nGlobal
+
   ## ==========================================================================
   ## Vertexing
   ## ==========================================================================
