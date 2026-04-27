@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
-// Copyright (C) 2022 Whitney Armstrong, Sylvester Joosten
-// Copyright (C) 2024 Wouter Deconinck
+// Copyright (C) 2022 - 2024 Whitney Armstrong, Sylvester Joosten, Wouter Deconinck
 
 #ifndef EDM4EIC_UTILS_ANALYSIS_HH
 #define EDM4EIC_UTILS_ANALYSIS_HH
