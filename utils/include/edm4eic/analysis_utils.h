@@ -12,7 +12,6 @@
 
 #include <edm4hep/MCParticleCollection.h>
 #include <edm4eic/ReconstructedParticleCollection.h>
-#include <edm4eic/ReconstructedParticleData.h>
 #include <edm4eic/TrackParametersCollection.h>
 
 namespace edm4eic {
