@@ -825,8 +825,8 @@ links:
     From: edm4eic::Track
     To: edm4eic::ProtoCluster
 
-  edm4eic::ChargeSharedSimLink:
-    Description: "Link between the original GEANT4 SimTrackerHit and charge shared SimTrackerHit"
+  edm4eic::SimTrackerLink:
+    Description: "Link between the original GEANT4 SimTrackerHit and other SimTrackerHit created by intermediate EICRecon class"
     Author: "C.Y. Tsang"
     From: edm4hep::SimTrackerHit
     To: edm4hep::SimTrackerHit
