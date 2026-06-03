@@ -489,12 +489,12 @@ datatypes:
       - int32_t              type              // Type of track parameters (-1/seed, 0/head, ...)
       - uint64_t             surface           // Surface for bound parameters (geometryID)
       - edm4hep::Vector2f    loc               // 2D location on surface
-      - float                theta             // Track polar angle [rad]
       - float                phi               // Track azimuthal angle [rad]
+      - float                theta             // Track polar angle [rad]
       - float                qOverP            // [e/GeV]
       - float                time              // Track time [ns] 
       - int32_t              pdg               // pdg pid for these parameters
-      - edm4eic::Cov6f       covariance        // Full covariance in basis [l0,l1,theta,phi,q/p,t]
+      - edm4eic::Cov6f       covariance        // Full covariance in basis following ACTS convention [l0,l1,phi,theta,q/p,t]
 
 
   edm4eic::Track:
