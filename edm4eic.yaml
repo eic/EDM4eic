@@ -335,9 +335,8 @@ datatypes:
       - edm4eic::Cov3f    positionError     // Covariance matrix of the position (6 Parameters).
       - float             radius       // Cluster radius [mm].
       - float             dispersion   // Cluster dispersion [mm].
-      - float             widthTheta   // Cluster width in polar (theta) direction [rad].
-      - float             widthPhi     // Cluster width in azimuthal (phi) direction [rad].
-      - std::array<float, 3> principalAxesLengths // Lengths along the cluster's principal axes [mm], sorted in descending order (equivalent to sqrt of eigenvalues of the position covariance, descending).
+      - std::array<float, 3> principalAxesLengthsXYZ      // Lengths along the cluster's principal axes [mm], sorted in descending order (equivalent to sqrt of eigenvalues of the position covariance, descending).
+      - std::array<float, 2> principalAxesLengthsThetaPhi // Lengths along the cluster's principal axes [rad], sorted in descending order.
       - float             intrinsicTheta    // Intrinsic cluster propagation direction polar angle [rad]
       - float             intrinsicPhi      // Intrinsic cluster propagation direction azimuthal angle [rad]
       - edm4eic::Cov2f    intrinsicDirectionError // Error on the intrinsic cluster propagation direction
