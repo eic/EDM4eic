@@ -335,10 +335,10 @@ datatypes:
       - edm4eic::Cov3f    positionError     // Covariance matrix of the position (6 Parameters).
       - float             radius       // Cluster radius [mm].
       - float             dispersion   // Cluster dispersion [mm].
-      - std::array<float, 3> principalAxesLengthsXYZ      // Lengths along the cluster's principal axes [mm], sorted in descending order (equivalent to sqrt of eigenvalues of the position covariance, descending).
+      - std::array<float, 3> principalAxesLengthsXYZ      // Lengths along the cluster's principal axes [mm], sorted in descending order (equivalent to sqrt of eigenvalues of the position covariance). For an XY planar detector one can expect this to be [sigma_max, sigma_min, 0].
       - std::array<float, 2> principalAxesLengthsThetaPhi // Lengths along the cluster's principal axes [rad], sorted in descending order.
-      - float             intrinsicTheta    // Intrinsic cluster propagation direction polar angle [rad]
-      - float             intrinsicPhi      // Intrinsic cluster propagation direction azimuthal angle [rad]
+      - float             intrinsicTheta    // Intrinsic cluster propagation direction polar angle [rad].
+      - float             intrinsicPhi      // Intrinsic cluster propagation direction azimuthal angle [rad]. For an XY planar detector one can expect this to be the tilt of "sigma_max" axis.
       - edm4eic::Cov2f    intrinsicDirectionError // Error on the intrinsic cluster propagation direction
     VectorMembers:
       - float             shapeParameters   // [DEPRECATED] use radius, dispersion, widthTheta/Phi, and principalAxesLengths instead.
