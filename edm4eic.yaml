@@ -341,7 +341,7 @@ datatypes:
       - float             intrinsicPhi      // Intrinsic cluster propagation direction azimuthal angle [rad]. For an XY planar detector one can expect this to be the tilt of "sigma_max" axis.
       - edm4eic::Cov2f    intrinsicDirectionError // Error on the intrinsic cluster propagation direction
     VectorMembers:
-      - float             shapeParameters   // [DEPRECATED] use radius, dispersion, widthTheta/Phi, and principalAxesLengths instead.
+      - float             shapeParameters   // [DEPRECATED] use radius, dispersion, principalAxesLengthsXYZ/ThetaPhi instead.
       - float             hitContributions  // Energy contributions of the hits. Runs parallel to ::hits()
       - float             subdetectorEnergies // Energies observed in each subdetector used for this cluster.
     OneToManyRelations:
