@@ -3,13 +3,14 @@
 # Some datatypes based on EDM4hep. EDM4hep license applies to those sections.
 ---
 ## Schema versioning
-## This is required to be an integer, and defined as 100*major+10*minor+patch.
+## This is required to be an integer, and defined as 10000*major+100*minor+patch
+## (two digits per component, so each component may range from 0 to 99).
 ## Patch level changes are required to be schema invariant.
 ##
 ## If there are schema version changes that can be evolved, see the podio documentation
 ## for an example: https://github.com/AIDASoft/podio/tree/master/tests/schema_evolution
 ##
-schema_version: 890
+schema_version: 81000
 
 options :
   # should getters / setters be prefixed with get / set?
@@ -324,7 +325,6 @@ datatypes:
     Description: "EIC hit cluster, reworked to more closely resemble EDM4hep"
     Author: "W. Armstrong, S. Joosten, C.Peng"
     Members:
-      # main variables
       - int32_t           type              // Flag-word that defines the type of the cluster
       - float             energy            // Reconstructed energy of the cluster [GeV].
       - float             energyError       // Error on the cluster energy [GeV]
@@ -333,11 +333,15 @@ datatypes:
       - uint32_t          nhits             // Number of hits in the cluster.
       - edm4hep::Vector3f position          // Global position of the cluster [mm].
       - edm4eic::Cov3f    positionError     // Covariance matrix of the position (6 Parameters).
-      - float             intrinsicTheta    // Intrinsic cluster propagation direction polar angle [rad]
-      - float             intrinsicPhi      // Intrinsic cluster propagation direction azimuthal angle [rad]
+      - float             radius       // Cluster radius [mm].
+      - float             dispersion   // Cluster dispersion [mm].
+      - std::array<float, 3> principalAxesLengthsXYZ      // Lengths along the cluster's principal axes [mm], sorted in descending order (equivalent to sqrt of eigenvalues of the position covariance). For an XY planar detector one can expect this to be [sigma_max, sigma_min, 0].
+      - std::array<float, 2> principalAxesLengthsThetaPhi // Lengths along the cluster's principal axes [rad], sorted in descending order.
+      - float             intrinsicTheta    // Intrinsic cluster propagation direction polar angle [rad].
+      - float             intrinsicPhi      // Intrinsic cluster propagation direction azimuthal angle [rad]. For an XY planar detector one can expect this to be the tilt of "sigma_max" axis.
       - edm4eic::Cov2f    intrinsicDirectionError // Error on the intrinsic cluster propagation direction
     VectorMembers:
-      - float             shapeParameters   // Should be set in metadata, for now it's a list of -- radius [mm], dispersion [mm], 2 entries for theta-phi widths [rad], 3 entries for x-y-z widths [mm].
+      - float             shapeParameters   // [DEPRECATED] use radius, dispersion, principalAxesLengthsXYZ/ThetaPhi instead.
       - float             hitContributions  // Energy contributions of the hits. Runs parallel to ::hits()
       - float             subdetectorEnergies // Energies observed in each subdetector used for this cluster.
     OneToManyRelations:
