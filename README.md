@@ -3,7 +3,7 @@ EDM4eic - EIC data model
 
 A data model for EIC defined with [podio](https://github.com/AIDASoft/podio) and based on [EDM4hep](https://github.com/key4hep/EDM4hep).
 
-![](docs/EDM4eic_v8100_diagram.png)
+![](docs/EDM4eic_v8100_diagram.SVG)
 
 ## Full Description File
 
