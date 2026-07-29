@@ -3,6 +3,8 @@ EDM4eic - EIC data model
 
 A data model for EIC defined with [podio](https://github.com/AIDASoft/podio) and based on [EDM4hep](https://github.com/key4hep/EDM4hep).
 
+![](doc/EDM4eic_v8100_diagram.png)
+
 ## Full Description File
 
 The entire data model is defined with a single YAML file, `edm4eic.yml`.
