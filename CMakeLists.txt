@@ -73,8 +73,9 @@ PODIO_GENERATE_DATAMODEL(edm4eic edm4eic.yaml headers sources
   UPSTREAM_EDM edm4hep:${EDM4HEP_DATA_DIR}/edm4hep.yaml
   IO_BACKEND_HANDLERS ${PODIO_IO_HANDLERS}
   OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
-  OLD_DESCRIPTION ${CMAKE_CURRENT_SOURCE_DIR}/edm4eic_old.yaml
-  SCHEMA_EVOLUTION ${CMAKE_CURRENT_SOURCE_DIR}/edm4eic_evolution.yaml
+  # podio 1.7 schema evolution re-reads current/old YAMLs without forwarding
+  # the configured upstream EDM, so components using edm4hep types fail
+  # validation during comparison (normal code generation still works).
   )
 
 PODIO_ADD_DATAMODEL_CORE_LIB(edm4eic "${headers}" "${sources}"
