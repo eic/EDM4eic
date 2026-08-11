@@ -1,0 +1,49 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Copyright (C) 2025 EIC Collaboration
+#
+# Schema evolution file for EDM4eic.
+# Describes changes from schema version 81000 (8.10.0) to 81100 (8.11.0).
+# Fields of Cov*f type that were misleadingly named *Error are renamed to *Cov.
+#
+# See https://github.com/AIDASoft/podio/blob/master/doc/advanced_topics.md#schema-evolution
+
+migrations:
+  edm4eic::TrackPoint:
+    - from_version: 81000
+      to_version: 81100
+      rename_member:
+        from: positionError
+        to: positionCov
+    - from_version: 81000
+      to_version: 81100
+      rename_member:
+        from: momentumError
+        to: momentumCov
+    - from_version: 81000
+      to_version: 81100
+      rename_member:
+        from: directionError
+        to: directionCov
+  edm4eic::Cluster:
+    - from_version: 81000
+      to_version: 81100
+      rename_member:
+        from: positionError
+        to: positionCov
+    - from_version: 81000
+      to_version: 81100
+      rename_member:
+        from: intrinsicDirectionError
+        to: intrinsicDirectionCov
+  edm4eic::TrackerHit:
+    - from_version: 81000
+      to_version: 81100
+      rename_member:
+        from: positionError
+        to: positionCov
+  edm4eic::Vertex:
+    - from_version: 81000
+      to_version: 81100
+      rename_member:
+        from: positionError
+        to: positionCov
