@@ -101,7 +101,7 @@ endif()
 if(PODIO_ENABLE_ARROW)
   PODIO_ADD_ARROW(edm4eic "${headers}" "${sources}")
   message(STATUS "Building and installing the Arrow component since podio supports it")
-  add_library(EDM4EIC::edm4eicArrow ALIAS edm4eicPodioArrow)
+  add_library(EDM4EIC::edm4eicPodioArrow ALIAS edm4eicPodioArrow)
   list(APPEND EDM4EIC_INSTALL_LIBS edm4eicPodioArrow)
 endif()
 
