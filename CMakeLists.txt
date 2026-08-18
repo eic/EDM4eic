@@ -92,12 +92,6 @@ add_subdirectory(test)
 
 list(APPEND EDM4EIC_INSTALL_LIBS edm4eic edm4eicDict)
 
-PODIO_ADD_SIO_IO_BLOCKS(edm4eic "${headers}" "${sources}")
-if(TARGET edm4eicSioBlocks)
-  message(STATUS "Building and installing the SioBlocks since podio supports it")
-  list(APPEND EDM4EIC_INSTALL_LIBS edm4eicSioBlocks)
-endif()
-
 if(PODIO_ENABLE_ARROW)
   PODIO_ADD_ARROW(edm4eic "${headers}" "${sources}")
   message(STATUS "Building and installing the Arrow component since podio supports it")
