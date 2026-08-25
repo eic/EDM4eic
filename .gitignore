@@ -4,3 +4,4 @@ BUILD/*
 include/*
 lib/*
 share/*
+set_env_vars.sh
