@@ -3,13 +3,14 @@
 # Some datatypes based on EDM4hep. EDM4hep license applies to those sections.
 ---
 ## Schema versioning
-## This is required to be an integer, and defined as 100*major+minor.
+## This is required to be an integer, and defined as 10000*major+100*minor+patch
+## (two digits per component, so each component may range from 0 to 99).
 ## Patch level changes are required to be schema invariant.
 ##
 ## If there are schema version changes that can be evolved, see the podio documentation
 ## for an example: https://github.com/AIDASoft/podio/tree/master/tests/schema_evolution
 ##
-schema_version: 850
+schema_version: 81100
 
 options :
   # should getters / setters be prefixed with get / set?
@@ -191,14 +192,26 @@ components:
       - uint32_t boundValuesSize          // size of bound values
       - std::array<double,16> transform   // row-wise 4x4 affine transform [R T; 0 1] with 3x3 rotation matrix R and translation column 3-vector T
 
-  ## An individual sample output by an HGCROC chip
-  edm4eic::HGCROCSample:
+  ## An individual sample output by a CALOROC1A chip
+  edm4eic::CALOROC1ASample:
     Members:
       - uint16_t ADC                // [ADC Counts], amplitude of signal during sample, valid IFF TOTInProgress is false
       - uint16_t timeOfArrival      // Time of arrival (TOA) [TDC counts], nonzero IFF ADC crossed threshold upwards during sample
       - uint16_t timeOverThreshold  // Time over threshold (TOT) [TDC counts], nonzero IFF ADC crossed threshold downwards during sample AND if TOA fired in a previous sample
-      - bool     TOTInProgress      // Flag which indicates if TOT calculation is ongoing, ADC value may be corrupted if this is true
-      - bool     TOTComplete        // Flag which indicates if a TOT calculation is complete and TOT value is valid
+
+  ## An individual sample output by a CALOROC1B chip
+  edm4eic::CALOROC1BSample:
+    Members:
+      - uint16_t lowGainADC         // [ADC Counts], amplitude of signal during sample in the low gain mode
+      - uint16_t highGainADC        // [ADC Counts], amplitude of signal during sample in the high gain mode
+      - uint16_t timeOfArrival      // Time of arrival (TOA) [TDC counts]
+
+  ## Event-level truthiness information
+  edm4eic::TruthinessContribution:
+    Members:
+      - float pid                 // Contribution of PID matching to truthiness
+      - float energy              // Contribution of energy matching to truthiness
+      - float momentum            // Contribution of momentum matching to truthiness
 
 datatypes:
 
@@ -268,15 +281,16 @@ datatypes:
   ## Calorimetry
   ## ==========================================================================
 
-  edm4eic::RawHGCROCHit:
-    Description: "Raw hit from an HGCROC chip"
-    Author: "D. Anderson, S. Joosten, T. Protzman, N. Novitzky, D. Kalinkin"
+  edm4eic::RawCALOROCHit:
+    Description: "Raw hit from a CALOROC1A/B chip"
+    Author: "D. Anderson, S. Joosten, T. Protzman, N. Novitzky, D. Kalinkin, M. Zurek, M. H. Kim"
     Members:
-      - uint64_t cellID                // Detector specific (geometrical) cell id
-      - int32_t  samplePhase           // Phase of samples in [# samples], for synchronizing across chips
-      - int32_t  timeStamp             // [TDC counts]
+      - uint64_t cellID                   // Detector specific (geometrical) cell id
+      - int32_t  samplePhase              // Phase of samples in [# samples], for synchronizing across chips
+      - int32_t  timeStamp                // [TDC counts]
     VectorMembers:
-      - edm4eic::HGCROCSample samples  // ADC, Time of Arrival (TOA), and Time over Threshold (TOT) values for each sample read out
+      - edm4eic::CALOROC1ASample aSamples // ADC, Time of Arrival (TOA), and Time over Threshold (TOT) values for each sample read out
+      - edm4eic::CALOROC1BSample bSamples // Low- and high-gain ADC and Time of Arrival (TOA) values for each sample read out
 
   edm4eic::CalorimeterHit:
     Description: "Calorimeter hit"
@@ -311,7 +325,6 @@ datatypes:
     Description: "EIC hit cluster, reworked to more closely resemble EDM4hep"
     Author: "W. Armstrong, S. Joosten, C.Peng"
     Members:
-      # main variables
       - int32_t           type              // Flag-word that defines the type of the cluster
       - float             energy            // Reconstructed energy of the cluster [GeV].
       - float             energyError       // Error on the cluster energy [GeV]
@@ -320,11 +333,15 @@ datatypes:
       - uint32_t          nhits             // Number of hits in the cluster.
       - edm4hep::Vector3f position          // Global position of the cluster [mm].
       - edm4eic::Cov3f    positionError     // Covariance matrix of the position (6 Parameters).
-      - float             intrinsicTheta    // Intrinsic cluster propagation direction polar angle [rad]
-      - float             intrinsicPhi      // Intrinsic cluster propagation direction azimuthal angle [rad]
+      - float             radius       // Cluster radius [mm].
+      - float             dispersion   // Cluster dispersion [mm].
+      - std::array<float, 3> principalAxesLengthsXYZ      // Lengths along the cluster's principal axes [mm], sorted in descending order (equivalent to sqrt of eigenvalues of the position covariance). For an XY planar detector one can expect this to be [sigma_max, sigma_min, 0].
+      - std::array<float, 2> principalAxesLengthsThetaPhi // Lengths along the cluster's principal axes [rad], sorted in descending order.
+      - float             intrinsicTheta    // Intrinsic cluster propagation direction polar angle [rad].
+      - float             intrinsicPhi      // Intrinsic cluster propagation direction azimuthal angle [rad]. For an XY planar detector one can expect this to be the tilt of "sigma_max" axis.
       - edm4eic::Cov2f    intrinsicDirectionError // Error on the intrinsic cluster propagation direction
     VectorMembers:
-      - float             shapeParameters   // Should be set in metadata, for now it's a list of -- radius [mm], dispersion [mm], 2 entries for theta-phi widths [rad], 3 entries for x-y-z widths [mm].
+      - float             shapeParameters   // [DEPRECATED] use radius, dispersion, principalAxesLengthsXYZ/ThetaPhi instead.
       - float             hitContributions  // Energy contributions of the hits. Runs parallel to ::hits()
       - float             subdetectorEnergies // Energies observed in each subdetector used for this cluster.
     OneToManyRelations:
@@ -364,6 +381,26 @@ datatypes:
       - edm4eic::TrackSegment                  chargedParticle    // reconstructed charged particle
     OneToManyRelations:
       - edm4eic::MCRecoTrackerHitAssociation   rawHitAssociations // raw sensor hits, associated with MC hits
+
+  edm4eic::IrtRadiatorInfo:
+    Description: "IRT 2.1 output (radiator level)"
+    Author: "A. Kiselev"
+    Members:
+      - uint16_t          npe               // Detected photoelectron count
+      - uint16_t          nhits             // Hit count associated with this radiator by IRT engine
+      - float             angle             // Reconstructed Cherenkov angle
+      
+  edm4eic::IrtParticle:
+    Description: "IRT 2.1 output (track level)"
+    Author: "A. Kiselev"
+    Members:
+      - int32_t           PDG               // Reconstructed most probable PDG code
+      - uint16_t          npe               // Detected photoelectron count
+      - uint16_t          nhits             // Hit count associated with this particle by IRT engine
+    OneToOneRelations:
+      - edm4eic::Track                         track      // charged particle track
+    OneToManyRelations:
+      - edm4eic::IrtRadiatorInfo               radiators  // radiator-related information
 
   edm4eic::RingImage:
     ##@TODO: Juggler support; not used in EICrecon
@@ -423,6 +460,7 @@ datatypes:
     Author: "S. Li, B. Schmookler, J. Osborn"
     Members:
       - edm4hep::Vector3f         perigee   // Vector for the perigee (line surface)
+      - float                     quality   // Seed quality reported by finder
     OneToManyRelations:
       - edm4eic::TrackerHit       hits      // Tracker hits triplet for seeding
     OneToOneRelations:
@@ -455,12 +493,12 @@ datatypes:
       - int32_t              type              // Type of track parameters (-1/seed, 0/head, ...)
       - uint64_t             surface           // Surface for bound parameters (geometryID)
       - edm4hep::Vector2f    loc               // 2D location on surface
-      - float                theta             // Track polar angle [rad]
       - float                phi               // Track azimuthal angle [rad]
+      - float                theta             // Track polar angle [rad]
       - float                qOverP            // [e/GeV]
       - float                time              // Track time [ns] 
       - int32_t              pdg               // pdg pid for these parameters
-      - edm4eic::Cov6f       covariance        // Full covariance in basis [l0,l1,theta,phi,q/p,t]
+      - edm4eic::Cov6f       covariance        // Full covariance in basis following ACTS convention [l0,l1,phi,theta,q/p,t]
 
 
   edm4eic::Track:
@@ -568,53 +606,150 @@ datatypes:
     OneToManyRelations:
       - edm4eic::ReconstructedParticle hadrons // Reconstructed hadrons used in calculation
 
+  edm4eic::Jet:
+    Description:  "A reconstructed jet, inspired by the FastJet PseudoJet"
+    Author: "D. Anderson"
+    Members:
+      - uint32_t          type                    // Jet type as enumerated in fastjet::JetAlgorithm
+      - float             area                    // Jet area
+      - float             energy                  // Jet energy [GeV]
+      - float             backgroundEnergyDensity // Background energy density [GeV/area]
+      - edm4hep::Vector3f momentum                // Jet 3-momentum [GeV]
+    OneToManyRelations:
+      - edm4eic::ReconstructedParticle constituents // Constituents of this jet
+    ExtraCode:
+      declaration: "
+      /// Compute the background energy in [GeV]\n
+      float getBackgroundEnergy() const { return getArea() * getBackgroundEnergyDensity(); }\n
+      "
+
   ## ==========================================================================
-  ## Data-Montecarlo relations
+  ## Data-Monte Carlo relations
   ## ==========================================================================
 
   edm4eic::MCRecoParticleAssociation:
     Description: "Used to keep track of the correspondence between MC and reconstructed particles"
     Author: "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
-      - uint32_t          recID             // Index of corresponding ReconstructedParticle (position in ReconstructedParticles array)
       - float             weight            // weight of this association
     OneToOneRelations :
       - edm4eic::ReconstructedParticle rec  // reference to the reconstructed particle
       - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
+    ExtraCode:
+      includes: "
+      #include <edm4eic/ReconstructedParticle.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      "
+      declaration: "
+      [[deprecated(\"use getSim().getObjectID().index instead\")]]
+      int getSimID() const { return getSim().getObjectID().index; }\n
+      [[deprecated(\"use getRec().getObjectID().index instead\")]]
+      int getRecID() const { return getRec().getObjectID().index; }\n
+      "
+    MutableExtraCode:
+      includes: "
+      #include <edm4eic/ReconstructedParticle.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      " 
+      declaration: "
+      [[deprecated(\"use setSim() instead; this function does nothing\")]]
+      void setSimID(int) { }\n
+      [[deprecated(\"use setRec() instead; this function does nothing\")]]
+      void setRecID(int) { }\n
+      "
 
   edm4eic::MCRecoClusterParticleAssociation:
     Description: "Association between a Cluster and a MCParticle"
     Author : "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
-      - uint32_t          recID             // Index of corresponding Cluster (position in Clusters array)
       - float             weight            // weight of this association
     OneToOneRelations:
       - edm4eic::Cluster  rec               // reference to the cluster
       - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
+    ExtraCode:
+      includes: "
+      #include <edm4eic/Cluster.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      "
+      declaration: "
+      [[deprecated(\"use getSim().getObjectID().index instead\")]]
+      int getSimID() const { return getSim().getObjectID().index; }\n
+      [[deprecated(\"use getRec().getObjectID().index instead\")]]
+      int getRecID() const { return getRec().getObjectID().index; }\n
+      "
+    MutableExtraCode:
+      includes: "
+      #include <edm4eic/Cluster.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      "
+      declaration: "
+      [[deprecated(\"use setSim() instead; this function does nothing\")]]
+      void setSimID(int) { }\n
+      [[deprecated(\"use setRec() instead; this function does nothing\")]]
+      void setRecID(int) { }\n
+      "
 
   edm4eic::MCRecoTrackParticleAssociation:
     Description: "Association between a Track and a MCParticle"
     Author : "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
-      - uint32_t          recID             // Index of corresponding Track (position in Tracks array)
       - float             weight            // weight of this association
     OneToOneRelations:
       - edm4eic::Track    rec               // reference to the track
       - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
+    ExtraCode:
+      includes: "
+      #include <edm4eic/Track.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      "
+      declaration: "
+      [[deprecated(\"use getSim().getObjectID().index instead\")]]
+      int getSimID() const { return getSim().getObjectID().index; }\n
+      [[deprecated(\"use getRec().getObjectID().index instead\")]]
+      int getRecID() const { return getRec().getObjectID().index; }\n
+      "
+    MutableExtraCode:
+      includes: "
+      #include <edm4eic/Track.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      "
+      declaration: "
+      [[deprecated(\"use setSim() instead; this function does nothing\")]]
+      void setSimID(int) { }\n
+      [[deprecated(\"use setRec() instead; this function does nothing\")]]
+      void setRecID(int) { }\n
+      "
 
   edm4eic::MCRecoVertexParticleAssociation:
     Description: "Association between a Vertex and a MCParticle"
     Author : "S. Joosten"
     Members:
-      - uint32_t          simID             // Index of corresponding MCParticle (position in MCParticles array)
-      - uint32_t          recID             // Index of corresponding Vertex (position in Vertices array)
       - float             weight            // weight of this association
     OneToOneRelations:
       - edm4eic::Vertex     rec             // reference to the vertex
       - edm4hep::MCParticle sim             // reference to the Monte-Carlo particle
+    ExtraCode:
+      includes: "
+      #include <edm4eic/Vertex.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      "
+      declaration: "
+      [[deprecated(\"use getSim().getObjectID().index instead\")]]
+      int getSimID() const { return getSim().getObjectID().index; }\n
+      [[deprecated(\"use getRec().getObjectID().index instead\")]]
+      int getRecID() const { return getRec().getObjectID().index; }\n
+      "
+    MutableExtraCode:
+      includes: "
+      #include <edm4eic/Vertex.h>\n
+      #include <edm4hep/MCParticle.h>\n
+      "
+      declaration: "
+      [[deprecated(\"use setSim() instead; this function does nothing\")]]
+      void setSimID(int) { }\n
+      [[deprecated(\"use setRec() instead; this function does nothing\")]]
+      void setRecID(int) { }\n
+      "
 
   edm4eic::MCRecoTrackerHitAssociation:
     Description: "Association between a RawTrackerHit and a SimTrackerHit"
@@ -652,7 +787,71 @@ datatypes:
       - edm4eic::Track        from   // reference to the track
       - edm4eic::ProtoCluster to     // reference to the protocluster
 
+  ## ==========================================================================
+  ## Data-Monte Carlo comparisons
+  ## ==========================================================================
+
+  edm4eic::Truthiness:
+    Description: "Positive-definite convex norm of how confidently wrong the reconstruction is,
+                  with non-negative contributions from various aspects of the reconstruction,
+                  where a zero value indicates a perfect reconstruction."
+    Author: "W. Deconinck, S. Colbert"
+    Members:
+       - float truthiness                                         // Overall truthiness of the entire event
+       - edm4eic::TruthinessContribution associationContribution  // Contribution from all associated particles
+       - float unassociatedMCParticlesContribution                // Contribution from unassociated MC particles
+       - float unassociatedRecoParticlesContribution              // Contribution from unassociated reconstructed particles
+    VectorMembers:
+      - edm4eic::TruthinessContribution associationContributions  // Contribution from associated particles
+    OneToManyRelations:
+       - edm4eic::MCRecoParticleAssociation associations          // Reference to the associated particles
+       - edm4hep::MCParticle unassociatedMCParticles              // Reference to the unassociated MC particles
+       - edm4eic::ReconstructedParticle unassociatedRecoParticles // Reference to the unassociated reconstructed particles
+
 links:
+
+  edm4eic::MCRecoParticleLink:
+    Description: "Used to keep track of the correspondence between MC and reconstructed particles"
+    Author: "S. Joosten"
+    From: edm4eic::ReconstructedParticle
+    To: edm4hep::MCParticle
+
+  edm4eic::MCRecoClusterParticleLink:
+    Description: "Association between a Cluster and a MCParticle"
+    Author : "S. Joosten"
+    From: edm4eic::Cluster
+    To: edm4hep::MCParticle
+
+  edm4eic::MCRecoTrackParticleLink:
+    Description: "Association between a Track and a MCParticle"
+    Author : "S. Joosten"
+    From: edm4eic::Track
+    To: edm4hep::MCParticle
+
+  edm4eic::MCRecoVertexParticleLink:
+    Description: "Association between a Vertex and a MCParticle"
+    Author : "S. Joosten"
+    From: edm4eic::Vertex
+    To: edm4hep::MCParticle
+
+  edm4eic::MCRecoTrackerHitLink:
+    Description: "Association between a RawTrackerHit and a SimTrackerHit"
+    Author: "C. Dilks, W. Deconinck"
+    From: edm4eic::RawTrackerHit
+    To: edm4hep::SimTrackerHit
+
+  edm4eic::MCRecoCalorimeterHitLink:
+    Description: "Association between a RawCalorimeterHit and a SimCalorimeterHit"
+    Author: "S. Rahman"
+    From: edm4hep::RawCalorimeterHit
+    To: edm4hep::SimCalorimeterHit
+
+  edm4eic::TrackClusterLink:
+    Description: "Match between a Cluster and a Track"
+    Author: "D. Anderson, D. Brandenburg, D. Kalinkin, S. Joosten"
+    From: edm4eic::Cluster
+    To: edm4eic::Track
+
   edm4eic::TrackProtoClusterLink:
     Description: "Link between a ProtoCluster and a Track"
     Author: "D. Anderson, D. Kalinkin"

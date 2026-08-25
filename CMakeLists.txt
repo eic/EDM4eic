@@ -7,14 +7,37 @@ project(EDM4EIC
   LANGUAGES CXX)
 
 SET( ${PROJECT_NAME}_VERSION_MAJOR 8 )
-SET( ${PROJECT_NAME}_VERSION_MINOR 4 )
+SET( ${PROJECT_NAME}_VERSION_MINOR 10 )
 SET( ${PROJECT_NAME}_VERSION_PATCH 0 )
 SET( ${PROJECT_NAME}_VERSION  "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}" )
 
+# Verify that schema version in edm4eic.yaml matches project version
+# Schema version is defined as 10000*major + 100*minor + patch
+# (two digits per component, so each component may range from 0 to 99)
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/edm4eic.yaml" EDM4EIC_YAML_CONTENT)
+string(REGEX MATCH "schema_version:[ \t]*([0-9]+)" SCHEMA_VERSION_MATCH "${EDM4EIC_YAML_CONTENT}")
+if(SCHEMA_VERSION_MATCH)
+  set(SCHEMA_VERSION ${CMAKE_MATCH_1})
+  math(EXPR EXPECTED_SCHEMA_VERSION "${${PROJECT_NAME}_VERSION_MAJOR} * 10000 + ${${PROJECT_NAME}_VERSION_MINOR} * 100 + ${${PROJECT_NAME}_VERSION_PATCH}")
+  if(NOT SCHEMA_VERSION EQUAL EXPECTED_SCHEMA_VERSION)
+    message(FATAL_ERROR
+      "Schema version mismatch: edm4eic.yaml has schema_version=${SCHEMA_VERSION}, "
+      "but CMakeLists.txt version ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH} "
+      "requires schema_version=${EXPECTED_SCHEMA_VERSION}. "
+      "Please update schema_version in edm4eic.yaml to match the project version.")
+  endif()
+else()
+  message(WARNING "Could not find schema_version in edm4eic.yaml")
+endif()
+
 # C++ standard
-set(CMAKE_CXX_STANDARD 17 CACHE STRING "Set the C++ standard to be used")
-if(NOT CMAKE_CXX_STANDARD MATCHES "17|20")
-  message(FATAL_ERROR "Unsupported C++ standard: ${CMAKE_CXX_STANDARD}")
+set(CMAKE_CXX_STANDARD_MIN 20)
+set(CMAKE_CXX_STANDARD 20 CACHE STRING "Set the C++ standard to be used")
+if(CMAKE_CXX_STANDARD LESS CMAKE_CXX_STANDARD_MIN)
+  message(
+    FATAL_ERROR
+    "Unsupported C++ standard: ${CMAKE_CXX_STANDARD} (at least ${CMAKE_CXX_STANDARD_MIN} required)"
+  )
 endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -30,13 +53,16 @@ include(GNUInstallDirs)
 
 include(CTest)
 
-find_package(podio 0.15)
-if(NOT podio_FOUND)
-  find_package(podio 1.0 REQUIRED)
-endif()
+# podio has SameMajorVersion compatibility
+find_package(podio 1.2 REQUIRED)
 include_directories(${podio_INCLUDE_DIR})
 
-find_package(EDM4HEP 0.10.3 REQUIRED)
+# EDM4hep has SameMajorVersion compatibility so we try to find 1.0 first and
+# fall back to the minimum version in case we canot find that
+find_package(EDM4HEP 1.0)
+if (NOT EDM4HEP_FOUND)
+  find_package(EDM4HEP 0.10.3 REQUIRED)
+endif()
 
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -61,10 +87,17 @@ PODIO_ADD_ROOT_IO_DICT(edm4eicDict edm4eic "${headers}" src/selection.xml
 
 add_library(edm4eic::edm4eicDict ALIAS edm4eicDict )
 
-list(APPEND EDM4EIC_INSTALL_LIBS edm4eic edm4eicDict)
-
 add_subdirectory(utils)
 add_subdirectory(test)
+
+list(APPEND EDM4EIC_INSTALL_LIBS edm4eic edm4eicDict)
+
+if(PODIO_ENABLE_ARROW)
+  PODIO_ADD_ARROW(edm4eic "${headers}" "${sources}")
+  message(STATUS "Building and installing the Arrow component since podio supports it")
+  add_library(EDM4EIC::edm4eicPodioArrow ALIAS edm4eicPodioArrow)
+  list(APPEND EDM4EIC_INSTALL_LIBS edm4eicPodioArrow)
+endif()
 
 install(TARGETS ${EDM4EIC_INSTALL_LIBS}
   EXPORT ${PROJECT_NAME}Targets
@@ -127,15 +160,15 @@ include(CMakePackageConfigHelpers)
 install(EXPORT ${PROJECT_NAME}Targets
   FILE ${PROJECT_NAME}Targets.cmake
   NAMESPACE ${PROJECT_NAME}::
-  DESTINATION lib/${PROJECT_NAME}
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
   )
 
-set(TARGETS_INSTALL_PATH lib/${PROJECT_NAME}/${PROJECT_NAME}Targets.cmake)
+set(TARGETS_INSTALL_PATH "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}/${PROJECT_NAME}Targets.cmake")
 
 configure_package_config_file(
   cmake/${PROJECT_NAME}Config.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-  INSTALL_DESTINATION lib/${PROJECT_NAME}
+  INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
   PATH_VARS TARGETS_INSTALL_PATH
   )
 
@@ -148,5 +181,5 @@ write_basic_package_version_file(
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-  DESTINATION lib/${PROJECT_NAME}
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
   )
