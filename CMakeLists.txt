@@ -89,6 +89,7 @@ add_library(edm4eic::edm4eicDict ALIAS edm4eicDict )
 
 add_subdirectory(utils)
 add_subdirectory(test)
+add_subdirectory(python)
 
 list(APPEND EDM4EIC_INSTALL_LIBS edm4eic edm4eicDict)
 
