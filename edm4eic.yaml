@@ -788,31 +788,31 @@ links:
     To: edm4hep::MCParticle
 
   edm4eic::MCRecoClusterParticleLink:
-    Description: "Association between a Cluster and a MCParticle"
+    Description: "Link between a Cluster and a MCParticle"
     Author : "S. Joosten"
     From: edm4eic::Cluster
     To: edm4hep::MCParticle
 
   edm4eic::MCRecoTrackParticleLink:
-    Description: "Association between a Track and a MCParticle"
+    Description: "Link between a Track and a MCParticle"
     Author : "S. Joosten"
     From: edm4eic::Track
     To: edm4hep::MCParticle
 
   edm4eic::MCRecoVertexParticleLink:
-    Description: "Association between a Vertex and a MCParticle"
+    Description: "Link between a Vertex and a MCParticle"
     Author : "S. Joosten"
     From: edm4eic::Vertex
     To: edm4hep::MCParticle
 
   edm4eic::MCRecoTrackerHitLink:
-    Description: "Association between a RawTrackerHit and a SimTrackerHit"
+    Description: "Link between a RawTrackerHit and a SimTrackerHit"
     Author: "C. Dilks, W. Deconinck"
     From: edm4eic::RawTrackerHit
     To: edm4hep::SimTrackerHit
 
   edm4eic::MCRecoCalorimeterHitLink:
-    Description: "Association between a RawCalorimeterHit and a SimCalorimeterHit"
+    Description: "Link between a RawCalorimeterHit and a SimCalorimeterHit"
     Author: "S. Rahman"
     From: edm4hep::RawCalorimeterHit
     To: edm4hep::SimCalorimeterHit
