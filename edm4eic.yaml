@@ -10,7 +10,7 @@
 ## If there are schema version changes that can be evolved, see the podio documentation
 ## for an example: https://github.com/AIDASoft/podio/tree/master/tests/schema_evolution
 ##
-schema_version: 81000
+schema_version: 81100
 
 options :
   # should getters / setters be prefixed with get / set?
@@ -806,12 +806,24 @@ links:
     To: edm4hep::MCParticle
 
   edm4eic::MCRecoTrackerHitLink:
+    Description: "[DEPRECATED - use edm4eic::MCRawTrackerHitLink] Association between a RawTrackerHit and a SimTrackerHit"
+    Author: "C. Dilks, W. Deconinck"
+    From: edm4eic::RawTrackerHit
+    To: edm4hep::SimTrackerHit
+
+  edm4eic::MCRawTrackerHitLink:
     Description: "Association between a RawTrackerHit and a SimTrackerHit"
     Author: "C. Dilks, W. Deconinck"
     From: edm4eic::RawTrackerHit
     To: edm4hep::SimTrackerHit
 
   edm4eic::MCRecoCalorimeterHitLink:
+    Description: "[DEPRECATED - use edm4eic::MCRawCalorimeterHitLink] Association between a RawCalorimeterHit and a SimCalorimeterHit"
+    Author: "S. Rahman"
+    From: edm4hep::RawCalorimeterHit
+    To: edm4hep::SimCalorimeterHit
+
+  edm4eic::MCRawCalorimeterHitLink:
     Description: "Association between a RawCalorimeterHit and a SimCalorimeterHit"
     Author: "S. Rahman"
     From: edm4hep::RawCalorimeterHit
