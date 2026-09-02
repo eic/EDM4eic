@@ -7,7 +7,7 @@ project(EDM4EIC
   LANGUAGES CXX)
 
 SET( ${PROJECT_NAME}_VERSION_MAJOR 8 )
-SET( ${PROJECT_NAME}_VERSION_MINOR 10 )
+SET( ${PROJECT_NAME}_VERSION_MINOR 11 )
 SET( ${PROJECT_NAME}_VERSION_PATCH 0 )
 SET( ${PROJECT_NAME}_VERSION  "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}" )
 
@@ -73,6 +73,9 @@ PODIO_GENERATE_DATAMODEL(edm4eic edm4eic.yaml headers sources
   UPSTREAM_EDM edm4hep:${EDM4HEP_DATA_DIR}/edm4hep.yaml
   IO_BACKEND_HANDLERS ${PODIO_IO_HANDLERS}
   OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
+  # podio 1.7 schema evolution re-reads current/old YAMLs without forwarding
+  # the configured upstream EDM, so components using edm4hep types fail
+  # validation during comparison (normal code generation still works).
   )
 
 PODIO_ADD_DATAMODEL_CORE_LIB(edm4eic "${headers}" "${sources}"
