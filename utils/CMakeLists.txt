@@ -36,7 +36,7 @@ install(TARGETS edm4eic_utils
 
 if(CLI11_FOUND)
 
-  if(${podio_VERSION} VERSION_LESS 0.17.4)
+  if(${podio_VERSION} VERSION_LESS 0.17.4 AND TARGET podio::podioRootIO)
 
     # EventStore-based merging
     add_executable(edm4eic_event_merge src/event_merge.cpp)

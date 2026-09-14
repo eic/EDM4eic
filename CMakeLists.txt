@@ -85,12 +85,17 @@ PODIO_ADD_ROOT_IO_DICT(edm4eicDict edm4eic "${headers}" src/selection.xml
   OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-add_library(edm4eic::edm4eicDict ALIAS edm4eicDict )
+if(TARGET edm4eicDict)
+  add_library(edm4eic::edm4eicDict ALIAS edm4eicDict)
+endif()
 
 add_subdirectory(utils)
 add_subdirectory(test)
 
-list(APPEND EDM4EIC_INSTALL_LIBS edm4eic edm4eicDict)
+list(APPEND EDM4EIC_INSTALL_LIBS edm4eic)
+if(TARGET edm4eicDict)
+  list(APPEND EDM4EIC_INSTALL_LIBS edm4eicDict)
+endif()
 
 if(PODIO_ENABLE_ARROW)
   PODIO_ADD_ARROW(edm4eic "${headers}" "${sources}")
@@ -106,17 +111,21 @@ install(TARGETS ${EDM4EIC_INSTALL_LIBS}
   PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/edm4eic"
   COMPONENT dev)
 
-install(FILES
-  "${PROJECT_BINARY_DIR}/edm4eicDictDict.rootmap"
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT dev)
+if(TARGET edm4eicDict)
+  install(FILES
+    "${PROJECT_BINARY_DIR}/edm4eicDictDict.rootmap"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT dev)
+endif()
 
 install(FILES
   edm4eic.yaml
   DESTINATION "${CMAKE_INSTALL_DATADIR}/edm4eic" COMPONENT dev)
 
-install(FILES
-  "${PROJECT_BINARY_DIR}/libedm4eicDict_rdict.pcm"
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT dev)
+if(TARGET edm4eicDict)
+  install(FILES
+    "${PROJECT_BINARY_DIR}/libedm4eicDict_rdict.pcm"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}" COMPONENT dev)
+endif()
 
 # -------------------------
 # install class documentation
