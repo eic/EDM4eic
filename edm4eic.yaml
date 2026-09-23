@@ -206,6 +206,12 @@ components:
       - uint16_t highGainADC        // [ADC Counts], amplitude of signal during sample in the high gain mode
       - uint16_t timeOfArrival      // Time of arrival (TOA) [TDC counts]
 
+  ## Distance-of-closest approach (DCA) between two points and its error
+  edm4eic::DCA:
+    Members:
+      - float distance // [mm], distance-of-closest approach of a track or particle's trajectory to a reference point
+      - float error    // [mm], estimated error on the distance
+
   ## Event-level truthiness information
   edm4eic::TruthinessContribution:
     Members:
@@ -545,7 +551,9 @@ datatypes:
       - int                 ndf           // NDF of the vertex fit
       - edm4hep::Vector4f   position      // position [mm] + time t0 [ns] of the vertex. Time is 4th component in vector
       ## this is named "covMatrix" in EDM4hep, renamed for consistency with the rest of edm4eic
-      - edm4eic::Cov4f      positionError // Covariance matrix of the position+time. Time is 4th component, similarly to 4vector 
+      - edm4eic::Cov4f      positionError // Covariance matrix of the position+time. Time is 4th component, similarly to 4vector
+    VectorMembers:
+      - edm4eic::DCA DCAs // Distance-of-closest-approach (DCA) of associated particles to this vertex, runs parallel to associatedParticles
     OneToManyRelations:
       - edm4eic::ReconstructedParticle associatedParticles // particles associated to this vertex.
 
