@@ -558,7 +558,7 @@ datatypes:
     Members:
       - float parentDecayLength      // length b/n primary vertex and decay vertex
       - float parentDecayLengthError // error on the decay length
-    OneToOneRelation:
+    OneToOneRelations:
       - edm4eic::Vertex                primaryVertex // associated primary vertex
       - edm4eic::Vertex                decayVertex   // decay vertex and associated decay particles
       - edm4eic::ReconstructedParticle parent        // decaying parent particle
