@@ -10,7 +10,7 @@
 ## If there are schema version changes that can be evolved, see the podio documentation
 ## for an example: https://github.com/AIDASoft/podio/tree/master/tests/schema_evolution
 ##
-schema_version: 81000
+schema_version: 81100
 
 options :
   # should getters / setters be prefixed with get / set?
@@ -163,16 +163,31 @@ components:
       - uint64_t          surface         // Surface track was propagated to (possibly multiple per detector)
       - uint32_t          system          // Detector system track was propagated to
       - edm4hep::Vector3f position        // Position of the trajectory point [mm]
-      - edm4eic::Cov3f    positionError   // Error on the position
+      - edm4eic::Cov3f    positionCov     // Covariance matrix on the position [mm²]
       - edm4hep::Vector3f momentum        // 3-momentum at the point [GeV]
-      - edm4eic::Cov3f    momentumError   // Error on the 3-momentum
+      - edm4eic::Cov3f    momentumCov     // Covariance matrix on the 3-momentum [GeV²]
       - float             time            // Time at this point [ns]
       - float             timeError       // Error on the time at this point
       - float             theta           // polar direction of the track at the surface [rad]
       - float             phi             // azimuthal direction of the track at the surface [rad]
-      - edm4eic::Cov2f    directionError  // Error on the polar and azimuthal angles
+      - edm4eic::Cov2f    directionCov    // Covariance matrix on the polar and azimuthal angles [rad²]
       - float             pathlength      // Pathlength from the origin to this point
       - float             pathlengthError // Error on the pathlength
+    ExtraCode:
+      declaration: "
+      [[deprecated(\"use positionCov instead\")]]\n
+      const edm4eic::Cov3f& getPositionError() const { return positionCov; }\n
+      [[deprecated(\"use positionCov instead\")]]\n
+      edm4eic::Cov3f& getPositionError() { return positionCov; }\n
+      [[deprecated(\"use momentumCov instead\")]]\n
+      const edm4eic::Cov3f& getMomentumError() const { return momentumCov; }\n
+      [[deprecated(\"use momentumCov instead\")]]\n
+      edm4eic::Cov3f& getMomentumError() { return momentumCov; }\n
+      [[deprecated(\"use directionCov instead\")]]\n
+      const edm4eic::Cov2f& getDirectionError() const { return directionCov; }\n
+      [[deprecated(\"use directionCov instead\")]]\n
+      edm4eic::Cov2f& getDirectionError() { return directionCov; }\n
+      "
 
   ## PID hypothesis from Cherenkov detectors
   edm4eic::CherenkovParticleIDHypothesis:
@@ -332,14 +347,14 @@ datatypes:
       - float             timeError         // Error on the cluster time
       - uint32_t          nhits             // Number of hits in the cluster.
       - edm4hep::Vector3f position          // Global position of the cluster [mm].
-      - edm4eic::Cov3f    positionError     // Covariance matrix of the position (6 Parameters).
+      - edm4eic::Cov3f    positionCov       // Covariance matrix of the position [mm²] (6 parameters).
       - float             radius       // Cluster radius [mm].
       - float             dispersion   // Cluster dispersion [mm].
       - std::array<float, 3> principalAxesLengthsXYZ      // Lengths along the cluster's principal axes [mm], sorted in descending order (equivalent to sqrt of eigenvalues of the position covariance). For an XY planar detector one can expect this to be [sigma_max, sigma_min, 0].
       - std::array<float, 2> principalAxesLengthsThetaPhi // Lengths along the cluster's principal axes [rad], sorted in descending order.
       - float             intrinsicTheta    // Intrinsic cluster propagation direction polar angle [rad].
       - float             intrinsicPhi      // Intrinsic cluster propagation direction azimuthal angle [rad]. For an XY planar detector one can expect this to be the tilt of "sigma_max" axis.
-      - edm4eic::Cov2f    intrinsicDirectionError // Error on the intrinsic cluster propagation direction
+      - edm4eic::Cov2f    intrinsicDirectionCov // Covariance matrix on the intrinsic cluster propagation direction [rad²]
     VectorMembers:
       - float             shapeParameters   // [DEPRECATED] use radius, dispersion, principalAxesLengthsXYZ/ThetaPhi instead.
       - float             hitContributions  // Energy contributions of the hits. Runs parallel to ::hits()
@@ -348,6 +363,20 @@ datatypes:
       - edm4eic::Cluster        clusters    // Clusters that have been combined to form this cluster
       - edm4eic::CalorimeterHit hits        // Hits that have been combined to form this cluster
       - edm4hep::ParticleID     particleIDs // Particle IDs sorted by likelihood
+    ExtraCode:
+      declaration: "
+      [[deprecated(\"use getPositionCov() instead\")]]\n
+      edm4eic::Cov3f getPositionError() const { return getPositionCov(); }\n
+      [[deprecated(\"use getIntrinsicDirectionCov() instead\")]]\n
+      edm4eic::Cov2f getIntrinsicDirectionError() const { return getIntrinsicDirectionCov(); }\n
+      "
+    MutableExtraCode:
+      declaration: "
+      [[deprecated(\"use setPositionCov() instead\")]]\n
+      void setPositionError(edm4eic::Cov3f value) { setPositionCov(value); }\n
+      [[deprecated(\"use setIntrinsicDirectionCov() instead\")]]\n
+      void setIntrinsicDirectionError(edm4eic::Cov2f value) { setIntrinsicDirectionCov(value); }\n
+      "
 
   ## ==========================================================================
   ## RICH/Cherenkov and PID
@@ -434,13 +463,23 @@ datatypes:
     Members:
       - uint64_t          cellID            // The detector specific (geometrical) cell id.
       - edm4hep::Vector3f position          // Hit (cell) position [mm]
-      - edm4eic::CovDiag3f positionError    // Covariance Matrix
+      - edm4eic::CovDiag3f positionCov     // Covariance matrix of the position [mm²]
       - float             time              // Hit time [ns]
       - float             timeError         // Error on the time
       - float             edep              // Energy deposit in this hit [GeV]
       - float             edepError         // Error on the energy deposit [GeV]
     OneToOneRelations:
       - edm4eic::RawTrackerHit rawHit       // Related raw tracker hit
+    ExtraCode:
+      declaration: "
+      [[deprecated(\"use getPositionCov() instead\")]]\n
+      edm4eic::CovDiag3f getPositionError() const { return getPositionCov(); }\n
+      "
+    MutableExtraCode:
+      declaration: "
+      [[deprecated(\"use setPositionCov() instead\")]]\n
+      void setPositionError(edm4eic::CovDiag3f value) { setPositionCov(value); }\n
+      "
       
   edm4eic::Measurement2D:
     Description: "2D measurement (on an arbitrary surface)"
@@ -545,9 +584,19 @@ datatypes:
       - int                 ndf           // NDF of the vertex fit
       - edm4hep::Vector4f   position      // position [mm] + time t0 [ns] of the vertex. Time is 4th component in vector
       ## this is named "covMatrix" in EDM4hep, renamed for consistency with the rest of edm4eic
-      - edm4eic::Cov4f      positionError // Covariance matrix of the position+time. Time is 4th component, similarly to 4vector 
+      - edm4eic::Cov4f      positionCov   // Covariance matrix of the position+time [mm²,ns²]. Time is 4th component, similarly to 4vector 
     OneToManyRelations:
       - edm4eic::ReconstructedParticle associatedParticles // particles associated to this vertex.
+    ExtraCode:
+      declaration: "
+      [[deprecated(\"use getPositionCov() instead\")]]\n
+      edm4eic::Cov4f getPositionError() const { return getPositionCov(); }\n
+      "
+    MutableExtraCode:
+      declaration: "
+      [[deprecated(\"use setPositionCov() instead\")]]\n
+      void setPositionError(edm4eic::Cov4f value) { setPositionCov(value); }\n
+      "
 
   ## ==========================================================================
   ## Kinematic reconstruction
