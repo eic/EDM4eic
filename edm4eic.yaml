@@ -817,7 +817,7 @@ links:
     From: edm4hep::RawCalorimeterHit
     To: edm4hep::SimCalorimeterHit
 
-  edm4eic::MCRecoCALOROCHitLink:
+  edm4eic::MCRawCALOROCHitLink:
     Description: "Link between a RawCALOROCHit and a SimCalorimeterHit"
     Author: "W. Deconinck"
     From: edm4eic::RawCALOROCHit
