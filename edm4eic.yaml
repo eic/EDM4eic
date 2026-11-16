@@ -755,8 +755,8 @@ datatypes:
     Members:
       - float                 weight // weight of this association
     OneToOneRelations:
-      - edm4eic::Track        from   // reference to the track
-      - edm4eic::ProtoCluster to     // reference to the protocluster
+      - edm4eic::ProtoCluster from   // reference to the protocluster
+      - edm4eic::Track        to     // reference to the track
 
   ## ==========================================================================
   ## Data-Monte Carlo comparisons
