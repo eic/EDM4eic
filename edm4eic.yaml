@@ -10,7 +10,7 @@
 ## If there are schema version changes that can be evolved, see the podio documentation
 ## for an example: https://github.com/AIDASoft/podio/tree/master/tests/schema_evolution
 ##
-schema_version: 81100
+schema_version: 90000
 
 options :
   # should getters / setters be prefixed with get / set?
@@ -755,8 +755,8 @@ datatypes:
     Members:
       - float                 weight // weight of this association
     OneToOneRelations:
-      - edm4eic::Track        from   // reference to the track
-      - edm4eic::ProtoCluster to     // reference to the protocluster
+      - edm4eic::ProtoCluster from   // reference to the protocluster
+      - edm4eic::Track        to     // reference to the track
 
   ## ==========================================================================
   ## Data-Monte Carlo comparisons
@@ -838,5 +838,5 @@ links:
   edm4eic::TrackProtoClusterLink:
     Description: "Link between a ProtoCluster and a Track"
     Author: "D. Anderson, D. Kalinkin"
-    From: edm4eic::Track
-    To: edm4eic::ProtoCluster
+    From: edm4eic::ProtoCluster
+    To: edm4eic::Track
