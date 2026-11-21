@@ -91,6 +91,7 @@ endif()
 
 add_subdirectory(utils)
 add_subdirectory(test)
+add_subdirectory(python)
 
 list(APPEND EDM4EIC_INSTALL_LIBS edm4eic)
 if(TARGET edm4eicDict)
