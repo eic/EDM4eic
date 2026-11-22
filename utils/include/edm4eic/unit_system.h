@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <numbers>
+
 namespace edm4eic {
 
   namespace unit {
@@ -41,6 +43,9 @@ namespace edm4eic {
     static constexpr double keV = 1e-6 * GeV; // kilo electron volt
     static constexpr double eV = 1e-9 * GeV; // electron volt
 
+    // angles
+    static constexpr double rad = 1.0; // radian
+    static constexpr double deg = std::numbers::pi / 180. / rad; // degree
   }
 
 }
