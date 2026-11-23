@@ -45,7 +45,7 @@ namespace edm4eic {
 
     // angles
     static constexpr double rad = 1.0; // radian
-    static constexpr double deg = std::numbers::pi / 180. / rad; // degree
+    static constexpr double deg = std::numbers::pi * rad / 180.; // degree
   }
 
 }
