@@ -382,6 +382,19 @@ datatypes:
     OneToManyRelations:
       - edm4eic::RawTrackerHit                 rawHits            // raw sensor hits
 
+  edm4eic::CherenkovPhotonAngle:
+    Description: "Cherenkov angle estimate from one detected photon for one charged particle (one entry per photon and reconstruction solution)"
+    Author: "W.J. Llope"
+    Members:
+      - float             theta             // Cherenkov polar angle around the track, as used for the PID [rad]
+      - float             phi               // Azimuthal angle around the track [rad]
+      - float             timeResidual      // Measured minus expected photon arrival time [ns]
+      - float             pathLength        // Photon path length from emission to the sensor [mm]
+      - int32_t           type              // Detector-specific solution class, e.g. hpDIRC -1 = direct, +1 = via the mirror
+    OneToOneRelations:
+      - edm4eic::RawTrackerHit                 rawHit             // raw sensor hit of the photon
+      - edm4eic::CherenkovParticleID           particleID         // charged-particle PID this estimate belongs to
+
   edm4eic::IrtRadiatorInfo:
     Description: "IRT 2.1 output (radiator level)"
     Author: "A. Kiselev"
